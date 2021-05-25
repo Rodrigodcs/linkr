@@ -31,17 +31,17 @@ export default function Navbar(){
                 <Drop show={show}>
                     <Link to="/my-posts" onClick={showDropDown}>
                         <p>
-                            My posts
+                        {show && "My posts"}
                         </p>
                     </Link>
                     <Link to="/my-likes" onClick={showDropDown}>
                         <p>
-                            My likes
+                            {show && "My likes"}
                         </p>
                     </Link>
                     <Link to="/" onClick={showDropDown}>
                         <p>
-                            Logout
+                        {show && "Logout"}
                         </p>
                     </Link>
                 </Drop>
@@ -88,13 +88,14 @@ const Image = styled.div`
 const Drop = styled.div`
     background: #151515;
     z-index: 2;
-    height:109px;
+    height:${props=> props.show? "109px" : "0" };
     width:120px;
     position:fixed;
     top:72px;
     right: 0;
     border-radius:0 0 0 15px;
-    display: ${props=> props.show? "flex" : "none" };
+    display: flex;
+    transition: height 0.2s;
     flex-direction: column;
     justify-content: space-evenly;
     align-items: center ;
