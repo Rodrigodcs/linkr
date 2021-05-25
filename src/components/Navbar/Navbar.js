@@ -2,10 +2,13 @@ import styled from "styled-components"
 import { ChevronDownOutline, ChevronUpOutline } from 'react-ionicons'
 import {useState} from "react"
 import {Link} from "react-router-dom"
+import {useContext} from "react"
+import UserContext from "../../contexts/UserContext"
 
 export default function Navbar(){
     const [show, setShow] = useState(false)
-
+    const {userInfo, setUserInfo} = useContext(UserContext)
+    console.log(userInfo)
     function showDropDown(){
         setShow(!show)
     }
@@ -27,7 +30,7 @@ export default function Navbar(){
                 height="30px"
                 width="30px"
                 />}
-                <Image onClick={showDropDown}></Image>
+                <img src={userInfo.user.avatar} onClick={showDropDown}></img>
                 <Drop show={show}>
                     <Link to="/my-posts" onClick={showDropDown}>
                         <p>
@@ -39,7 +42,8 @@ export default function Navbar(){
                             {show && "My likes"}
                         </p>
                     </Link>
-                    <Link to="/" onClick={showDropDown}>
+                    <Link to="/" onClick={()=> {showDropDown()
+                                                setUserInfo("")}}>
                         <p>
                         {show && "Logout"}
                         </p>
@@ -78,12 +82,14 @@ const DropDown = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
+    img{
+        height:50px;
+        width:50px;
+        border-radius:50px;
+    }
 `
 const Image = styled.div`
-    height:50px;
-    width:50px;
-    border-radius:50px;
-    background:red;
+    
 `
 const Drop = styled.div`
     background: #151515;
