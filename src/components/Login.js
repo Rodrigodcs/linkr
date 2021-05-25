@@ -1,10 +1,36 @@
 import styled from "styled-components"
-import useState from "react"
+import {useState, useContext} from "react"
+import UserContext from "../contexts/UserContext"
+import {Link, useHistory} from "react-router-dom"
+import axios from "axios"
 
 export default function Login(){
     const [email, setEmail] = useState("")
     const [password,setPassword]=useState("")
+    const [requesting,setRequesting] = useState(false)
+    let history=useHistory()
+    const {setUserInfo} = useContext(UserContext);
 
+    function login(e){
+        e.preventDefault()
+        if(email===""||password===""){
+            alert("Preencha todos os campos")
+            return
+        }
+        setRequesting(true)
+        const body={email,password}
+        const request = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/sign-in",body)
+        request.then(r=>{
+            console.log(r)
+            setUserInfo(r.data)
+            history.push("/timeline")
+        })
+        request.catch(e=>{
+            alert("Incorrect email/password")
+            setRequesting(false)
+
+        })
+    }
 
     return (
         <Wrapper>
@@ -15,10 +41,18 @@ export default function Login(){
                 </div>
             </LogoWrapper>
             <Logo>
-                <Input type="email" placeholder={"e-mail"} value={email} onChange={e=>setEmail(e.target.value)}></Input>
-                <Input type="password" placeholder={"password"} value={password} onChange={e=>setPassword(e.target.value)}></Input>
-                <Button>Log In</Button>
-                <p>First time? Create an account!</p>
+                <form onSubmit={login}>
+                    <Input type="email" placeholder={"e-mail"} value={email} onChange={e=>setEmail(e.target.value)}></Input>
+                    <Input type="password" placeholder={"password"} value={password} onChange={e=>setPassword(e.target.value)}></Input>
+                    {requesting?
+                        <div>Loging In...</div>:
+                        <Button type="submit">Log In</Button>
+                    }
+                    
+                </form>
+                <Link to="/sign-up">
+                    <p>First time? Create an account!</p>
+                </Link>
             </Logo>
         </Wrapper>
     )
@@ -59,6 +93,27 @@ export const Logo = styled.section`
         font-size: 20px;
         line-height: 24px;
         text-decoration-line: underline;
+        color: #FFFFFF;
+    }
+    form{
+        display:flex;
+        flex-direction: column;
+        gap:13px;
+    }
+    div{
+        display:flex;
+        align-items: center;
+        justify-content: center;
+        width: 429px;
+        height: 65px;
+        background: #1877F2;
+        border-radius: 6px;
+        border:none;
+        font-family: Oswald;
+        font-style: normal;
+        font-weight: bold;
+        font-size: 27px;
+        line-height: 40px;
         color: #FFFFFF;
     }
 `;

@@ -1,18 +1,19 @@
 import {GlobalStyle} from "./GlobalStyle"
 import {BrowserRouter as Router, Switch, Route} from "react-router-dom"
-import useState from "react"
-import UserContext from "./contexts/UserContext"
 import Login from "./components/Login"
-import Register from "./components/Registration"
+import Registration from "./components/Registration"
+import UserContext from "./contexts/UserContext"
+import {useState} from "react"
+
 
 export default function App(){
     const [userInfo, setUserInfo]=useState("")
-
+  
     return (
         <UserContext.Provider value={{userInfo, setUserInfo}}>
             <Router>
+                <GlobalStyle/>
                 <Switch>
-                    <GlobalStyle/>
                     <Route path="/" exact>
                         <Login/>
                     </Route>

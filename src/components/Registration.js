@@ -1,28 +1,35 @@
 import styled from "styled-components"
-import useState from "react"
+import {useState} from "react"
 import axios from "axios"
 import {Link, useHistory} from "react-router-dom"
 
-
-
 export default function Registration(){
     const [email, setEmail] = useState("")
-    const [password,setPassword]=useState("")
+    const [password,setPassword] = useState("")
     const [username, setUsername] = useState("")
-    const [pictureUrl,setPictureUrl]=useState("")
+    const [pictureUrl,setPictureUrl] = useState("")
+    let history = useHistory();
+    const [requesting,setRequesting] = useState(false)
 
     function register(e){
         e.preventDefault()
+        if(email===""||password===""||username===""||pictureUrl===""){
+            alert("Preencha todos os campos")
+            return
+        }
+        
+        setRequesting(true)
         const body={email,password,username,pictureUrl}
+        console.log(body)
         const request = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/sign-up",body)
         request.then(r=>{
-            console.log(r)
+            history.goBack()
         })
         request.catch(e=>{
-            console.log(e)
+            alert("Email já cadastrado")
+            setRequesting(false)
         })
     }
-
 
     return (
         <Wrapper>
@@ -38,9 +45,15 @@ export default function Registration(){
                     <Input type="password" placeholder={"password"} value={password} onChange={e=>setPassword(e.target.value)}></Input>
                     <Input type="text" placeholder={"username"} value={username} onChange={e=>setUsername(e.target.value)}></Input>
                     <Input type="url" placeholder={"picture url"} value={pictureUrl} onChange={e=>setPictureUrl(e.target.value)}></Input>
-                    <Button>Sign Up</Button>
+                    {requesting?
+                        <div>Signing up...</div>:
+                        <Button type="submit">Sign Up</Button>
+                    }
                 </form>
-                <p>Switch back to log in</p>
+                
+                <Link to="/">
+                    <p>Switch back to log in</p>
+                </Link>
             </Logo>
         </Wrapper>
     )
@@ -83,6 +96,27 @@ export const Logo = styled.section`
         text-decoration-line: underline;
         color: #FFFFFF;
     }
+    form{
+        display:flex;
+        flex-direction: column;
+        gap:13px;
+    }
+    div{
+        display:flex;
+        align-items: center;
+        justify-content: center;
+        width: 429px;
+        height: 65px;
+        background: #1877F2;
+        border-radius: 6px;
+        border:none;
+        font-family: Oswald;
+        font-style: normal;
+        font-weight: bold;
+        font-size: 27px;
+        line-height: 40px;
+        color: #FFFFFF;
+    }
 `;
 export const Title = styled.h1`
     font-family: 'Passion One', cursive;
@@ -109,7 +143,6 @@ export const Input = styled.input`
     outline-color:#1877F2;
     padding-left: 17px;
     font-family: Oswald;
-
     font-style: normal;
     font-weight: bold;
     font-size: 27px;
