@@ -39,7 +39,7 @@ export default function Registration(){
                     <Description>save, share and discover the best links on the web</Description>
                 </div>
             </LogoWrapper>
-            <Logo>
+            <Log>
                 <form onSubmit={register}>
                     <Input type="email" placeholder={"e-mail"} value={email} onChange={e=>setEmail(e.target.value)}></Input>
                     <Input type="password" placeholder={"password"} value={password} onChange={e=>setPassword(e.target.value)}></Input>
@@ -54,7 +54,7 @@ export default function Registration(){
                 <Link to="/">
                     <p>Switch back to log in</p>
                 </Link>
-            </Logo>
+            </Log>
         </Wrapper>
     )
 }
@@ -68,15 +68,42 @@ export const Wrapper = styled.section`
 export const LogoWrapper = styled.section`
     width:calc(100% - 535px);
     background: #151515;
-    box-shadow: 4px 0px 4px rgba(0, 0, 0, 0.25);
+    box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.25);
     z-index: 1;
     div{
         width:442px;
         margin-top: calc(50vh - 117px - 64px);
         margin-left:144px
     }
+    @media (max-width: 1174px) {
+        div{
+            margin-left:100px;
+            width:353px;
+        }
+    }
+    @media (max-width: 1000px) {
+        position:fixed;
+        top:0;
+        left:0;
+        width:100%;
+        height:175px;
+
+        div{
+            position:fixed;
+            top:0;
+            left:0;
+            display:flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-top:0;
+            margin-left:0;
+            width:100%;
+            
+        }
+    }
 `;
-export const Logo = styled.section`
+export const Log = styled.section`
     position: absolute;
     right: 0;
     display:flex;
@@ -117,6 +144,20 @@ export const Logo = styled.section`
         line-height: 40px;
         color: #FFFFFF;
     }
+    @media (max-width: 1000px) {
+        position:fixed;
+        top:175px;
+        height: 100%;
+        justify-content: flex-start;
+        left:0;
+        width:auto;
+        form{
+            margin-top: 40px;
+        }
+        div{
+            width: 330px;
+        }
+    }
 `;
 export const Title = styled.h1`
     font-family: 'Passion One', cursive;
@@ -125,6 +166,11 @@ export const Title = styled.h1`
     line-height: 117px;
     letter-spacing: 0.05em;
     color: #FFFFFF;
+    @media (max-width: 1000px) {
+        margin-top: 10px;
+        font-size: 76px;
+        line-height: 84px;
+    }
 `;
 export const Description = styled.h2`
     font-family: 'Oswald', sans-serif;
@@ -132,6 +178,12 @@ export const Description = styled.h2`
     font-size: 43px;
     line-height: 64px;
     color: #FFFFFF;
+    @media (max-width: 1000px) {
+        margin-top:-10px;
+        width: 237px;
+        font-size: 23px;
+        line-height: 34px;
+    }
 `;
 
 export const Input = styled.input`
@@ -151,6 +203,9 @@ export const Input = styled.input`
     ::placeholder{
         color: #9F9F9F;
     }
+    @media (max-width: 1000px) {
+        width: 330px;
+    }
 `;
 
 export const Button = styled.button`
@@ -159,12 +214,13 @@ export const Button = styled.button`
     background: #1877F2;
     border-radius: 6px;
     border:none;
-
     font-family: Oswald;
     font-style: normal;
     font-weight: bold;
     font-size: 27px;
     line-height: 40px;
     color: #FFFFFF;
-    
+    @media (max-width: 1000px) {
+        width: 330px;
+    }
 `;
