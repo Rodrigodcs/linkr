@@ -1,6 +1,7 @@
 import styled from "styled-components"
 import { ChevronDownOutline, ChevronUpOutline } from 'react-ionicons'
 import {useState} from "react"
+import {Link} from "react-router-dom"
 
 export default function Navbar(){
     const [show, setShow] = useState(false)
@@ -28,16 +29,23 @@ export default function Navbar(){
                 />}
                 <Image onClick={showDropDown}></Image>
                 <Drop show={show}>
-                    <p>
-                        My posts
-                    </p>
-                    <p>
-                        My likes
-                    </p>
-                    <p>
-                        Logout
-                    </p>
+                    <Link to="/my-posts" onClick={showDropDown}>
+                        <p>
+                            My posts
+                        </p>
+                    </Link>
+                    <Link to="/my-likes" onClick={showDropDown}>
+                        <p>
+                            My likes
+                        </p>
+                    </Link>
+                    <Link to="/" onClick={showDropDown}>
+                        <p>
+                            Logout
+                        </p>
+                    </Link>
                 </Drop>
+                {show && <ResetDropDownArea onClick={showDropDown}/>}
             </DropDown>
         </Container>
     )
@@ -63,6 +71,7 @@ const Container = styled.div`
 `
 
 const DropDown = styled.div`
+    
     width:90px;
     height: 72px;
     background: #151515;
@@ -78,6 +87,7 @@ const Image = styled.div`
 `
 const Drop = styled.div`
     background: #151515;
+    z-index: 2;
     height:109px;
     width:120px;
     position:fixed;
@@ -93,4 +103,12 @@ const Drop = styled.div`
         color:white;
         font-size:17px;
     }
+`
+const ResetDropDownArea = styled.div`
+    position:fixed;
+    top:0;
+    bottom:0;
+    right:0;
+    left:0;
+    z-index:0;
 `
