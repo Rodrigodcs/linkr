@@ -1,30 +1,29 @@
 import { useContext, useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom';
 import styled from 'styled-components'
-import CreatePost from './CreatePost'
-import Trending from "./Trending/Trending"
-import Post from './Post'
-import UserContext from '../contexts/UserContext'
+import Trending from "../Trending/Trending"
+import Post from '../Post'
+import UserContext from '../../contexts/UserContext'
 import axios from 'axios'
-import preloader from '../images/preloader.gif'
+import preloader from '../../images/preloader.gif'
 
-export default function TimeLine(){
-
+export default function Hashtag(){
+    const { hashtag } = useParams()
     const {userInfo} = useContext(UserContext);
-    const [posts, setPosts] = useState([]);
+    const [postsHash, setPostsHash] = useState([]);
     const [loader, setLoader] = useState(true);
-    
+
     useEffect(()=>{
         const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
-        const promisse = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/posts",config);
+        const promisse = axios.get(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/hashtags/${hashtag}/posts`,config);
         promisse.then(answer=>{
             setLoader(false);
-            setPosts(answer.data.posts);
+            setPostsHash(answer.data.posts);
         });
         promisse.catch((answer)=>{
-            console.log(answer.response);
             alert("Houve uma falha ao obter os posts, por favor atualize a página")
         });
-    },[userInfo.token])
+    },[userInfo.token, hashtag])
 
     return(
         <PageContainer>
@@ -36,9 +35,8 @@ export default function TimeLine(){
             :<>
             <TimelineStyles>
                 <div className="content">
-                    <header>timeline</header>
-                    <CreatePost/>
-                    {posts.length === 0 ? ("Nenhum post encontrado") : posts.map((post)=>(
+                    <header>{hashtag}</header>
+                    {postsHash.length === 0 ? ("Nenhum post encontrado") : postsHash.map((post)=>(
                         <Post post={post} key={post.id}/>
                     ))}
                     
@@ -100,7 +98,7 @@ margin-right: 25px;
 margin-top:58px;
 
     header{
-        margin-bottom:46px;
+        margin-bottom:42px;
         font-weight: 700;
         font-size:43px;
         color: #fff;
