@@ -18,22 +18,6 @@ export default function Navbar(){
                 linkr
             </h1>
             <DropDown>
-<<<<<<< HEAD
-
-                {!show ? <ChevronDownOutline onClick={showDropDown}
-                color={'#ffffff'} 
-                title={'drop'}
-                height="30px"
-                width="30px"
-                />:<ChevronUpOutline onClick={showDropDown}
-                color={'#ffffff'} 
-                title={'drop'}
-                height="30px"
-                width="30px"
-                />}
-                <img src={userInfo.user.avatar} alt="profile" onClick={showDropDown}></img>
-
-=======
                 {!show ? 
                         <ChevronDownOutline onClick={showDropDown}
                             title="drop"
@@ -44,7 +28,6 @@ export default function Navbar(){
                         />
                 }
                 <img src={userInfo.user.avatar} alt="user" onClick={showDropDown}></img>
->>>>>>> timeline
                 <Drop show={show}>
                     <Link to="/my-posts" onClick={showDropDown}>
                         <p>
