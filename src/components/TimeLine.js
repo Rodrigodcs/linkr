@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import CreatePost from './CreatePost'
-import Trending from "./components/Trending/Trending"
+import Trending from "./Trending/Trending"
 import Post from './Post'
 import UserContext from '../contexts/UserContext'
 import axios from 'axios'
@@ -80,7 +80,7 @@ font-family: 'Oswald', sans-serif;
     margin-top:162px;
     }
     
-@media(max-width:1000px){
+@media(max-width:950px){
     width: 100%;
     .hashtag-container{
         display:none;

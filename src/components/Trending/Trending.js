@@ -33,8 +33,6 @@ export default function Trending(){
 }
 
 const Container = styled.div`
-    margin-top:200px;
-    margin-left: 200px  ;
     width:301px;
     background:#171717;
     display:flex;
