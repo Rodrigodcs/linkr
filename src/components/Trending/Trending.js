@@ -7,16 +7,15 @@ import UserContext from "../../contexts/UserContext"
 
 export default function Trending(){
     const [hashtags, setHashtags] = useState()
-    const {userInfo, setUserInfo} = useContext(UserContext)
+    const {userInfo} = useContext(UserContext)
 
     useEffect(()=>{
         const response = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/hashtags/trending", {headers: {"Authorization": `Bearer ${userInfo.token}`}})
         response.then((data)=>{
             setHashtags([...data.data.hashtags])
         })
-    }, [])
+    }, [userInfo.token])
 
-    console.log(hashtags)
     return(
         <Container>
             <Title>
@@ -25,7 +24,7 @@ export default function Trending(){
             <Hashtags>
                 {hashtags && hashtags.map(h=>( 
                     <Link to={`/hashtag/${h.name}`}>
-                        <p># {h.name}</p>
+                        <p key={h.id}># {h.name}</p>
                     </Link>
                 ))}
             </Hashtags>
