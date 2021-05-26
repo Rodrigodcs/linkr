@@ -8,7 +8,6 @@ import UserContext from "../../contexts/UserContext"
 export default function Navbar(){
     const [show, setShow] = useState(false)
     const {userInfo, setUserInfo} = useContext(UserContext)
-    console.log(userInfo)
     function showDropDown(){
         setShow(!show)
     }
@@ -19,22 +18,20 @@ export default function Navbar(){
                 linkr
             </h1>
             <DropDown>
-                {!show ? <ChevronDownOutline onClick={showDropDown}
-                color={'#ffffff'} 
-                title={'drop'}
-                height="30px"
-                width="30px"
-                />:<ChevronUpOutline onClick={showDropDown}
-                color={'#ffffff'} 
-                title={'drop'}
-                height="30px"
-                width="30px"
-                />}
-                <img src={userInfo.user.avatar} alt="profile" onClick={showDropDown}></img>
+                {!show ? 
+                        <ChevronDownOutline onClick={showDropDown}
+                            title="drop"
+                        />
+                        :
+                        <ChevronUpOutline onClick={showDropDown}
+                            title="drop"
+                        />
+                }
+                <img src={userInfo.user.avatar} alt="user" onClick={showDropDown}></img>
                 <Drop show={show}>
                     <Link to="/my-posts" onClick={showDropDown}>
                         <p>
-                        {show && "My posts"}
+                            {show && "My posts"}
                         </p>
                     </Link>
                     <Link to="/my-likes" onClick={showDropDown}>
@@ -75,7 +72,6 @@ const Container = styled.div`
 `
 
 const DropDown = styled.div`
-    
     width:90px;
     height: 72px;
     background: #151515;
@@ -87,10 +83,13 @@ const DropDown = styled.div`
         width:50px;
         border-radius:50px;
     }
+    svg{
+        color:#ffffff;
+        height:30px;
+        width:30px;
+    }
 `
-const Image = styled.div`
-    
-`
+
 const Drop = styled.div`
     background: #151515;
     z-index: 2;
@@ -111,6 +110,7 @@ const Drop = styled.div`
         font-size:17px;
     }
 `
+
 const ResetDropDownArea = styled.div`
     position:fixed;
     top:0;
