@@ -28,6 +28,7 @@ export default function App(){
                         <TimeLine/>
                     </Route>
                     <Route path="/user/:id">
+                        <Navbar/>
                         <User/>
                     </Route>
                 </Switch>
