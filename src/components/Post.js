@@ -61,7 +61,6 @@ export default function Post({post}) {
             setDisabled(false)
         })
     }
-
     return(
         <PostStyles>
             <div className="left-column">
@@ -89,12 +88,12 @@ export default function Post({post}) {
                             wrap="soft" 
                             value={postText} 
                             onChange={(e)=>setPostText(e.target.value)} 
-                            onKeyUp={(e)=>cancelEdition(e)}
+                            onKeyDown={(e)=>cancelEdition(e)}
                             disabled={disabled}
                         ></textarea>:
                         <p className="post-description">
                             <ReactHashtag onHashtagClick={(hashtag)=>goToHashtag(hashtag)}>
-                                    {post.text ? post.text : "Hey, check this link i found on Linkr"}
+                                    {post.text!=="" ? post.text : "Hey, check this link i found on Linkr"}
                             </ReactHashtag>
                         </p>
                     }
