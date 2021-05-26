@@ -22,11 +22,12 @@ export default function Post({post}) {
     }
 
     function goToHashtag(hash){
-        history.push("/hashtag/"+hash);
+        const str = hash.substr(1);
+        history.push(`/hashtag/${str}`);
     }
 
     function goToUser(){
-        history.push("/user/"+post.user.id);
+        history.push(`/user/${post.user.id}`);
     }
 
     function editPost(){

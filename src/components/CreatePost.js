@@ -75,7 +75,7 @@ display:flex;
         border:none;
         border-radius:5px;
         background:#efefef;
-        padding-top:8px;
+        padding-top:6px;
         padding-left: 12px;
         font-family: 'Lato', sans-serif;
         font-weight: 300;
