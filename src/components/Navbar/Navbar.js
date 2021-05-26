@@ -20,14 +20,14 @@ export default function Navbar(){
             <DropDown>
                 {!show ? 
                         <ChevronDownOutline onClick={showDropDown}
-                            title={'drop'}
+                            title="drop"
                         />
                         :
                         <ChevronUpOutline onClick={showDropDown}
-                            title={'drop'}
+                            title="drop"
                         />
                 }
-                <img src={userInfo.user.avatar} onClick={showDropDown}></img>
+                <img src={userInfo.user.avatar} alt="user" onClick={showDropDown}></img>
                 <Drop show={show}>
                     <Link to="/my-posts" onClick={showDropDown}>
                         <p>
