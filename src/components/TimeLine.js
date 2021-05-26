@@ -10,10 +10,10 @@ export default function TimeLine(){
 
     const {userInfo} = useContext(UserContext);
     const [posts, setPosts] = useState([]);
-    const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
     const [loader, setLoader] = useState(true);
-
+    
     useEffect(()=>{
+        const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
         const promisse = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/posts",config);
         promisse.then(answer=>{
             setLoader(false);
@@ -24,7 +24,7 @@ export default function TimeLine(){
             console.log(answer.response);
             alert("Houve uma falha ao obter os posts, por favor atualize a página")
         });
-    },[])
+    },[userInfo.token])
 
     return(
         <PageContainer>
@@ -38,8 +38,8 @@ export default function TimeLine(){
                 <div className="content">
                     <header>timeline</header>
                     <CreatePost/>
-                    {posts.length === 0 ? ("Nenhum post encontrado") : posts.map((post, i)=>(
-                        <Post post={post} key={i}/>
+                    {posts.length === 0 ? ("Nenhum post encontrado") : posts.map((post)=>(
+                        <Post post={post} key={post.id}/>
                     ))}
                     
                 </div>
@@ -79,7 +79,7 @@ font-family: 'Oswald', sans-serif;
     margin-top:162px;
     }
     
-@media(max-width:414px){
+@media(max-width:1000px){
     width: 100%;
     .hashtag-container{
         display:none;

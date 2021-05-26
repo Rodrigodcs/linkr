@@ -12,6 +12,10 @@ export default function Post({post}) {
         return
     }
 
+    function goToHashtag(hash){
+        history.push("/hashtag/"+hash);
+    }
+
     function goToUser(){
         history.push("/user/"+post.user.id);
     }
@@ -30,7 +34,11 @@ export default function Post({post}) {
             <PostContent>
                 <p className="post-username" onClick={goToUser} >{post.user.username}</p>
                 
-                    <p className="post-description"><ReactHashtag>{post.text ? post.text : "Hey, check this link i found on Linkr"}</ReactHashtag></p>
+                    <p className="post-description">
+                        <ReactHashtag onHashtagClick={(hashtag)=>goToHashtag(hashtag)}>
+                                {post.text ? post.text : "Hey, check this link i found on Linkr"}
+                        </ReactHashtag>
+                    </p>
                 
                 <a href={post.link} target="_blank" rel="noreferrer">
                     <LinkSnippet>
@@ -141,6 +149,11 @@ color:#cecece;
 `
 
 const PostContent = styled.div`
+
+span{
+    color:#fff;
+    font-weight: bold;
+}
 
 .post-username{
     padding-top:6px;
