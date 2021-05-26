@@ -3,6 +3,7 @@ import {BrowserRouter as Router, Switch, Route} from "react-router-dom"
 import Login from "./components/Login"
 import Registration from "./components/Registration"
 import Navbar from "./components/Navbar/Navbar"
+import Trending from "./components/Trending/Trending"
 import UserContext from "./contexts/UserContext"
 import {useState} from "react"
 
@@ -22,6 +23,7 @@ export default function App(){
                     </Route>
                     <Route path="/timeline" exact>
                         <Navbar/>
+                        <Trending/>
                     </Route>
                 </Switch>
             </Router>
