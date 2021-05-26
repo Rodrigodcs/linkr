@@ -79,6 +79,13 @@ font-family: 'Oswald', sans-serif;
     margin-top:162px;
     }
     
+@media(max-width:414px){
+    width: 100%;
+    .hashtag-container{
+        display:none;
+    }
+}
+
 `
 
 const TimelineStyles=styled.div`
@@ -88,9 +95,9 @@ flex-direction: column;
 width:611px;
 justify-content: space-between;
 margin-right: 25px;
+margin-top:58px;
 
     header{
-        margin-top:58px;
         margin-bottom:46px;
         font-weight: 700;
         font-size:43px;
@@ -101,6 +108,20 @@ margin-right: 25px;
     justify-content: flex-start;
     }
 
+@media(max-width:414px){
+    width:100%;
+    margin: 0px 0px;
+
+    header{
+        margin-left:17px;
+        margin-top:25px;
+        margin-bottom:22px;
+    }
+}
+
+@media(max-width:375px){
+    width: 100%;
+}
 
 `
 

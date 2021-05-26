@@ -2,12 +2,11 @@ import React from 'react'
 import {useHistory} from 'react-router-dom'
 import styled from 'styled-components'
 import { IoIosHeartEmpty } from "react-icons/io"
-
+import ReactHashtag from "react-hashtag";
 
 export default function Post({post}) {
 
     const history = useHistory();
-    console.log(post)
 
     function toggleLike(){
         return
@@ -30,8 +29,10 @@ export default function Post({post}) {
             </div>
             <PostContent>
                 <p className="post-username" onClick={goToUser} >{post.user.username}</p>
-                <p className="post-description">{post.text? post.text : 'Hey, check this Link i found on Linkr'}</p>
-                <a href={post.link} target="_blank">
+                
+                    <p className="post-description"><ReactHashtag>{post.text ? post.text : "Hey, check this link i found on Linkr"}</ReactHashtag></p>
+                
+                <a href={post.link} target="_blank" rel="noreferrer">
                     <LinkSnippet>
                         <div className="link-content">
                             <p>{post.linkTitle ? post.linkTitle : `  Can't find any title for this link  `}</p>
@@ -52,14 +53,16 @@ const LinkSnippet = styled.div`
 
 display: flex;
 justify-content: space-between;
-width: 503px;
 min-height: 155px;
-border-radius: 11px;
+max-width: 503px;
 margin-top:10px;
-border: 1px solid #4d4d4d;
 color:#cecece;
 
 .link-content{
+    border-radius: 11px 0px 0px 11px;
+    border: 1px solid #4d4d4d;
+    border-right: 0px;
+    width: 350px;
     padding: 20px;
     max-width:350px;
 
@@ -74,6 +77,7 @@ color:#cecece;
     }
     p:nth-child(3){
         font-size: 11px;
+        word-break: break-word;
     }
 }
 
@@ -86,6 +90,51 @@ color:#cecece;
     img{
         width: 100%;
         height:100%;
+    }
+}
+
+@media(max-width:414px){
+    width: 330px;
+    min-height: 95px;
+    margin-right:0px;
+    
+    .link-content{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    padding: 10px;
+    width: 255px;
+
+        p:nth-child(1){
+            font-size: 11px;
+            margin-bottom: 4px;
+        }
+        p:nth-child(2){
+            font-size: 9px;
+            color:#9b9595;
+            margin-bottom: 6px;
+        }
+        p:nth-child(3){
+            font-size: 9px;
+        }
+    }
+
+    .link-img{
+    min-height: 95px;
+    height: auto;
+
+        img{
+            overflow:hidden;
+        }
+    }
+}
+
+@media(max-width:375px){
+    width: 288px;
+    min-height: 75px;
+    .link-img{
+        max-width: 95px;
+        min-height: 95px;
     }
 }
 
@@ -154,6 +203,23 @@ margin-bottom:16px;
             color:#fff;
         }
 
+    }
+
+    @media(max-width:414px){
+        width: 100%;
+        min-height: 192px;
+        border-radius: 0px;
+        padding: 10px 15px 15px 15px;
+
+        .left-column{
+            margin-right: 12px;
+
+            .profile-picture{
+                margin-top: 8px;
+                width:40px;
+                height: 40px;
+            }
+        }
     }
 
 `

@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { useContext, useState } from 'react'
+import { useContext } from 'react'
 import UserContext from '../contexts/UserContext'
 
 export default function CreatePost(){
@@ -14,12 +14,12 @@ export default function CreatePost(){
 
     return(
         <CreatePostStyles>
-            <div className="left-column">
+            <div className="create-left-column">
                 <div className="profile-picture"> 
                     <img src={userInfo.user.avatar} alt="profile"/>
                 </div>
             </div>
-            <div className="post-content">
+            <div className="create-post-content">
                 <p>O que você tem pra favoritar hoje?</p>
                 <form onSubmit={submitPost}>
                     <textarea required placeholder="http://..."></textarea>
@@ -54,7 +54,7 @@ display:flex;
     }
 }
 
-.post-content{
+.create-post-content{
     margin-left:18px;
     width: 100%;
 
@@ -101,6 +101,62 @@ display:flex;
         cursor:pointer;
     }
 
+}
+
+@media(max-width:414px){
+    width: 100%;
+    min-height: 164px;
+    border-radius: 0px;
+    padding: 10px 19px 12px 15px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    .create-left-column{
+        display: none;
+    }
+
+    .create-post-content{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin:0px;
+
+        p{
+            padding:0px;
+            font-size: 17px;
+            margin-bottom: 8px;
+        }
+
+        textarea{
+            width:100%;
+            padding-top:7px;
+            font-size:13px;
+
+            &:nth-child(2){
+                height: 47px;
+                padding-top:12px;
+            }
+        }
+
+        button{
+            margin-left:272px;
+            font-size: 13px;
+            width:112px;
+            height: 22px;
+        }
+
+    }
+}
+
+@media(max-width:375px){
+    padding-right:13px;
+    .create-post-content{
+        button{
+            margin-left:235px;
+        }
+
+    }
 }
 
 `
