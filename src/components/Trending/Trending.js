@@ -23,8 +23,8 @@ export default function Trending(){
             </Title>
             <Hashtags>
                 {hashtags && hashtags.map(h=>( 
-                    <Link to={`/hashtag/${h.name}`}>
-                        <p key={h.id}># {h.name}</p>
+                    <Link key={h.id} to={`/hashtag/${h.name}`}>
+                        <p># {h.name}</p>
                     </Link>
                 ))}
             </Hashtags>
@@ -33,8 +33,6 @@ export default function Trending(){
 }
 
 const Container = styled.div`
-    margin-top:200px;
-    margin-left: 200px  ;
     width:301px;
     background:#171717;
     display:flex;

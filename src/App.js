@@ -2,8 +2,9 @@ import {GlobalStyle} from "./GlobalStyle"
 import {BrowserRouter as Router, Switch, Route} from "react-router-dom"
 import Login from "./components/Login"
 import Registration from "./components/Registration"
+import TimeLine from "./components/TimeLine"
 import Navbar from "./components/Navbar/Navbar"
-import Trending from "./components/Trending/Trending"
+import User from './components/User'
 import UserContext from "./contexts/UserContext"
 import {useState} from "react"
 
@@ -11,6 +12,7 @@ export default function App(){
     const [userInfo, setUserInfo]=useState("")
   
     return (
+
         <UserContext.Provider value={{userInfo, setUserInfo}}>
             <Router>
                 <GlobalStyle/>
@@ -23,10 +25,14 @@ export default function App(){
                     </Route>
                     <Route path="/timeline" exact>
                         <Navbar/>
-                        <Trending/>
+                        <TimeLine/>
+                    </Route>
+                    <Route path="/user/:id">
+                        <User/>
                     </Route>
                 </Switch>
             </Router>
         </UserContext.Provider>
+
     )
 }
