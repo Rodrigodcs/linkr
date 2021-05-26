@@ -2,10 +2,14 @@ import React from 'react'
 import {useHistory} from 'react-router-dom'
 import styled from 'styled-components'
 import { IoIosHeartEmpty } from "react-icons/io"
+import { IoTrash } from "react-icons/io"
 import ReactHashtag from "react-hashtag";
+import UserContext from "../contexts/UserContext"
+import {useContext} from "react"
 
 export default function Post({post}) {
 
+    const {userInfo, setUserInfo} = useContext(UserContext)
     const history = useHistory();
 
     function toggleLike(){
@@ -28,10 +32,17 @@ export default function Post({post}) {
                 <p>{post.likes.length+" likes"}</p>
             </div>
             <PostContent>
-                <p className="post-username" onClick={goToUser} >{post.user.username}</p>
-                
+                <div className="post-header">
+                    <p className="post-username" onClick={goToUser} >{post.user.username}</p>
+                    {post.user.username===userInfo.user.username &&
+                        <div className="post-icons">
+                            <IoIosHeartEmpty/>
+                            <IoIosHeartEmpty/>
+                        </div>
+                    }
+                    
+                </div>
                     <p className="post-description"><ReactHashtag>{post.text ? post.text : "Hey, check this link i found on Linkr"}</ReactHashtag></p>
-                
                 <a href={post.link} target="_blank" rel="noreferrer">
                     <LinkSnippet>
                         <div className="link-content">
@@ -155,6 +166,17 @@ const PostContent = styled.div`
     font-size:16px;
     color:#b7b7b7;    
 }
+.post-header{
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.post-icons{
+    display:flex;
+    gap:13px;
+    color:white;
+    font-size: 23px;
+}
 
 `
 
@@ -223,3 +245,4 @@ margin-bottom:16px;
     }
 
 `
+

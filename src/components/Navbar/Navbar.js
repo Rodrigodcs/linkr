@@ -11,7 +11,7 @@ export default function Navbar(){
     function showDropDown(){
         setShow(!show)
     }
-    console.log(userInfo)
+    
     return(
         <Container>
             <h1>
@@ -45,7 +45,7 @@ export default function Navbar(){
                     </Link>
                     <Link to="/" onClick={()=> {showDropDown()
                                                 setUserInfo("")
-                                                localStorage.removeItem('linkrUserInfo');}}>
+                                                localStorage.removeItem('linkrUserInfo')}}>
                         <p>
                         {show && "Logout"}
                         </p>
