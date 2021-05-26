@@ -8,7 +8,6 @@ import UserContext from "../../contexts/UserContext"
 export default function Navbar(){
     const [show, setShow] = useState(false)
     const {userInfo, setUserInfo} = useContext(UserContext)
-    console.log(userInfo)
     function showDropDown(){
         setShow(!show)
     }
@@ -21,17 +20,11 @@ export default function Navbar(){
             <DropDown>
                 {!show ? 
                         <ChevronDownOutline onClick={showDropDown}
-                            color={'#ffffff'} 
                             title={'drop'}
-                            height="30px"
-                            width="30px"
                         />
                         :
                         <ChevronUpOutline onClick={showDropDown}
-                            color={'#ffffff'} 
                             title={'drop'}
-                            height="30px"
-                            width="30px"
                         />
                 }
                 <img src={userInfo.user.avatar} onClick={showDropDown}></img>
@@ -79,7 +72,6 @@ const Container = styled.div`
 `
 
 const DropDown = styled.div`
-    
     width:90px;
     height: 72px;
     background: #151515;
@@ -90,6 +82,11 @@ const DropDown = styled.div`
         height:50px;
         width:50px;
         border-radius:50px;
+    }
+    svg{
+        color:#ffffff;
+        height:30px;
+        width:30px;
     }
 `
 
