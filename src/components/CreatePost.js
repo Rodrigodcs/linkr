@@ -60,6 +60,7 @@ display:flex;
         min-height:30px;
         min-width:503px;
         resize:auto;
+        overflow: hidden;
         outline-style: none;
         border:none;
         border-radius:5px;
