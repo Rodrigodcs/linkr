@@ -6,10 +6,13 @@ export default function TimeLine(){
     return(
         <PageContainer>
             <TimelineStyles>
-                <header>timeline</header>
-                <CreatePost/>
-                <Post/>
+                <div className="content">
+                    <header>timeline</header>
+                    <CreatePost/>
+                    <Post/>
+                </div>
             </TimelineStyles>
+            <div className="hashtag-container">sidebar aqui</div>
         </PageContainer>
     )
 }
@@ -23,14 +26,23 @@ min-height: calc(100vh - 72px);
 margin: 72px 0px 0px 0px;
 font-family: 'Oswald', sans-serif;
 
+    .hashtag-container{
+    width:301px;
+    min-height: 406px;
+    border-radius: 16px;
+    margin-top:162px;
+    }
+    
 `
 
 const TimelineStyles=styled.div`
 
 display: flex;
 flex-direction: column;
-justify-content: flex-start;
-width:937px;
+width:611px;
+justify-content: space-between;
+margin-right: 25px;
+
     header{
         margin-top:58px;
         margin-bottom:46px;
@@ -39,4 +51,10 @@ width:937px;
         color: #fff;
     }
 
+    &>div{
+    justify-content: flex-start;
+    }
+
+
 `
+
