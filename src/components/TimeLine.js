@@ -10,10 +10,10 @@ export default function TimeLine(){
 
     const {userInfo} = useContext(UserContext);
     const [posts, setPosts] = useState([]);
-    const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
     const [loader, setLoader] = useState(true);
 
     useEffect(()=>{
+        const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
         const promisse = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/posts",config);
         promisse.then(answer=>{
             setLoader(false);
@@ -24,7 +24,7 @@ export default function TimeLine(){
             console.log(answer.response);
             alert("Houve uma falha ao obter os posts, por favor atualize a página")
         });
-    },[])
+    },[userInfo.token])
 
     return(
         <PageContainer>
