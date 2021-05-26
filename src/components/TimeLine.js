@@ -21,7 +21,6 @@ export default function TimeLine(){
             setPosts(answer.data.posts);
         });
         promisse.catch((answer)=>{
-            console.log(answer.response);
             alert("Houve uma falha ao obter os posts, por favor atualize a página")
         });
     },[userInfo.token])
