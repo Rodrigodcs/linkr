@@ -6,16 +6,16 @@ import { BsTrash } from "react-icons/bs";
 import { BsPencil } from "react-icons/bs";
 import ReactHashtag from "react-hashtag";
 import UserContext from "../contexts/UserContext"
-import {useContext,useState} from "react"
+import {useContext,useState, useRef, useEffect} from "react"
+import axios from 'axios';
 
 export default function Post({post}) {
-    console.log("postuserrrrrr")
-    console.log(post)
-    const {userInfo, setUserInfo} = useContext(UserContext)
-    const {editing,setEditing} = useState(false)
-    const {postText,setPostText}=useState(post.text)
+    const {userInfo} = useContext(UserContext)
+    const [editing,setEditing] = useState(false)
+    const [disabled,setDisabled]=useState(false)
+    const [postText,setPostText] = useState(post.text)
     const history = useHistory();
-    console.log(userInfo)
+    const inputRef = useRef()
 
     function toggleLike(){
         return
@@ -30,8 +30,34 @@ export default function Post({post}) {
     }
 
     function editPost(){
-        console.log(post)
         setEditing(true)
+        setTimeout(()=>inputRef.current.focus(), 500);
+    }
+
+    function cancelEdition(e){
+        if(e.keyCode===27){
+            setPostText(post.text)
+            setEditing(false)
+        }else if(e.keyCode===13){
+            requestPostEdition()
+        }
+    }
+
+    function requestPostEdition(){
+        setDisabled(true)
+        const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
+        const request = axios.put(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/posts/${post.id}`,{text:postText},config)
+        request.then(r=> {
+            console.log(r)
+            post.text=postText;
+            setEditing(false)
+            setDisabled(false)
+        })
+        request.catch(e=>{
+            console.log(e)
+            alert("Não foi possivel salvar as alterções")
+            setDisabled(false)
+        })
     }
 
     return(
@@ -46,28 +72,32 @@ export default function Post({post}) {
                 <p>{post.likes.length+" likes"}</p>
             </div>
             <PostContent>
-<<<<<<< HEAD
                 <div className="post-header">
                     <p className="post-username" onClick={goToUser} >{post.user.username}</p>
-                    {post.user.username==="banda" && //userInfo.user.username
+                    {post.user.username==="rabbithay" && //userInfo.user.username
                         <div className="post-icons">
                             <BsPencil onClick={()=>editPost()}/>
                             <BsTrash/>
                         </div>
                     }
-                    
                 </div>
-                    <p className="post-description"><ReactHashtag>{post.text ? post.text : "Hey, check this link i found on Linkr"}</ReactHashtag></p>
-=======
-                <p className="post-username" onClick={goToUser} >{post.user.username}</p>
-                
-                    <p className="post-description">
-                        <ReactHashtag onHashtagClick={(hashtag)=>goToHashtag(hashtag)}>
-                                {post.text ? post.text : "Hey, check this link i found on Linkr"}
-                        </ReactHashtag>
-                    </p>
-                
->>>>>>> timeline
+                    {editing?
+                        <textarea 
+                            ref={inputRef}
+                            wrap="soft" 
+                            value={postText} 
+                            onChange={(e)=>setPostText(e.target.value)} 
+                            onKeyUp={(e)=>cancelEdition(e)}
+                            disabled={disabled}
+                        ></textarea>:
+                        <p className="post-description">
+                            <ReactHashtag onHashtagClick={(hashtag)=>goToHashtag(hashtag)}>
+                                    {post.text ? post.text : "Hey, check this link i found on Linkr"}
+                            </ReactHashtag>
+                        </p>
+                    }
+                    
+              
                 <a href={post.link} target="_blank" rel="noreferrer">
                     <LinkSnippet>
                         <div className="link-content">
@@ -206,6 +236,22 @@ span{
     gap:13px;
     color:white;
     font-size: 23px;
+}
+textarea{
+    outline: none;
+    width:100%;
+    margin-top: 8px;
+    font-weight: 400;
+    font-size:16px;
+    border-radius: 7px;
+    border:none;
+    min-height: 44px;
+    height:auto;
+    word-wrap: break-word;
+    word-break: break-all;
+    :disabled{
+        background-color: #888888;
+    }
 }
 
 `
