@@ -18,11 +18,9 @@ export default function TimeLine(){
         const promisse = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/posts",config);
         promisse.then(answer=>{
             setLoader(false);
-            console.log(answer.data);
             setPosts(answer.data.posts);
         });
         promisse.catch((answer)=>{
-            console.log(answer.response);
             alert("Houve uma falha ao obter os posts, por favor atualize a página")
         });
     },[userInfo.token])
