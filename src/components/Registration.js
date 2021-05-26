@@ -23,10 +23,10 @@ export default function Registration(){
         console.log(body)
         const request = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/sign-up",body)
         request.then(r=>{
-            history.goBack()
+            history.push("/")
         })
         request.catch(e=>{
-            alert("Email já cadastrado")
+            e.response.status===403 ? alert("Email is already in use") : alert("Unexpected error")
             setRequesting(false)
         })
     }
@@ -41,16 +41,15 @@ export default function Registration(){
             </LogoWrapper>
             <Log>
                 <form onSubmit={register}>
-                    <Input type="email" placeholder={"e-mail"} value={email} onChange={e=>setEmail(e.target.value)}></Input>
-                    <Input type="password" placeholder={"password"} value={password} onChange={e=>setPassword(e.target.value)}></Input>
-                    <Input type="text" placeholder={"username"} value={username} onChange={e=>setUsername(e.target.value)}></Input>
-                    <Input type="url" placeholder={"picture url"} value={pictureUrl} onChange={e=>setPictureUrl(e.target.value)}></Input>
+                    <Input type="email" placeholder="e-mail" value={email} onChange={e=>setEmail(e.target.value)}></Input>
+                    <Input type="password" placeholder="password" value={password} onChange={e=>setPassword(e.target.value)}></Input>
+                    <Input type="text" placeholder="username" value={username} onChange={e=>setUsername(e.target.value)}></Input>
+                    <Input type="url" placeholder="picture url" value={pictureUrl} onChange={e=>setPictureUrl(e.target.value)}></Input>
                     {requesting?
                         <div>Signing up...</div>:
                         <Button type="submit">Sign Up</Button>
                     }
                 </form>
-                
                 <Link to="/">
                     <p>Switch back to log in</p>
                 </Link>
@@ -63,7 +62,6 @@ export const Wrapper = styled.section`
     display:flex;
     position:relative;
     height: 100vh;
-    background-color: red;
 `;
 export const LogoWrapper = styled.section`
     width:calc(100% - 535px);

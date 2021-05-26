@@ -21,14 +21,12 @@ export default function Login(){
         const body={email,password}
         const request = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/sign-in",body)
         request.then(r=>{
-            console.log(r)
             setUserInfo(r.data)
             history.push("/timeline")
         })
         request.catch(e=>{
-            alert("Incorrect email/password")
+            e.response.status===403 ? alert("Incorrect email/password") : alert("Unexpected error")
             setRequesting(false)
-
         })
     }
 
@@ -42,8 +40,8 @@ export default function Login(){
             </LogoWrapper>
             <Log>
                 <form onSubmit={login}>
-                    <Input type="email" placeholder={"e-mail"} value={email} onChange={e=>setEmail(e.target.value)}></Input>
-                    <Input type="password" placeholder={"password"} value={password} onChange={e=>setPassword(e.target.value)}></Input>
+                    <Input type="email" placeholder="e-mail" value={email} onChange={e=>setEmail(e.target.value)}></Input>
+                    <Input type="password" placeholder="password" value={password} onChange={e=>setPassword(e.target.value)}></Input>
                     {requesting?
                         <div>Loging In...</div>:
                         <Button type="submit">Log In</Button>
