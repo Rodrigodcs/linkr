@@ -11,23 +11,27 @@ export default function Navbar(){
     function showDropDown(){
         setShow(!show)
     }
-    
+    console.log(userInfo)
     return(
         <Container>
             <h1>
                 linkr
             </h1>
             <DropDown>
-                {!show ? 
-                        <ChevronDownOutline onClick={showDropDown}
-                            title="drop"
-                        />
-                        :
-                        <ChevronUpOutline onClick={showDropDown}
-                            title="drop"
-                        />
-                }
-                <img src={userInfo.user.avatar} alt="user" onClick={showDropDown}></img>
+
+                {!show ? <ChevronDownOutline onClick={showDropDown}
+                color={'#ffffff'} 
+                title={'drop'}
+                height="30px"
+                width="30px"
+                />:<ChevronUpOutline onClick={showDropDown}
+                color={'#ffffff'} 
+                title={'drop'}
+                height="30px"
+                width="30px"
+                />}
+                <img src={userInfo.user.avatar} alt="profile" onClick={showDropDown}></img>
+
                 <Drop show={show}>
                     <Link to="/my-posts" onClick={showDropDown}>
                         <p>
