@@ -31,6 +31,7 @@ export default function Post({post}) {
 
     function editPost(){
         setEditing(true)
+        console.log(inputRef)
         setTimeout(()=>inputRef.current.focus(), 500);
     }
 
@@ -74,7 +75,7 @@ export default function Post({post}) {
             <PostContent>
                 <div className="post-header">
                     <p className="post-username" onClick={goToUser} >{post.user.username}</p>
-                    {post.user.username==="rabbithay" && //userInfo.user.username
+                    {post.user.username===userInfo.user.username && 
                         <div className="post-icons">
                             <BsPencil onClick={()=>editPost()}/>
                             <BsTrash/>
