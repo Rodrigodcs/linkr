@@ -21,6 +21,10 @@ export default function Post({post}) {
         return
     }
 
+    function goToHashtag(hash){
+        history.push("/hashtag/"+hash);
+    }
+
     function goToUser(){
         history.push("/user/"+post.user.id);
     }
@@ -42,6 +46,7 @@ export default function Post({post}) {
                 <p>{post.likes.length+" likes"}</p>
             </div>
             <PostContent>
+<<<<<<< HEAD
                 <div className="post-header">
                     <p className="post-username" onClick={goToUser} >{post.user.username}</p>
                     {post.user.username==="banda" && //userInfo.user.username
@@ -53,6 +58,16 @@ export default function Post({post}) {
                     
                 </div>
                     <p className="post-description"><ReactHashtag>{post.text ? post.text : "Hey, check this link i found on Linkr"}</ReactHashtag></p>
+=======
+                <p className="post-username" onClick={goToUser} >{post.user.username}</p>
+                
+                    <p className="post-description">
+                        <ReactHashtag onHashtagClick={(hashtag)=>goToHashtag(hashtag)}>
+                                {post.text ? post.text : "Hey, check this link i found on Linkr"}
+                        </ReactHashtag>
+                    </p>
+                
+>>>>>>> timeline
                 <a href={post.link} target="_blank" rel="noreferrer">
                     <LinkSnippet>
                         <div className="link-content">
@@ -162,6 +177,11 @@ color:#cecece;
 `
 
 const PostContent = styled.div`
+
+span{
+    color:#fff;
+    font-weight: bold;
+}
 
 .post-username{
     padding-top:6px;

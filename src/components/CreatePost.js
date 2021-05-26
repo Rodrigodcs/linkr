@@ -107,7 +107,7 @@ display:flex;
     width: 100%;
     min-height: 164px;
     border-radius: 0px;
-    padding: 10px 19px 12px 15px;
+    padding: 10px 15px 12px 15px;
     flex-direction: column;
     justify-content: center;
     align-items: center;

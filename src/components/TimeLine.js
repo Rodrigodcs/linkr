@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import CreatePost from './CreatePost'
+import Trending from "./Trending/Trending"
 import Post from './Post'
 import UserContext from '../contexts/UserContext'
 import axios from 'axios'
@@ -38,13 +39,13 @@ export default function TimeLine(){
                 <div className="content">
                     <header>timeline</header>
                     <CreatePost/>
-                    {posts.length === 0 ? ("Nenhum post encontrado") : posts.map((post, i)=>(
-                        <Post post={post} key={i}/>
+                    {posts.length === 0 ? ("Nenhum post encontrado") : posts.map((post)=>(
+                        <Post post={post} key={post.id}/>
                     ))}
                     
                 </div>
             </TimelineStyles>
-            <div className="hashtag-container">sidebar aqui</div>
+            <div className="hashtag-container"><Trending/></div>
             </>}
         </PageContainer>
     )
@@ -79,7 +80,7 @@ font-family: 'Oswald', sans-serif;
     margin-top:162px;
     }
     
-@media(max-width:414px){
+@media(max-width:950px){
     width: 100%;
     .hashtag-container{
         display:none;
