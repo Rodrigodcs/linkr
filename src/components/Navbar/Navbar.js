@@ -30,7 +30,7 @@ export default function Navbar(){
                 height="30px"
                 width="30px"
                 />}
-                <img src={userInfo.user.avatar} onClick={showDropDown}></img>
+                <img src={userInfo.user.avatar} alt="profile" onClick={showDropDown}></img>
                 <Drop show={show}>
                     <Link to="/my-posts" onClick={showDropDown}>
                         <p>

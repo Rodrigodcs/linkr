@@ -1,20 +1,30 @@
 import styled from 'styled-components'
+import { useContext, useState } from 'react'
+import UserContext from '../contexts/UserContext'
 
 export default function CreatePost(){
 
+    const {userInfo} = useContext(UserContext)
 
+    function submitPost(e){
+        e.preventDefault();
+        alert("posting is underconstruction")
+
+    }
 
     return(
         <CreatePostStyles>
             <div className="left-column">
                 <div className="profile-picture"> 
-                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSo7WfE6wFfdpeFph92LdEFJFnula0ecIObiQ&usqp=CAU" alt="profile"/>
+                    <img src={userInfo.user.avatar} alt="profile"/>
                 </div>
             </div>
             <div className="post-content">
                 <p>O que você tem pra favoritar hoje?</p>
-                <form>
-                    <textarea placeholder="http://..."></textarea>
+                <form onSubmit={submitPost}>
+                    <textarea required placeholder="http://..."></textarea>
+                    <textarea required placeholder="Muito irado esse link falando de #javascript"></textarea>
+                    <button type="submit">Publicar</button>
                 </form>
             </div>
         </CreatePostStyles>
@@ -54,19 +64,43 @@ display:flex;
         font-weight: 300;
         font-size: 24px;
         color:#707070;
+        margin-bottom: 10px;
     }
 
     textarea{
-        min-height:30px;
-        min-width:503px;
-        resize:auto;
-        overflow: hidden;
+        height:30px;
+        width:503px;
+        resize:none;
         outline-style: none;
         border:none;
         border-radius:5px;
         background:#efefef;
-        padding-top:10px;
+        padding-top:8px;
+        padding-left: 12px;
+        font-family: 'Lato', sans-serif;
+        font-weight: 300;
+        font-size: 15px;
+
+        &:nth-child(2){
+            height: 66px;
+        }
     }
+
+    button{
+        background: #1877F2;
+        margin-left: 392px;
+        width: 112px;
+        height: 31px;
+        color:#fff;
+        font-family: 'Lato', sans-serif;
+        font-weight: 700;
+        font-size: 14px;
+        border-radius:5px;
+        border:none;
+        outline-style: none;
+        cursor:pointer;
+    }
+
 }
 
 `

@@ -4,6 +4,7 @@ import Login from "./components/Login"
 import Registration from "./components/Registration"
 import TimeLine from "./components/TimeLine"
 import Navbar from "./components/Navbar/Navbar"
+import User from './components/User'
 import UserContext from "./contexts/UserContext"
 import {useState} from "react"
 
@@ -25,6 +26,9 @@ export default function App(){
                     <Route path="/timeline" exact>
                         <Navbar/>
                         <TimeLine/>
+                    </Route>
+                    <Route path="/user/:id">
+                        <User/>
                     </Route>
                 </Switch>
             </Router>

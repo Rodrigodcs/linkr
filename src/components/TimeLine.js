@@ -1,21 +1,67 @@
+import { useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import CreatePost from './CreatePost'
 import Post from './Post'
+import UserContext from '../contexts/UserContext'
+import axios from 'axios'
+import preloader from '../images/preloader.gif'
 
 export default function TimeLine(){
+
+    const {userInfo} = useContext(UserContext);
+    const [posts, setPosts] = useState([]);
+    const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
+    const [loader, setLoader] = useState(true);
+
+    useEffect(()=>{
+        const promisse = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/posts",config);
+        promisse.then(answer=>{
+            setLoader(false);
+            console.log(answer.data);
+            setPosts(answer.data.posts);
+        });
+        promisse.catch((answer)=>{
+            console.log(answer.response);
+            alert("Houve uma falha ao obter os posts, por favor atualize a página")
+        });
+    },[])
+
     return(
         <PageContainer>
+            {loader
+            ?<Loading>  
+            <img src={preloader} alt="preloader"/> 
+            <p>Loading</p>
+            </Loading>
+            :<>
             <TimelineStyles>
                 <div className="content">
                     <header>timeline</header>
                     <CreatePost/>
-                    <Post/>
+                    {posts.length === 0 ? ("Nenhum post encontrado") : posts.map((post, i)=>(
+                        <Post post={post} key={i}/>
+                    ))}
+                    
                 </div>
             </TimelineStyles>
             <div className="hashtag-container">sidebar aqui</div>
+            </>}
         </PageContainer>
     )
 }
+
+const Loading=styled.div`
+
+    display: flex;
+    flex-direction: column;
+    margin-top: 12%;
+    align-items: center;
+
+    p{
+        font-size:38px;
+    }
+
+`
 
 const PageContainer = styled.div`
 
