@@ -68,7 +68,7 @@ display:flex;
     }
 
     textarea{
-        height:30px;
+        height:auto;
         width:503px;
         resize:none;
         outline-style: none;

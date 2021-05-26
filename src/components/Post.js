@@ -2,15 +2,20 @@ import React from 'react'
 import {useHistory} from 'react-router-dom'
 import styled from 'styled-components'
 import { IoIosHeartEmpty } from "react-icons/io"
-import { IoTrash } from "react-icons/io"
+import { BsTrash } from "react-icons/bs";
+import { BsPencil } from "react-icons/bs";
 import ReactHashtag from "react-hashtag";
 import UserContext from "../contexts/UserContext"
-import {useContext} from "react"
+import {useContext,useState} from "react"
 
 export default function Post({post}) {
-
+    console.log("postuserrrrrr")
+    console.log(post)
     const {userInfo, setUserInfo} = useContext(UserContext)
+    const {editing,setEditing} = useState(false)
+    const {postText,setPostText}=useState(post.text)
     const history = useHistory();
+    console.log(userInfo)
 
     function toggleLike(){
         return
@@ -18,6 +23,11 @@ export default function Post({post}) {
 
     function goToUser(){
         history.push("/user/"+post.user.id);
+    }
+
+    function editPost(){
+        console.log(post)
+        setEditing(true)
     }
 
     return(
@@ -34,10 +44,10 @@ export default function Post({post}) {
             <PostContent>
                 <div className="post-header">
                     <p className="post-username" onClick={goToUser} >{post.user.username}</p>
-                    {post.user.username===userInfo.user.username &&
+                    {post.user.username==="banda" && //userInfo.user.username
                         <div className="post-icons">
-                            <IoIosHeartEmpty/>
-                            <IoIosHeartEmpty/>
+                            <BsPencil onClick={()=>editPost()}/>
+                            <BsTrash/>
                         </div>
                     }
                     

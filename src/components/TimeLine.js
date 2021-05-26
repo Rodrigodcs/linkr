@@ -11,7 +11,7 @@ export default function TimeLine(){
     const {userInfo} = useContext(UserContext);
     const [posts, setPosts] = useState([]);
     const [loader, setLoader] = useState(true);
-
+    
     useEffect(()=>{
         const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
         const promisse = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/posts",config);
