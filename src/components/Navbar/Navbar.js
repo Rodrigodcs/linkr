@@ -19,22 +19,26 @@ export default function Navbar(){
                 linkr
             </h1>
             <DropDown>
-                {!show ? <ChevronDownOutline onClick={showDropDown}
-                color={'#ffffff'} 
-                title={'drop'}
-                height="30px"
-                width="30px"
-                />:<ChevronUpOutline onClick={showDropDown}
-                color={'#ffffff'} 
-                title={'drop'}
-                height="30px"
-                width="30px"
-                />}
+                {!show ? 
+                        <ChevronDownOutline onClick={showDropDown}
+                            color={'#ffffff'} 
+                            title={'drop'}
+                            height="30px"
+                            width="30px"
+                        />
+                        :
+                        <ChevronUpOutline onClick={showDropDown}
+                            color={'#ffffff'} 
+                            title={'drop'}
+                            height="30px"
+                            width="30px"
+                        />
+                }
                 <img src={userInfo.user.avatar} onClick={showDropDown}></img>
                 <Drop show={show}>
                     <Link to="/my-posts" onClick={showDropDown}>
                         <p>
-                        {show && "My posts"}
+                            {show && "My posts"}
                         </p>
                     </Link>
                     <Link to="/my-likes" onClick={showDropDown}>
@@ -88,9 +92,7 @@ const DropDown = styled.div`
         border-radius:50px;
     }
 `
-const Image = styled.div`
-    
-`
+
 const Drop = styled.div`
     background: #151515;
     z-index: 2;
@@ -111,6 +113,7 @@ const Drop = styled.div`
         font-size:17px;
     }
 `
+
 const ResetDropDownArea = styled.div`
     position:fixed;
     top:0;
