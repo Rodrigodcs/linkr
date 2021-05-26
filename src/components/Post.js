@@ -6,7 +6,7 @@ import { BsTrash } from "react-icons/bs";
 import { BsPencil } from "react-icons/bs";
 import ReactHashtag from "react-hashtag";
 import UserContext from "../contexts/UserContext"
-import {useContext,useState, useRef, useEffect} from "react"
+import {useContext,useState, useRef} from "react"
 import axios from 'axios';
 
 export default function Post({post}) {
@@ -33,7 +33,7 @@ export default function Post({post}) {
     function editPost(){
         setEditing(true)
         console.log(inputRef)
-        setTimeout(()=>inputRef.current.focus(), 500);
+        setTimeout(()=>inputRef.current.focus(), 200);
     }
 
     function cancelEdition(e){
