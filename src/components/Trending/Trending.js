@@ -23,8 +23,8 @@ export default function Trending(){
             </Title>
             <Hashtags>
                 {hashtags && hashtags.map(h=>( 
-                    <Link to={`/hashtag/${h.name}`}>
-                        <p key={h.id}># {h.name}</p>
+                    <Link key={h.id} to={`/hashtag/${h.name}`}>
+                        <p># {h.name}</p>
                     </Link>
                 ))}
             </Hashtags>
