@@ -18,6 +18,7 @@ export default function User(){
         const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
         const userInfoPromisse = axios.get(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/users/${id}`, config )
         userInfoPromisse.then(response =>{
+            console.log(response.data)
             setSelectedUserInfo(response.data)
         })
         userInfoPromisse.catch(() =>{
