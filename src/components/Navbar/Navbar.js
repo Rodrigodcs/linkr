@@ -40,7 +40,8 @@ export default function Navbar(){
                         </p>
                     </Link>
                     <Link to="/" onClick={()=> {showDropDown()
-                                                setUserInfo("")}}>
+                                                setUserInfo("")
+                                                localStorage.removeItem('linkrUserInfo')}}>
                         <p>
                         {show && "Logout"}
                         </p>
