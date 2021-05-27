@@ -4,6 +4,7 @@ import Login from "./components/Login"
 import Registration from "./components/Registration"
 import TimeLine from "./components/TimeLine"
 import Navbar from "./components/Navbar/Navbar"
+import MyPosts from "./components/MyPosts"
 import Hashtag from "./components/Hashtag/Hashtag"
 import User from './components/User'
 import UserContext from "./contexts/UserContext"
@@ -29,7 +30,12 @@ export default function App(){
                         <Navbar/>
                         <TimeLine/>
                     </Route>
+                    <Route path="/my-posts" exact>
+                        <Navbar/>
+                        <MyPosts/>
+                    </Route>
                     <Route path="/user/:id" exact>
+                        <Navbar/>
                         <User/>
                     </Route>
                     <Route path="/hashtag/:hashtag" exact>

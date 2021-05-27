@@ -27,8 +27,11 @@ export default function Post({post}) {
     }
 
     function goToUser(){
+        post.user.username===userInfo.user.username?
+        history.push(`/my-posts`):
         history.push(`/user/${post.user.id}`);
     }
+
 
     function editPost(){
         setEditing(true)
