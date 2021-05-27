@@ -7,7 +7,7 @@ import axios from 'axios'
 import preloader from '../images/preloader.gif'
 
 export default function MyPosts(){
-    const {userInfo} = useContext(UserContext);
+    const {userInfo,refresh} = useContext(UserContext);
     const [myPosts, setMyPosts] = useState([]);
     const [loader, setLoader] = useState(true);
 
@@ -21,7 +21,7 @@ export default function MyPosts(){
         promisse.catch((answer)=>{
             alert("Houve uma falha ao obter os posts, por favor atualize a página")
         });
-    },[userInfo.token, userInfo.user.id])
+    },[userInfo.token, userInfo.user.id, refresh])
 
     return(
         <PageContainer>
