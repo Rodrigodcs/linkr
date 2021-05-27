@@ -141,6 +141,7 @@ export const Log = styled.section`
         font-size: 27px;
         line-height: 40px;
         color: #FFFFFF;
+        opacity:0.6;
     }
     @media (max-width: 1000px) {
         position:fixed;
