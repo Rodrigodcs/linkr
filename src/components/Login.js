@@ -1,5 +1,5 @@
 import styled from "styled-components"
-import {useState, useContext} from "react"
+import {useState, useContext, useEffect} from "react"
 import UserContext from "../contexts/UserContext"
 import {Link, useHistory} from "react-router-dom"
 import axios from "axios"
@@ -10,6 +10,13 @@ export default function Login(){
     const [requesting,setRequesting] = useState(false)
     let history=useHistory()
     const {setUserInfo} = useContext(UserContext);
+
+    useEffect(() => {
+        if(JSON.parse(localStorage.getItem('linkrUserInfo'))!==null){
+            setUserInfo(JSON.parse(localStorage.getItem('linkrUserInfo')))
+            history.push("/timeline")
+        }
+	}, [history,setUserInfo]);
 
     function login(e){
         e.preventDefault()
@@ -22,6 +29,8 @@ export default function Login(){
         const request = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/sign-in",body)
         request.then(r=>{
             setUserInfo(r.data)
+            console.log(r.data)
+            localStorage.setItem('linkrUserInfo', JSON.stringify(r.data));
             history.push("/timeline")
         })
         request.catch(e=>{
