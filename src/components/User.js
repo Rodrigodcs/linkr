@@ -13,25 +13,28 @@ export default function User(){
     const [selectedUserPosts, setSelectedUserPosts] = useState([]);
     const [selectedUserInfo, setSelectedUserInfo] = useState([]);
     const [loader, setLoader] = useState(true);
+    const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
 
-    useEffect(()=>{
-        const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
-        const userInfoPromisse = axios.get(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/users/${id}`, config )
-        userInfoPromisse.then(response =>{
-            setSelectedUserInfo(response.data)
-        })
-        userInfoPromisse.catch(() =>{
-            alert("Houve uma falha ao obter os posts, por favor atualize a página")
-        })
-        
+    function getUserInfo(){
         const promisse = axios.get(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/users/${id}/posts`,config);
         promisse.then(answer=>{
-            setLoader(false);
             setSelectedUserPosts(answer.data.posts);
+            setLoader(false);
         });
         promisse.catch((answer)=>{
             alert("Houve uma falha ao obter os posts, por favor atualize a página")
         });
+    }
+
+    useEffect(()=>{
+        const userInfoPromisse = axios.get(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/users/${id}`, config )
+        userInfoPromisse.then(response =>{
+            setSelectedUserInfo(response.data)
+            getUserInfo()
+        })
+        userInfoPromisse.catch(() =>{
+            alert("Houve uma falha ao obter os posts, por favor atualize a página")
+        })
     },[userInfo.token, id, refresh])
 
     return(
