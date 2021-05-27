@@ -1,29 +1,27 @@
 import { useContext, useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom';
 import styled from 'styled-components'
-import Trending from "../Trending/Trending"
-import Post from '../Post'
-import UserContext from '../../contexts/UserContext'
+import Trending from "./Trending/Trending"
+import Post from './Post'
+import UserContext from '../contexts/UserContext'
 import axios from 'axios'
-import preloader from '../../images/preloader.gif'
+import preloader from '../images/preloader.gif'
 
-export default function Hashtag(){
-    const { hashtag } = useParams()
-    const {userInfo, refresh} = useContext(UserContext);
-    const [postsHash, setPostsHash] = useState([]);
+export default function MyPosts(){
+    const {userInfo,refresh} = useContext(UserContext);
+    const [myPosts, setMyPosts] = useState([]);
     const [loader, setLoader] = useState(true);
 
     useEffect(()=>{
         const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
-        const promisse = axios.get(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/hashtags/${hashtag}/posts`,config);
+        const promisse = axios.get(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/users/${userInfo.user.id}/posts`,config);
         promisse.then(answer=>{
             setLoader(false);
-            setPostsHash(answer.data.posts);
+            setMyPosts(answer.data.posts);
         });
         promisse.catch((answer)=>{
             alert("Houve uma falha ao obter os posts, por favor atualize a página")
         });
-    },[userInfo.token, hashtag, refresh])
+    },[userInfo.token, userInfo.user.id, refresh])
 
     return(
         <PageContainer>
@@ -37,9 +35,9 @@ export default function Hashtag(){
                     <TimelineStyles>
                         <div className="content">
                             <header>
-                                {hashtag}
+                                my posts
                             </header>
-                            {postsHash.length === 0 ? ("Nenhum post encontrado") : postsHash.map((post)=>(
+                            {myPosts.length === 0 ? ("Nenhum post encontrado") : myPosts.map((post)=>(
                                 <Post post={post} key={post.id}/>
                             ))}
                         </div>
@@ -115,4 +113,3 @@ const TimelineStyles=styled.div`
 }
 
 `
-

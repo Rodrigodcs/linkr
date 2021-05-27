@@ -9,7 +9,7 @@ import preloader from '../images/preloader.gif'
 
 export default function User(){
     const { id } = useParams()
-    const {userInfo} = useContext(UserContext);
+    const {userInfo, refresh} = useContext(UserContext);
     const [selectedUserPosts, setSelectedUserPosts] = useState([]);
     const [selectedUserInfo, setSelectedUserInfo] = useState([]);
     const [loader, setLoader] = useState(true);
@@ -33,7 +33,7 @@ export default function User(){
         promisse.catch((answer)=>{
             alert("Houve uma falha ao obter os posts, por favor atualize a página")
         });
-    },[userInfo.token, id])
+    },[userInfo.token, id, refresh])
 
     return(
         <PageContainer>

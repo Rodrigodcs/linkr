@@ -9,7 +9,7 @@ import preloader from '../images/preloader.gif'
 
 export default function TimeLine(){
 
-    const {userInfo} = useContext(UserContext);
+    const {userInfo, refresh} = useContext(UserContext);
     const [posts, setPosts] = useState([]);
     const [loader, setLoader] = useState(true);
     
@@ -20,10 +20,8 @@ export default function TimeLine(){
             setLoader(false);
             setPosts(answer.data.posts);
         });
-        promisse.catch((answer)=>{
-            alert("Houve uma falha ao obter os posts, por favor atualize a página")
-        });
-    },[userInfo.token])
+        promisse.catch(()=>alert("Houve uma falha ao obter os posts, por favor atualize a página"));
+    },[userInfo.token, refresh])
 
     return(
         <PageContainer>
@@ -36,7 +34,7 @@ export default function TimeLine(){
             <TimelineStyles>
                 <div className="content">
                     <header>timeline</header>
-                    <CreatePost/>
+                    <CreatePost setPosts={setPosts}/>
                     {posts.length === 0 ? ("Nenhum post encontrado") : posts.map((post)=>(
                         <Post post={post} key={post.id}/>
                     ))}
