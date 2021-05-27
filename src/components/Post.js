@@ -298,7 +298,8 @@ span{
     margin-top: 8px;
     font-weight: 400;
     font-size:16px;
-    color:#b7b7b7;    
+    color:#b7b7b7;   
+    word-break: break-word; 
 }
 .post-header{
     display:flex;
