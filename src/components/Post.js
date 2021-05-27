@@ -20,7 +20,7 @@ export default function Post({post}) {
     const history = useHistory();
     const inputRef = useRef()
     const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
-
+    
     function toggleLike(){
         return
     }
