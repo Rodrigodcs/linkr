@@ -43,7 +43,9 @@ export default function TimeLine(){
                     
                 </div>
             </TimelineStyles>
-            <div className="hashtag-container"><Trending/></div>
+                <div className="hashtag-container">
+                    <Trending/>
+                </div>
             </>}
         </PageContainer>
     )
