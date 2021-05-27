@@ -121,7 +121,23 @@ display:flex;
     }
 
 }
-
+@media(max-width:611px){
+    position:relative;
+    width:100%;
+    .create-post-content{
+        width:100%;
+        margin-bottom: 30px;
+        textarea{
+            width:100%;
+        }
+        button{
+            margin:0;
+            position:absolute;
+            bottom: 15px;
+            right:23px;
+        }
+    }
+}
 @media(max-width:414px){
     width: 100%;
     min-height: 164px;
@@ -139,8 +155,11 @@ display:flex;
         display: flex;
         flex-direction: column;
         align-items: center;
-        margin:0px;
-
+        margin:0 0 28px 0;
+        width:100%;
+        form{
+            width:100%;
+        }
         p{
             padding:0px;
             font-size: 17px;
@@ -151,7 +170,6 @@ display:flex;
             width:100%;
             padding-top:7px;
             font-size:13px;
-
             &:nth-child(2){
                 height: 47px;
                 padding-top:12px;
@@ -159,7 +177,7 @@ display:flex;
         }
 
         button{
-            margin-left:272px;
+            right: 15px;
             font-size: 13px;
             width:112px;
             height: 22px;

@@ -57,6 +57,7 @@ export default function Navbar(){
 
 const Container = styled.div`
     height: 72px;
+    z-index: 2;
     background: #151515;
     display: flex;
     justify-content: space-between;

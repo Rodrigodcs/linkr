@@ -104,7 +104,13 @@ margin-top:58px;
     }
 
     &>div{
-    justify-content: flex-start;
+        justify-content: flex-start;
+    }
+    @media(max-width:950px){
+        margin-right:0;
+    }
+    @media(max-width:611px){
+        width:100%;
     }
 
 @media(max-width:414px){
