@@ -1,42 +1,33 @@
 import { useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components'
-import Trending from "./Trending/Trending"
-import Post from './Post'
-import UserContext from '../contexts/UserContext'
+import Trending from "../Trending/Trending"
+import Post from '../Post'
+import UserContext from '../../contexts/UserContext'
 import axios from 'axios'
-import preloader from '../images/preloader.gif'
+import preloader from '../../images/preloader.gif'
 
-export default function User(){
-    const { id } = useParams()
+export default function Hashtag(){
+    const { hashtag } = useParams()
     const {userInfo} = useContext(UserContext);
-    const [selectedUserPosts, setSelectedUserPosts] = useState([]);
-    const [selectedUserInfo, setSelectedUserInfo] = useState([]);
+    const [postsHash, setPostsHash] = useState([]);
     const [loader, setLoader] = useState(true);
 
     useEffect(()=>{
         const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
-        const userInfoPromisse = axios.get(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/users/${id}`, config )
-        userInfoPromisse.then(response =>{
-            setSelectedUserInfo(response.data)
-        })
-        userInfoPromisse.catch(() =>{
-            alert("Houve uma falha ao obter os posts, por favor atualize a página")
-        })
-        
-        const promisse = axios.get(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/users/${id}/posts`,config);
+        const promisse = axios.get(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/hashtags/${hashtag}/posts`,config);
         promisse.then(answer=>{
             setLoader(false);
-            setSelectedUserPosts(answer.data.posts);
+            setPostsHash(answer.data.posts);
         });
         promisse.catch((answer)=>{
             alert("Houve uma falha ao obter os posts, por favor atualize a página")
         });
-    },[userInfo.token, id])
+    },[userInfo.token, hashtag])
 
     return(
         <PageContainer>
-            {loader ?
+            {loader ? 
                 <Loading>  
                     <img src={preloader} alt="preloader"/> 
                     <p>Loading</p>
@@ -46,9 +37,9 @@ export default function User(){
                     <TimelineStyles>
                         <div className="content">
                             <header>
-                                {selectedUserInfo.user.username}'s posts
+                                {hashtag}
                             </header>
-                            {selectedUserPosts.length === 0 ? ("Nenhum post encontrado") : selectedUserPosts.map((post)=>(
+                            {postsHash.length === 0 ? ("Nenhum post encontrado") : postsHash.map((post)=>(
                                 <Post post={post} key={post.id}/>
                             ))}
                         </div>
@@ -118,8 +109,10 @@ const TimelineStyles=styled.div`
         margin-bottom:22px;
     }
 }
+
 @media(max-width:375px){
     width: 100%;
 }
+
 `
 
