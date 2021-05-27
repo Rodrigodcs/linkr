@@ -14,6 +14,7 @@ export default function Post({post}) {
 
     function goToHashtag(hash){
         const str = hash.substr(1);
+        if(str.lenght===0)return;
         history.push(`/hashtag/${str}`);
     }
 
