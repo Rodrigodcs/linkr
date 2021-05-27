@@ -36,30 +36,33 @@ export default function User(){
 
     return(
         <PageContainer>
-            {loader
-            ?<Loading>  
-            <img src={preloader} alt="preloader"/> 
-            <p>Loading</p>
-            </Loading>
-            :<>
-            <TimelineStyles>
-                <div className="content">
-                    <header>{selectedUserInfo.user.username}'s posts</header>
-                    {selectedUserPosts.length === 0 ? ("Nenhum post encontrado") : selectedUserPosts.map((post)=>(
-                        <Post post={post} key={post.id}/>
-                    ))}
-                </div>
-            </TimelineStyles>
-                <div className="hashtag-container">
-                    <Trending/>
-                </div>
-            </>}
+            {loader ?
+                <Loading>  
+                    <img src={preloader} alt="preloader"/> 
+                    <p>Loading</p>
+                </Loading>
+            :
+                <>
+                    <TimelineStyles>
+                        <div className="content">
+                            <header>
+                                {selectedUserInfo.user.username}'s posts
+                            </header>
+                            {selectedUserPosts.length === 0 ? ("Nenhum post encontrado") : selectedUserPosts.map((post)=>(
+                                <Post post={post} key={post.id}/>
+                            ))}
+                        </div>
+                    </TimelineStyles>
+                    <div className="hashtag-container">
+                        <Trending/>
+                    </div>
+                </>
+            }
         </PageContainer>
     )
 }
 
 const Loading=styled.div`
-
     display: flex;
     flex-direction: column;
     margin-top: 12%;
@@ -67,7 +70,6 @@ const Loading=styled.div`
     p{
         font-size:38px;
     }
-
 `
 
 const PageContainer = styled.div`
@@ -83,14 +85,12 @@ const PageContainer = styled.div`
     border-radius: 16px;
     margin-top:162px;
     }
-    
 @media(max-width:950px){
     width: 100%;
     .hashtag-container{
         display:none;
     }
 }
-
 `
 
 const TimelineStyles=styled.div`
@@ -109,7 +109,6 @@ const TimelineStyles=styled.div`
     &>div{
     justify-content: flex-start;
     }
-
 @media(max-width:414px){
     width:100%;
     margin: 0px 0px;
@@ -119,7 +118,6 @@ const TimelineStyles=styled.div`
         margin-bottom:22px;
     }
 }
-
 @media(max-width:375px){
     width: 100%;
 }
