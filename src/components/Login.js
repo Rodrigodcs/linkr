@@ -29,7 +29,6 @@ export default function Login(){
         const request = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/sign-in",body)
         request.then(r=>{
             setUserInfo(r.data)
-            console.log(r.data)
             localStorage.setItem('linkrUserInfo', JSON.stringify(r.data));
             history.push("/timeline")
         })

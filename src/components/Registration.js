@@ -20,7 +20,6 @@ export default function Registration(){
         
         setRequesting(true)
         const body={email,password,username,pictureUrl}
-        console.log(body)
         const request = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/sign-up",body)
         request.then(r=>{
             history.push("/")

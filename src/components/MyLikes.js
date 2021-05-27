@@ -15,7 +15,6 @@ export default function MyLikes(){
         const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
         const promisse = axios.get(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/posts/liked`,config);
         promisse.then(answer=>{
-            console.log(answer)
             setLoader(false);
             setMyLikedPosts(answer.data.posts);
         });
