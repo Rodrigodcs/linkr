@@ -75,7 +75,6 @@ const Container = styled.div`
     @media(max-width:950px){
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     }
-}
 `
 
 const DropDown = styled.div`
