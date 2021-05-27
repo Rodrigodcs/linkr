@@ -18,7 +18,6 @@ export default function CreatePost({setPosts}){
         const body = {"text": text,"link": link} 
         const promisse = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/posts", body, config)
         promisse.then((answer)=>{
-            console.log(answer.data);
             setSubmitting(false);
             setLink("");
             setText("");
@@ -26,8 +25,8 @@ export default function CreatePost({setPosts}){
             consecutivePromisse.then(answer=>setPosts(answer.data.posts));
             consecutivePromisse.catch(()=>alert("Houve uma falha ao obter os posts, por favor atualize a página"));
         });
-        promisse.catch(answer=>{
-            console.log(answer.data);
+        promisse.catch(()=>{
+            alert("Houve um erro ao publicar seu link");
             setSubmitting(false);
         })
     }
