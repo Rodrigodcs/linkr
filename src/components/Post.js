@@ -32,7 +32,6 @@ export default function Post({post}) {
 
     function editPost(){
         setEditing(true)
-        console.log(inputRef)
         setTimeout(()=>inputRef.current.focus(), 200);
     }
 
@@ -50,13 +49,11 @@ export default function Post({post}) {
         const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
         const request = axios.put(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/posts/${post.id}`,{text:postText},config)
         request.then(r=> {
-            console.log(r)
             post.text=postText;
             setEditing(false)
             setDisabled(false)
         })
         request.catch(e=>{
-            console.log(e)
             alert("Não foi possivel salvar as alterções")
             setDisabled(false)
         })
@@ -97,8 +94,6 @@ export default function Post({post}) {
                             </ReactHashtag>
                         </p>
                     }
-                    
-              
                 <a href={post.link} target="_blank" rel="noreferrer">
                     <LinkSnippet>
                         <div className="link-content">
