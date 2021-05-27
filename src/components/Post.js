@@ -8,14 +8,18 @@ import ReactHashtag from "react-hashtag";
 import UserContext from "../contexts/UserContext"
 import {useContext,useState, useRef} from "react"
 import axios from 'axios';
+import Modal from 'react-modal';
+import preloader from '../images/preloader.gif'
 
 export default function Post({post}) {
-    const {userInfo} = useContext(UserContext)
+    const {userInfo, refresh, setRefresh} = useContext(UserContext)
     const [editing,setEditing] = useState(false)
     const [disabled,setDisabled]=useState(false)
+    const [showModal, setShowModal] = useState(false)
     const [postText,setPostText] = useState(post.text)
     const history = useHistory();
     const inputRef = useRef()
+    const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
 
     function toggleLike(){
         return
@@ -33,7 +37,6 @@ export default function Post({post}) {
         history.push(`/user/${post.user.id}`);
     }
 
-
     function editPost(){
         setEditing(true)
         setTimeout(()=>inputRef.current.focus(), 200);
@@ -50,7 +53,6 @@ export default function Post({post}) {
 
     function requestPostEdition(){
         setDisabled(true)
-        const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
         const request = axios.put(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/posts/${post.id}`,{text:postText},config)
         request.then(r=> {
             post.text=postText;
@@ -62,6 +64,21 @@ export default function Post({post}) {
             setDisabled(false)
         })
     }
+
+    function confirmDelete(){
+        setDisabled(true)
+        const response = axios.delete(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/posts/${post.id}`, config)
+        response.then(()=>{
+            setShowModal(false)
+            setRefresh(refresh+1)
+        })
+        response.catch(()=>{
+            setDisabled(false)
+            setShowModal(false)
+            alert("Não foi possível deletar o post. Tente novamente.")
+        })
+    }
+
     return(
         <PostStyles>
             <div className="left-column">
@@ -79,7 +96,26 @@ export default function Post({post}) {
                     {post.user.username===userInfo.user.username && 
                         <div className="post-icons">
                             <BsPencil onClick={()=>editPost()}/>
-                            <BsTrash/>
+                            <BsTrash onClick={()=> setShowModal(true)}/>
+                            <Modal isOpen={showModal}
+                                    className="Modal"
+                                    overlayClassName="Overlay"
+                                    ariaHideApp={false}>
+                                <h1>Tem certeza que deseja excluir essa publicação?</h1>
+                                <Buttons>
+                                    <NoButton disabled={disabled} onClick={()=> setShowModal(false)}>
+                                        Não, voltar
+                                    </NoButton>
+                                    <YesButton disabled={disabled} onClick={confirmDelete}>
+                                        Sim, excluir
+                                    </YesButton>
+                                </Buttons>
+                                {disabled && 
+                                    <Loader>
+                                        <img src={preloader}></img>
+                                    </Loader>
+                                }       
+                            </Modal>
                         </div>
                     }
                 </div>
@@ -114,6 +150,44 @@ export default function Post({post}) {
         </PostStyles>
     )
 }
+
+const Loader = styled.div`
+    width:50px;
+    height:50px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    img{
+        width:100%;
+        height:100%;
+    }
+`
+const Buttons = styled.div`
+    display: flex;
+    margin-top: 30px;
+    width:300px;
+    justify-content: space-between;
+`
+
+const YesButton = styled.button`
+    width:134px;
+    height:37px;
+    text-align: center;
+    border-radius:5px;
+    outline:none;
+    border:none;
+    background:#1877F2;
+    color:white;
+`
+const NoButton = styled.button`
+    width:134px;
+    height:37px;
+    text-align: center;
+    border-radius:5px;
+    outline:none;
+    border:none;
+    color:#1877F2;
+`
 
 const LinkSnippet = styled.div`
 

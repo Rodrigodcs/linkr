@@ -9,7 +9,7 @@ import preloader from '../../images/preloader.gif'
 
 export default function Hashtag(){
     const { hashtag } = useParams()
-    const {userInfo} = useContext(UserContext);
+    const {userInfo, refresh} = useContext(UserContext);
     const [postsHash, setPostsHash] = useState([]);
     const [loader, setLoader] = useState(true);
 
@@ -23,7 +23,7 @@ export default function Hashtag(){
         promisse.catch((answer)=>{
             alert("Houve uma falha ao obter os posts, por favor atualize a página")
         });
-    },[userInfo.token, hashtag])
+    },[userInfo.token, hashtag, refresh])
 
     return(
         <PageContainer>
