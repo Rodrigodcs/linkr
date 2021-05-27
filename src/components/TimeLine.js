@@ -18,7 +18,6 @@ export default function TimeLine(){
         const promisse = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/posts",config);
         promisse.then(answer=>{
             setLoader(false);
-            console.log(answer.data)
             setPosts(answer.data.posts);
         });
         promisse.catch(()=>alert("Houve uma falha ao obter os posts, por favor atualize a página"));
@@ -37,7 +36,7 @@ export default function TimeLine(){
                     <header>timeline</header>
                     <CreatePost setPosts={setPosts}/>
                     {posts.length === 0 ? ("Nenhum post encontrado") : posts.map((post)=>(
-                        <Post post={post} key={post.id}/>
+                        <Post post={post} timeline={true} key={post.id}/>
                     ))}
                     
                 </div>

@@ -2,56 +2,51 @@ import React from 'react'
 import {useHistory} from 'react-router-dom'
 import styled from 'styled-components'
 import { IoIosHeartEmpty, IoIosHeart } from "react-icons/io"
-import { BsTrash } from "react-icons/bs";
-import { BsPencil } from "react-icons/bs";
+import { BsTrash, BsPencil } from "react-icons/bs";
 import ReactHashtag from "react-hashtag";
-import UserContext from "../contexts/UserContext"
 import {useContext,useState, useRef} from "react"
+import UserContext from "../contexts/UserContext"
 import axios from 'axios';
 import Modal from 'react-modal';
 import preloader from '../images/preloader.gif'
 
-export default function Post({post}) {
+export default function Post({post, timeline}) {
     const {userInfo, refresh, setRefresh} = useContext(UserContext)
     const [editing,setEditing] = useState(false)
     const [disabled,setDisabled] = useState(false)
-    const [like, setLike] = useState(post.likes.find((name)=>(name.username === userInfo.user.username)))
-    let [likeList, setLikeList] = useState([post.likes]);
     const [showModal, setShowModal] = useState(false)
+    const [like, setLike] = useState(post.likes.some(like=> timeline ? like.userId === userInfo.user.id : like.id === userInfo.user.id))
+    const [likeNum, setLikeNum] = useState(post.likes.length);
     const [postText,setPostText] = useState(post.text)
     const history = useHistory()
     const inputRef = useRef()
 
-
     const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
-    
-    function toggleLike(){
-        if(post.likes.find((name)=>(name.user.username === userInfo.user.username))){
-            console.log("trying to dislike!")
-            setLike(false);
-            const promisse = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/posts/${post.id}/dislike`,{},config)
-            promisse.then(answer=>{
-                likeList = [answer.data.post.likes]
-                setLikeList([...likeList])
-            });
-            promisse.catch(()=>{
-                alert("Houve um problema ao descurtir esta publicação!");
-                setLike(true);
-            });
-        }else{
-            console.log("trying to like!")
-            setLike(true);
-            const promisse = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/posts/${post.id}/like`,{},config)
-            promisse.then(answer=>{
-                likeList = [answer.data.post.likes]
-                setLikeList([...likeList])
-            });
-            promisse.catch(()=>{
-                alert("Houve um problema ao curtir esta publicação!");
-                setLike(false);
-            });
-        }
 
+    function handleLike(){
+        setLike(true);
+        setLikeNum(likeNum+1);
+
+        const promisse = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/posts/${post.id}/like`,{},config)
+        promisse.then(()=>{});
+        promisse.catch(()=>{
+            setLike(false);
+            setLikeNum(likeNum);
+            alert("Houve um problema ao curtir esta publicação!");
+        });
+    }
+
+    function handleDislike(){
+        setLike(false);
+        setLikeNum(likeNum-1);
+
+        const promisse = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/posts/${post.id}/dislike`,{})
+        promisse.then(()=>{});
+        promisse.catch(()=>{
+            setLike(true);
+            setLikeNum(likeNum);
+            alert("Houve um problema ao descurtir esta publicação!");
+        });
     }
 
     function goToHashtag(hash){
@@ -108,16 +103,17 @@ export default function Post({post}) {
             alert("Não foi possível deletar o post. Tente novamente.")
         })
     }
+
     return(
         <PostStyles>
             <div className="left-column">
                 <div onClick={goToUser} className="profile-picture"> 
                     <img src={post.user.avatar} alt="profile"/>
                 </div>
-                <div className="like-container" onClick={toggleLike} >
-                    {like? <IoIosHeart background={"#555"}/> : <IoIosHeartEmpty/>}
+                <div className="like-container">
+                    { like ? <IoIosHeart style={{color:"#AC0000"}} onClick={handleDislike}/> : <IoIosHeartEmpty onClick={handleLike}/>}
                 </div>
-                <p>{post.likes.length+" likes"}</p>
+                <p>{likeNum+" likes"}</p>
             </div>
             <PostContent>
                 <div className="post-header">

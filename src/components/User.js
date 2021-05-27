@@ -29,7 +29,6 @@ export default function User(){
     useEffect(()=>{
         const userInfoPromisse = axios.get(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/users/${id}`, config )
         userInfoPromisse.then(response =>{
-            console.log(response.data)
             setSelectedUserInfo(response.data)
             getUserInfo()
         })
@@ -53,7 +52,7 @@ export default function User(){
                                 {selectedUserInfo.user.username}'s posts
                             </header>
                             {selectedUserPosts.length === 0 ? ("Nenhum post encontrado") : selectedUserPosts.map((post)=>(
-                                <Post post={post} key={post.id}/>
+                                <Post post={post} timeline={true} key={post.id}/>
                             ))}
                         </div>
                     </TimelineStyles>
