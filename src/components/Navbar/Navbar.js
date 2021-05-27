@@ -57,6 +57,7 @@ export default function Navbar(){
 
 const Container = styled.div`
     height: 72px;
+    z-index: 2;
     background: #151515;
     display: flex;
     justify-content: space-between;
@@ -71,6 +72,9 @@ const Container = styled.div`
         font-size: 49px;
         color: #fff;
         letter-spacing: 0.05em;
+    }
+    @media(max-width:950px){
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     }
 `
 

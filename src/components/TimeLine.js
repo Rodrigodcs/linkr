@@ -9,7 +9,7 @@ import preloader from '../images/preloader.gif'
 
 export default function TimeLine(){
 
-    const {userInfo} = useContext(UserContext);
+    const {userInfo, refresh} = useContext(UserContext);
     const [posts, setPosts] = useState([]);
     const [loader, setLoader] = useState(true);
     
@@ -22,7 +22,7 @@ export default function TimeLine(){
             setPosts(answer.data.posts);
         });
         promisse.catch(()=>alert("Houve uma falha ao obter os posts, por favor atualize a página"));
-    },[userInfo.token])
+    },[userInfo.token, refresh])
 
     return(
         <PageContainer>
@@ -105,7 +105,13 @@ margin-top:58px;
     }
 
     &>div{
-    justify-content: flex-start;
+        justify-content: flex-start;
+    }
+    @media(max-width:950px){
+        margin-right:0;
+    }
+    @media(max-width:611px){
+        width:100%;
     }
 
 @media(max-width:414px){

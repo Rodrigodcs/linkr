@@ -8,21 +8,24 @@ import ReactHashtag from "react-hashtag";
 import UserContext from "../contexts/UserContext"
 import {useContext,useState, useRef} from "react"
 import axios from 'axios';
-import { ColorFill } from 'react-ionicons';
+import Modal from 'react-modal';
+import preloader from '../images/preloader.gif'
 
 export default function Post({post}) {
-    const {userInfo} = useContext(UserContext)
+    const {userInfo, refresh, setRefresh} = useContext(UserContext)
     const [editing,setEditing] = useState(false)
     const [disabled,setDisabled] = useState(false)
     const [like, setLike] = useState(post.likes.find((name)=>(name.username === userInfo.user.username)))
     let [likeList, setLikeList] = useState([post.likes]);
+    const [showModal, setShowModal] = useState(false)
     const [postText,setPostText] = useState(post.text)
     const history = useHistory()
     const inputRef = useRef()
 
 
+    const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
+    
     function toggleLike(){
-        const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
         if(post.likes.find((name)=>(name.user.username === userInfo.user.username))){
             console.log("trying to dislike!")
             setLike(false);
@@ -91,6 +94,20 @@ export default function Post({post}) {
             setDisabled(false)
         })
     }
+
+    function confirmDelete(){
+        setDisabled(true)
+        const response = axios.delete(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/posts/${post.id}`, config)
+        response.then(()=>{
+            setShowModal(false)
+            setRefresh(refresh+1)
+        })
+        response.catch(()=>{
+            setDisabled(false)
+            setShowModal(false)
+            alert("Não foi possível deletar o post. Tente novamente.")
+        })
+    }
     return(
         <PostStyles>
             <div className="left-column">
@@ -108,7 +125,26 @@ export default function Post({post}) {
                     {post.user.username===userInfo.user.username && 
                         <div className="post-icons">
                             <BsPencil onClick={()=>editPost()}/>
-                            <BsTrash/>
+                            <BsTrash onClick={()=> setShowModal(true)}/>
+                            <Modal isOpen={showModal}
+                                    className="Modal"
+                                    overlayClassName="Overlay"
+                                    ariaHideApp={false}>
+                                <h1>Tem certeza que deseja excluir essa publicação?</h1>
+                                <Buttons>
+                                    <NoButton disabled={disabled} onClick={()=> setShowModal(false)}>
+                                        Não, voltar
+                                    </NoButton>
+                                    <YesButton disabled={disabled} onClick={confirmDelete}>
+                                        Sim, excluir
+                                    </YesButton>
+                                </Buttons>
+                                {disabled && 
+                                    <Loader>
+                                        <img src={preloader} alt="loading"></img>
+                                    </Loader>
+                                }       
+                            </Modal>
                         </div>
                     }
                 </div>
@@ -144,8 +180,47 @@ export default function Post({post}) {
     )
 }
 
+const Loader = styled.div`
+    width:50px;
+    height:50px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    img{
+        width:100%;
+        height:100%;
+    }
+`
+const Buttons = styled.div`
+    display: flex;
+    margin-top: 30px;
+    width:300px;
+    justify-content: space-between;
+`
+
+const YesButton = styled.button`
+    width:134px;
+    height:37px;
+    text-align: center;
+    border-radius:5px;
+    outline:none;
+    border:none;
+    background:#1877F2;
+    color:white;
+`
+const NoButton = styled.button`
+    width:134px;
+    height:37px;
+    text-align: center;
+    border-radius:5px;
+    outline:none;
+    border:none;
+    color:#1877F2;
+`
+
 const LinkSnippet = styled.div`
 
+width: 100%;
 display: flex;
 justify-content: space-between;
 min-height: 155px;
@@ -157,7 +232,7 @@ color:#cecece;
     border-radius: 11px 0px 0px 11px;
     border: 1px solid #4d4d4d;
     border-right: 0px;
-    width: 350px;
+    width: 70%;
     padding: 20px;
     max-width:350px;
 
@@ -185,6 +260,7 @@ color:#cecece;
     img{
         width: 100%;
         height:100%;
+        overflow:hidden;
     }
 }
 
@@ -236,7 +312,7 @@ color:#cecece;
 `
 
 const PostContent = styled.div`
-
+width:100%;
 span{
     color:#fff;
     font-weight: bold;
@@ -253,7 +329,8 @@ span{
     margin-top: 8px;
     font-weight: 400;
     font-size:16px;
-    color:#b7b7b7;    
+    color:#b7b7b7;   
+    word-break: break-word;
 }
 .post-header{
     display:flex;
@@ -331,7 +408,9 @@ margin-bottom:16px;
         }
 
     }
-
+    @media(max-width:611px){
+        width:100%;
+    }
     @media(max-width:414px){
         width: 100%;
         min-height: 192px;
