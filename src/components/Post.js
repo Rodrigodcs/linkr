@@ -112,7 +112,7 @@ export default function Post({post}) {
                                 </Buttons>
                                 {disabled && 
                                     <Loader>
-                                        <img src={preloader}></img>
+                                        <img src={preloader} alt="loading"></img>
                                     </Loader>
                                 }       
                             </Modal>
@@ -190,7 +190,7 @@ const NoButton = styled.button`
 `
 
 const LinkSnippet = styled.div`
-
+width:100%;
 display: flex;
 justify-content: space-between;
 min-height: 155px;
@@ -202,7 +202,7 @@ color:#cecece;
     border-radius: 11px 0px 0px 11px;
     border: 1px solid #4d4d4d;
     border-right: 0px;
-    width: 350px;
+    width: 70%;
     padding: 20px;
     max-width:350px;
 
@@ -230,6 +230,7 @@ color:#cecece;
     img{
         width: 100%;
         height:100%;
+        overflow:hidden
     }
 }
 
@@ -281,7 +282,7 @@ color:#cecece;
 `
 
 const PostContent = styled.div`
-
+    width:100%;
 span{
     color:#fff;
     font-weight: bold;
@@ -298,7 +299,8 @@ span{
     margin-top: 8px;
     font-weight: 400;
     font-size:16px;
-    color:#b7b7b7;    
+    color:#b7b7b7;
+    word-break : break-all ;
 }
 .post-header{
     display:flex;
@@ -376,7 +378,9 @@ margin-bottom:16px;
         }
 
     }
-
+    @media(max-width:611px){
+        width:100%;
+    }
     @media(max-width:414px){
         width: 100%;
         min-height: 192px;
