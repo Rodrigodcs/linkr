@@ -29,7 +29,6 @@ export default function Login(){
         const request = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/sign-in",body)
         request.then(r=>{
             setUserInfo(r.data)
-            console.log(r.data)
             localStorage.setItem('linkrUserInfo', JSON.stringify(r.data));
             history.push("/timeline")
         })
@@ -147,6 +146,7 @@ export const Log = styled.section`
         font-size: 27px;
         line-height: 40px;
         color: #FFFFFF;
+        opacity:0.6;
     }
     @media (max-width: 1000px) {
         position:fixed;
