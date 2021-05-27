@@ -7,6 +7,7 @@ import Navbar from "./components/Navbar/Navbar"
 import MyPosts from "./components/MyPosts"
 import Hashtag from "./components/Hashtag/Hashtag"
 import User from './components/User'
+import MyLikes from "./components/MyLikes"
 import UserContext from "./contexts/UserContext"
 import {useState} from "react"
 
@@ -15,8 +16,6 @@ export default function App(){
     const [userInfo, setUserInfo]=useState("")
     const [refresh, setRefresh] =useState(0)
     return (
-
-
         <UserContext.Provider value={{userInfo, setUserInfo, refresh, setRefresh}}>
             <Router>
                 <GlobalStyle/>
@@ -43,9 +42,12 @@ export default function App(){
                         <Navbar/>
                         <Hashtag/>
                     </Route>
+                    <Route path="/my-likes" exact>
+                        <Navbar/>
+                        <MyLikes/>
+                    </Route>
                 </Switch>
             </Router>
         </UserContext.Provider>
-
     )
 }
