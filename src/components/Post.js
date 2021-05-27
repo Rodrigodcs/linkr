@@ -1,24 +1,54 @@
 import React from 'react'
 import {useHistory} from 'react-router-dom'
 import styled from 'styled-components'
-import { IoIosHeartEmpty } from "react-icons/io"
+import { IoIosHeartEmpty, IoIosHeart } from "react-icons/io"
 import { BsTrash } from "react-icons/bs";
 import { BsPencil } from "react-icons/bs";
 import ReactHashtag from "react-hashtag";
 import UserContext from "../contexts/UserContext"
 import {useContext,useState, useRef} from "react"
 import axios from 'axios';
+import { ColorFill } from 'react-ionicons';
 
 export default function Post({post}) {
     const {userInfo} = useContext(UserContext)
     const [editing,setEditing] = useState(false)
-    const [disabled,setDisabled]=useState(false)
+    const [disabled,setDisabled] = useState(false)
+    const [like, setLike] = useState(post.likes.find((name)=>(name.username === userInfo.user.username)))
+    let [likeList, setLikeList] = useState([post.likes]);
     const [postText,setPostText] = useState(post.text)
-    const history = useHistory();
+    const history = useHistory()
     const inputRef = useRef()
 
+
     function toggleLike(){
-        return
+        const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
+        if(post.likes.find((name)=>(name.user.username === userInfo.user.username))){
+            console.log("trying to dislike!")
+            setLike(false);
+            const promisse = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/posts/${post.id}/dislike`,{},config)
+            promisse.then(answer=>{
+                likeList = [answer.data.post.likes]
+                setLikeList([...likeList])
+            });
+            promisse.catch(()=>{
+                alert("Houve um problema ao descurtir esta publicação!");
+                setLike(true);
+            });
+        }else{
+            console.log("trying to like!")
+            setLike(true);
+            const promisse = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/posts/${post.id}/like`,{},config)
+            promisse.then(answer=>{
+                likeList = [answer.data.post.likes]
+                setLikeList([...likeList])
+            });
+            promisse.catch(()=>{
+                alert("Houve um problema ao curtir esta publicação!");
+                setLike(false);
+            });
+        }
+
     }
 
     function goToHashtag(hash){
@@ -32,7 +62,6 @@ export default function Post({post}) {
         history.push(`/my-posts`):
         history.push(`/user/${post.user.id}`);
     }
-
 
     function editPost(){
         setEditing(true)
@@ -69,7 +98,7 @@ export default function Post({post}) {
                     <img src={post.user.avatar} alt="profile"/>
                 </div>
                 <div className="like-container" onClick={toggleLike} >
-                    <IoIosHeartEmpty/>
+                    {like? <IoIosHeart background={"#555"}/> : <IoIosHeartEmpty/>}
                 </div>
                 <p>{post.likes.length+" likes"}</p>
             </div>
