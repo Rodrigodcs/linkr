@@ -23,12 +23,16 @@ export default function Post({post}) {
 
     function goToHashtag(hash){
         const str = hash.substr(1);
+        if(str.lenght===0)return;
         history.push(`/hashtag/${str}`);
     }
 
     function goToUser(){
+        post.user.username===userInfo.user.username?
+        history.push(`/my-posts`):
         history.push(`/user/${post.user.id}`);
     }
+
 
     function editPost(){
         setEditing(true)

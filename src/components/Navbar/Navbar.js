@@ -14,9 +14,11 @@ export default function Navbar(){
     
     return(
         <Container>
-            <h1>
-                linkr
-            </h1>
+            <Link to="/timeline">
+                <h1>
+                    linkr
+                </h1>
+            </Link>
             <DropDown>
                 {!show ? 
                         <ChevronDownOutline onClick={showDropDown}

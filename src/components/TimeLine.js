@@ -20,9 +20,7 @@ export default function TimeLine(){
             setLoader(false);
             setPosts(answer.data.posts);
         });
-        promisse.catch((answer)=>{
-            alert("Houve uma falha ao obter os posts, por favor atualize a página")
-        });
+        promisse.catch(()=>alert("Houve uma falha ao obter os posts, por favor atualize a página"));
     },[userInfo.token])
 
     return(
@@ -36,7 +34,7 @@ export default function TimeLine(){
             <TimelineStyles>
                 <div className="content">
                     <header>timeline</header>
-                    <CreatePost/>
+                    <CreatePost setPosts={setPosts}/>
                     {posts.length === 0 ? ("Nenhum post encontrado") : posts.map((post)=>(
                         <Post post={post} key={post.id}/>
                     ))}

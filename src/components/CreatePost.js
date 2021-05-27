@@ -1,15 +1,34 @@
 import styled from 'styled-components'
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import UserContext from '../contexts/UserContext'
+import axios from 'axios'
 
-export default function CreatePost(){
+export default function CreatePost({setPosts}){
 
-    const {userInfo} = useContext(UserContext)
+    const {userInfo} = useContext(UserContext);
+    const [submitting, setSubmitting] = useState(false);
+    const [link , setLink] = useState("");
+    const [text , setText] = useState("");
 
     function submitPost(e){
         e.preventDefault();
-        alert("posting is underconstruction")
-
+        setSubmitting(true);
+        
+        const config = {headers: {"Authorization": `Bearer ${userInfo.token}`}}
+        const body = {"text": text,"link": link} 
+        const promisse = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/posts", body, config)
+        promisse.then((answer)=>{
+            setSubmitting(false);
+            setLink("");
+            setText("");
+            const consecutivePromisse = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/posts", config);
+            consecutivePromisse.then(answer=>setPosts(answer.data.posts));
+            consecutivePromisse.catch(()=>alert("Houve uma falha ao obter os posts, por favor atualize a página"));
+        });
+        promisse.catch(()=>{
+            alert("Houve um erro ao publicar seu link");
+            setSubmitting(false);
+        })
     }
 
     return(
@@ -22,9 +41,9 @@ export default function CreatePost(){
             <div className="create-post-content">
                 <p>O que você tem pra favoritar hoje?</p>
                 <form onSubmit={submitPost}>
-                    <textarea required placeholder="http://..."></textarea>
-                    <textarea required placeholder="Muito irado esse link falando de #javascript"></textarea>
-                    <button type="submit">Publicar</button>
+                    <textarea value={link} onChange={(e)=>setLink(e.target.value)} required placeholder="http://..."></textarea>
+                    <textarea value={text} onChange={(e)=>setText(e.target.value)} placeholder="Muito irado esse link falando de #javascript"></textarea>
+                    <button disabled={submitting} type="submit">{ submitting ? "Publishing..." : "Publish" }</button>
                 </form>
             </div>
         </CreatePostStyles>
