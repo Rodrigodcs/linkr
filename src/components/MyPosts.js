@@ -62,45 +62,60 @@ const Loading=styled.div`
 `
 
 const PageContainer = styled.div`
-    display:flex;
-    justify-content:center;
-    background: #333;
-    min-height: calc(100vh - 72px);
-    margin: 72px 0px 0px 0px;
-    font-family: 'Oswald', sans-serif;
+
+display:flex;
+justify-content:center;
+background: #333;
+min-height: calc(100vh - 72px);
+margin: 72px 0px 0px 0px;
+font-family: 'Oswald', sans-serif;
+
     .hashtag-container{
     width:301px;
     min-height: 406px;
     border-radius: 16px;
     margin-top:162px;
     }
+    
 @media(max-width:950px){
     width: 100%;
     .hashtag-container{
         display:none;
     }
 }
+
 `
 
 const TimelineStyles=styled.div`
-    display: flex;
-    flex-direction: column;
-    width:611px;
-    justify-content: space-between;
-    margin-right: 25px;
-    margin-top:58px;
+
+display: flex;
+flex-direction: column;
+width:611px;
+justify-content: space-between;
+margin-right: 25px;
+margin-top:58px;
+
     header{
-        margin-bottom:42px;
+        margin-bottom:46px;
         font-weight: 700;
         font-size:43px;
         color: #fff;
     }
+
     &>div{
-    justify-content: flex-start;
+        justify-content: flex-start;
     }
+    @media(max-width:950px){
+        margin-right:0;
+    }
+    @media(max-width:611px){
+        width:100%;
+    }
+
 @media(max-width:414px){
     width:100%;
     margin: 0px 0px;
+
     header{
         margin-left:17px;
         margin-top:25px;
