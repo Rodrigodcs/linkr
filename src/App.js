@@ -4,6 +4,7 @@ import Login from "./components/Login"
 import Registration from "./components/Registration"
 import TimeLine from "./components/TimeLine"
 import Navbar from "./components/Navbar/Navbar"
+import Hashtag from "./components/Hashtag/Hashtag"
 import User from './components/User'
 import UserContext from "./contexts/UserContext"
 import {useState} from "react"
@@ -12,6 +13,7 @@ export default function App(){
     const [userInfo, setUserInfo]=useState("")
   
     return (
+
 
         <UserContext.Provider value={{userInfo, setUserInfo}}>
             <Router>
@@ -27,8 +29,12 @@ export default function App(){
                         <Navbar/>
                         <TimeLine/>
                     </Route>
-                    <Route path="/user/:id">
+                    <Route path="/user/:id" exact>
                         <User/>
+                    </Route>
+                    <Route path="/hashtag/:hashtag" exact>
+                        <Navbar/>
+                        <Hashtag/>
                     </Route>
                 </Switch>
             </Router>
