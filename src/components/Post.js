@@ -106,6 +106,8 @@ export default function Post({post, timeline}) {
         })
     }
 
+    //oi
+
     return(
         <PostStyles>
             <div className="left-column">
