@@ -11,10 +11,10 @@ import MyLikes from "./components/MyLikes"
 import UserContext from "./contexts/UserContext"
 import {useState} from "react"
 
-
 export default function App(){
-    const [userInfo, setUserInfo]=useState("")
+    const [userInfo, setUserInfo]=useState(JSON.parse(localStorage.getItem('linkrUserInfo'))!==null?JSON.parse(localStorage.getItem('linkrUserInfo')):"")
     const [refresh, setRefresh] =useState(0)
+
     return (
         <UserContext.Provider value={{userInfo, setUserInfo, refresh, setRefresh}}>
             <Router>

@@ -16,7 +16,6 @@ export default function Post({post, timeline}) {
     const [editing,setEditing] = useState(false)
     const [disabled,setDisabled] = useState(false)
     const [showModal, setShowModal] = useState(false)
-    const [tooltip , setTooltip] = useState("lala laê")
     const [like, setLike] = useState(post.likes.some(like=> timeline ? like.userId === userInfo.user.id : like.id === userInfo.user.id))
     const [likeNum, setLikeNum] = useState(post.likes.length);
     const [postText,setPostText] = useState(post.text)
@@ -33,6 +32,7 @@ export default function Post({post, timeline}) {
         promisse.catch(()=>{
             setLike(false);
             setLikeNum(likeNum);
+            !timeline&&setRefresh(refresh+1)
             alert("Houve um problema ao curtir esta publicação!");
         });
     }
@@ -42,6 +42,9 @@ export default function Post({post, timeline}) {
         setLikeNum(likeNum-1);
 
         const promisse = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/posts/${post.id}/dislike`,{},config)
+        promisse.then(()=>{
+            !timeline&&setRefresh(refresh+1)
+        });
         promisse.catch(()=>{
             setLike(true);
             setLikeNum(likeNum);
@@ -125,7 +128,7 @@ export default function Post({post, timeline}) {
                                     `Você, ${(post.likes.find(i=> i["user.username"]!==userInfo.user.username))["user.username"]} e outras ${likeNum-2} pessoas`
                         :
                             likeNum===0?
-                                "Ninguem":
+                                "Ninguém":
                                 likeNum===1?
                                     (post.likes.find(i=> i["user.username"]!==userInfo.user.username))["user.username"]:
                                     likeNum===2?
@@ -375,6 +378,10 @@ span{
     font-size:16px;
     color:#b7b7b7;   
     word-break: break-word;
+    span{
+       color:white;
+       cursor: pointer; 
+    }
 }
 .post-header{
     display:flex;
