@@ -200,8 +200,8 @@ export default function Post({post, timeline}) {
                     <LinkSnippet>
                         <div className="link-content">
                             <p>{post.linkTitle ? post.linkTitle : `  Can't find any title for this link  `}</p>
-                            <p>{post.linkDescription ? post.linkDescription : `" Can't find any description for this link "`}</p>
-                            <p>{post.link}</p>
+                            <p>{post.linkDescription ? post.linkDescription.substring(0,100) +  "..." : `" Can't find any description for this link "`}</p>
+                            <p>{post.link.substring(0,55)}  ... </p>
                         </div>
                         <div className="link-img">
                             <img src={post.linkImage} alt="link preview"/>
@@ -295,7 +295,7 @@ color:#cecece;
     }
     p:nth-child(3){
         font-size: 11px;
-        word-break: break-word;
+        word-break: break-all;
     }
 }
 
