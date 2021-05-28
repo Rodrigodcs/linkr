@@ -12,7 +12,7 @@ import Modal from 'react-modal';
 import preloader from '../images/preloader.gif'
 
 export default function Post({post, timeline}) {
-    const {userInfo, refresh, setRefresh} = useContext(UserContext) //comment
+    const {userInfo, refresh, setRefresh} = useContext(UserContext)
     const [editing,setEditing] = useState(false)
     const [disabled,setDisabled] = useState(false)
     const [showModal, setShowModal] = useState(false)
@@ -105,8 +105,6 @@ export default function Post({post, timeline}) {
             alert("Não foi possível deletar o post. Tente novamente.")
         })
     }
-
-    //oi
 
     return(
         <PostStyles>
