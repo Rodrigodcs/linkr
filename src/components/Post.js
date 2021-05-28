@@ -2,6 +2,7 @@ import React from 'react'
 import {useHistory} from 'react-router-dom'
 import styled from 'styled-components'
 import { IoIosHeartEmpty, IoIosHeart } from "react-icons/io"
+import ReactTooltip from 'react-tooltip';
 import { BsTrash, BsPencil } from "react-icons/bs";
 import ReactHashtag from "react-hashtag";
 import {useContext,useState, useRef} from "react"
@@ -9,13 +10,13 @@ import UserContext from "../contexts/UserContext"
 import axios from 'axios';
 import Modal from 'react-modal';
 import preloader from '../images/preloader.gif'
-import ReactTooltip from 'react-tooltip';
 
 export default function Post({post, timeline}) {
     const {userInfo, refresh, setRefresh} = useContext(UserContext)
     const [editing,setEditing] = useState(false)
     const [disabled,setDisabled] = useState(false)
     const [showModal, setShowModal] = useState(false)
+    const [tooltip , setTooltip] = useState("lala laê")
     const [like, setLike] = useState(post.likes.some(like=> timeline ? like.userId === userInfo.user.id : like.id === userInfo.user.id))
     const [likeNum, setLikeNum] = useState(post.likes.length);
     const [postText,setPostText] = useState(post.text)
@@ -24,21 +25,14 @@ export default function Post({post, timeline}) {
 
     const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
 
-    
-
     function handleLike(){
         setLike(true);
         setLikeNum(likeNum+1);
-        
 
         const promisse = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/posts/${post.id}/like`,{},config)
-        promisse.then(()=>{
-            ReactTooltip.rebuild()
-        });
         promisse.catch(()=>{
             setLike(false);
             setLikeNum(likeNum);
-            ReactTooltip.rebuild()
             alert("Houve um problema ao curtir esta publicação!");
         });
     }
@@ -48,13 +42,9 @@ export default function Post({post, timeline}) {
         setLikeNum(likeNum-1);
 
         const promisse = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/posts/${post.id}/dislike`,{},config)
-        promisse.then(()=>{
-            ReactTooltip.rebuild()
-        });
         promisse.catch(()=>{
             setLike(true);
             setLikeNum(likeNum);
-            ReactTooltip.rebuild()
             alert("Houve um problema ao descurtir esta publicação!");
         });
     }
@@ -121,13 +111,10 @@ export default function Post({post, timeline}) {
                     <img src={post.user.avatar} alt="profile"/>
                 </div>
                 <div className="like-container">
-                    <ReactTooltip />
-                    {like?
-                            <IoIosHeart style={{color:"#AC0000", cursor:'pointer'}} onClick={handleDislike}/> : 
-                            <IoIosHeartEmpty style={{cursor:'pointer'}} onClick={handleLike}/>
-                    }
+                    { like ? <IoIosHeart style={{color:"#AC0000", cursor:'pointer'}} onClick={handleDislike}/> : <IoIosHeartEmpty style={{cursor:'pointer'}} onClick={handleLike}/>}
                 </div>
-                <ReactTooltip />
+
+                <ReactTooltip arrowColor={'#fff'} className="tooltip"/>
                 <p data-tip={
                     timeline?
                         like?
@@ -172,7 +159,7 @@ export default function Post({post, timeline}) {
                                     className="Modal"
                                     overlayClassName="Overlay"
                                     ariaHideApp={false}>
-                                <HeaderModal>{disabled ? "Deletando..." : "Tem certeza que deseja excluir essa publicação?" }</HeaderModal>
+                                <HeaderModal>{ disabled ? "Deletando..." : "Tem certeza que deseja excluir essa publicação?" }</HeaderModal>
                                 {disabled && 
                                     <Loader>
                                         <img src={preloader} style={{marginTop:20}} alt="loading"></img>
