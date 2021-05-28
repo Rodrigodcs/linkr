@@ -133,7 +133,7 @@ export default function Post({post, timeline}) {
                         like?
                             likeNum===1?
                                 `Você`:
-                                likeNum===2?
+                                likeNum===2?//COMENTARIOOOOOOOOOO
                                     `Você e ${(post.likes.find(i=> i["user.username"]!==userInfo.user.username))["user.username"]}`:
                                     `Você, ${(post.likes.find(i=> i["user.username"]!==userInfo.user.username))["user.username"]} e outras ${likeNum-2} pessoas`
                         :
