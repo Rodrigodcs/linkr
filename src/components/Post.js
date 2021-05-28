@@ -40,7 +40,7 @@ export default function Post({post, timeline}) {
         setLike(false);
         setLikeNum(likeNum-1);
 
-        const promisse = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/posts/${post.id}/dislike`,{})
+        const promisse = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/posts/${post.id}/dislike`,{},config)
         promisse.then(()=>{});
         promisse.catch(()=>{
             setLike(true);
@@ -111,7 +111,7 @@ export default function Post({post, timeline}) {
                     <img src={post.user.avatar} alt="profile"/>
                 </div>
                 <div className="like-container">
-                    { like ? <IoIosHeart style={{color:"#AC0000"}} onClick={handleDislike}/> : <IoIosHeartEmpty onClick={handleLike}/>}
+                    { like ? <IoIosHeart style={{color:"#AC0000", cursor:'pointer'}} onClick={handleDislike}/> : <IoIosHeartEmpty style={{cursor:'pointer'}} onClick={handleLike}/>}
                 </div>
                 <p>{likeNum+" likes"}</p>
             </div>
@@ -120,13 +120,18 @@ export default function Post({post, timeline}) {
                     <p className="post-username" onClick={goToUser} >{post.user.username}</p>
                     {post.user.username===userInfo.user.username && 
                         <div className="post-icons">
-                            <BsPencil onClick={()=>editPost()}/>
-                            <BsTrash onClick={()=> setShowModal(true)}/>
+                            <BsPencil style={{cursor:'pointer'}} onClick={()=>editPost()}/>
+                            <BsTrash  style={{cursor:'pointer'}} onClick={()=> setShowModal(true)}/>
                             <Modal isOpen={showModal}
                                     className="Modal"
                                     overlayClassName="Overlay"
                                     ariaHideApp={false}>
-                                <h1>Tem certeza que deseja excluir essa publicação?</h1>
+                                <HeaderModal>{disabled ? "Deletando..." : "Tem certeza que deseja excluir essa publicação?" }</HeaderModal>
+                                {disabled && 
+                                    <Loader>
+                                        <img src={preloader} style={{marginTop:20}} alt="loading"></img>
+                                    </Loader>
+                                }       
                                 <Buttons>
                                     <NoButton disabled={disabled} onClick={()=> setShowModal(false)}>
                                         Não, voltar
@@ -135,11 +140,6 @@ export default function Post({post, timeline}) {
                                         Sim, excluir
                                     </YesButton>
                                 </Buttons>
-                                {disabled && 
-                                    <Loader>
-                                        <img src={preloader} alt="loading"></img>
-                                    </Loader>
-                                }       
                             </Modal>
                         </div>
                     }
@@ -187,6 +187,14 @@ const Loader = styled.div`
         height:100%;
     }
 `
+
+const HeaderModal = styled.h1`
+    font-family: 'Lato',sans-serif;
+    font-size: 34px;
+    font-weight: 700;
+    color:#fff;
+`
+
 const Buttons = styled.div`
     display: flex;
     margin-top: 30px;
@@ -197,8 +205,11 @@ const Buttons = styled.div`
 const YesButton = styled.button`
     width:134px;
     height:37px;
-    text-align: center;
     border-radius:5px;
+    font-size: 18px;
+    font-weight: 700;
+    font-family: 'Lato',sans-serif;
+    text-align: center;
     outline:none;
     border:none;
     background:#1877F2;
@@ -207,10 +218,14 @@ const YesButton = styled.button`
 const NoButton = styled.button`
     width:134px;
     height:37px;
-    text-align: center;
     border-radius:5px;
+    font-size: 18px;
+    font-weight: 700;
+    font-family: 'Lato',sans-serif;
+    text-align: center;
     outline:none;
     border:none;
+    background:#FFF;
     color:#1877F2;
 `
 
