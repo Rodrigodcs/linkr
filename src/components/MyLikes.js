@@ -37,8 +37,8 @@ export default function MyLikes(){
                             <header>
                                 my likes
                             </header>
-                            {myLikedPosts.length === 0 ? ("Nenhum post encontrado") : myLikedPosts.map((post)=>(
-                                <Post post={post} key={post.id}/>
+                            {myLikedPosts.length === 0 ? ("Nenhum post encontrado") : myLikedPosts.reverse().map((post)=>(
+                                <Post post={post} timeline={false} key={post.id}/>
                             ))}
                         </div>
                     </TimelineStyles>

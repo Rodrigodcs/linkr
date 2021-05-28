@@ -36,7 +36,7 @@ export default function TimeLine(){
                     <header>timeline</header>
                     <CreatePost setPosts={setPosts}/>
                     {posts.length === 0 ? ("Nenhum post encontrado") : posts.map((post)=>(
-                        <Post post={post} key={post.id}/>
+                        <Post post={post} timeline={true} key={post.id}/>
                     ))}
                     
                 </div>

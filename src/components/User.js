@@ -13,29 +13,31 @@ export default function User(){
     const [selectedUserPosts, setSelectedUserPosts] = useState([]);
     const [selectedUserInfo, setSelectedUserInfo] = useState([]);
     const [loader, setLoader] = useState(true);
-    const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
+    
 
-    function getUserInfo(){
-        const promisse = axios.get(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/users/${id}/posts`,config);
-        promisse.then(answer=>{
-            setSelectedUserPosts(answer.data.posts);
-            setLoader(false);
-        });
-        promisse.catch((answer)=>{
-            alert("Houve uma falha ao obter os posts, por favor atualize a página")
-        });
-    }
+    
 
     useEffect(()=>{
+        const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
         const userInfoPromisse = axios.get(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/users/${id}`, config )
         userInfoPromisse.then(response =>{
-            console.log(response.data)
             setSelectedUserInfo(response.data)
             getUserInfo()
         })
         userInfoPromisse.catch(() =>{
             alert("Houve uma falha ao obter os posts, por favor atualize a página")
         })
+        function getUserInfo(){
+            const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
+            const promisse = axios.get(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/users/${id}/posts`,config);
+            promisse.then(answer=>{
+                setSelectedUserPosts(answer.data.posts);
+                setLoader(false);
+            });
+            promisse.catch((answer)=>{
+                alert("Houve uma falha ao obter os posts, por favor atualize a página")
+            });
+        }
     },[userInfo.token, id, refresh])
 
     return(
@@ -53,7 +55,7 @@ export default function User(){
                                 {selectedUserInfo.user.username}'s posts
                             </header>
                             {selectedUserPosts.length === 0 ? ("Nenhum post encontrado") : selectedUserPosts.map((post)=>(
-                                <Post post={post} key={post.id}/>
+                                <Post post={post} timeline={true} key={post.id}/>
                             ))}
                         </div>
                     </TimelineStyles>
