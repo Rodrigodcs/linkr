@@ -12,7 +12,7 @@ import preloader from '../images/preloader.gif'
 import ReactTooltip from 'react-tooltip';
 
 export default function Post({post, timeline}) {
-    const {userInfo, refresh, setRefresh} = useContext(UserContext)
+    const {userInfo, refresh, setRefresh} = useContext(UserContext) //comment
     const [editing,setEditing] = useState(false)
     const [disabled,setDisabled] = useState(false)
     const [showModal, setShowModal] = useState(false)
