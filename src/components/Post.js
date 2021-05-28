@@ -30,7 +30,6 @@ export default function Post({post, timeline}) {
         setLikeNum(likeNum+1);
 
         const promisse = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/posts/${post.id}/like`,{},config)
-        promisse.then(()=>{});
         promisse.catch(()=>{
             setLike(false);
             setLikeNum(likeNum);
@@ -43,7 +42,6 @@ export default function Post({post, timeline}) {
         setLikeNum(likeNum-1);
 
         const promisse = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/posts/${post.id}/dislike`,{},config)
-        promisse.then(()=>{});
         promisse.catch(()=>{
             setLike(true);
             setLikeNum(likeNum);
