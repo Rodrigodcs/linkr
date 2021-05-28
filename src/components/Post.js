@@ -9,6 +9,7 @@ import UserContext from "../contexts/UserContext"
 import axios from 'axios';
 import Modal from 'react-modal';
 import preloader from '../images/preloader.gif'
+import ReactTooltip from 'react-tooltip';
 
 export default function Post({post, timeline}) {
     const {userInfo, refresh, setRefresh} = useContext(UserContext)
@@ -23,15 +24,21 @@ export default function Post({post, timeline}) {
 
     const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
 
+    
+
     function handleLike(){
         setLike(true);
         setLikeNum(likeNum+1);
+        
 
         const promisse = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/posts/${post.id}/like`,{},config)
-        promisse.then(()=>{});
+        promisse.then(()=>{
+            ReactTooltip.rebuild()
+        });
         promisse.catch(()=>{
             setLike(false);
             setLikeNum(likeNum);
+            ReactTooltip.rebuild()
             alert("Houve um problema ao curtir esta publicação!");
         });
     }
@@ -41,10 +48,13 @@ export default function Post({post, timeline}) {
         setLikeNum(likeNum-1);
 
         const promisse = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/posts/${post.id}/dislike`,{},config)
-        promisse.then(()=>{});
+        promisse.then(()=>{
+            ReactTooltip.rebuild()
+        });
         promisse.catch(()=>{
             setLike(true);
             setLikeNum(likeNum);
+            ReactTooltip.rebuild()
             alert("Houve um problema ao descurtir esta publicação!");
         });
     }
@@ -103,7 +113,8 @@ export default function Post({post, timeline}) {
             alert("Não foi possível deletar o post. Tente novamente.")
         })
     }
-
+    console.log(likeNum)
+    console.log(post)
     return(
         <PostStyles>
             <div className="left-column">
@@ -111,7 +122,60 @@ export default function Post({post, timeline}) {
                     <img src={post.user.avatar} alt="profile"/>
                 </div>
                 <div className="like-container">
-                    { like ? <IoIosHeart style={{color:"#AC0000", cursor:'pointer'}} onClick={handleDislike}/> : <IoIosHeartEmpty style={{cursor:'pointer'}} onClick={handleLike}/>}
+                    <ReactTooltip />
+                    {timeline?
+                        like ? 
+                            <IoIosHeart 
+                                data-tip={
+                                    likeNum===1?
+                                        `Você`:
+                                        likeNum===2?
+                                            `Você e ${(post.likes.find(i=> i["user.username"]!==userInfo.user.username))["user.username"]}`:
+                                            `Você, ${(post.likes.find(i=> i["user.username"]!==userInfo.user.username))["user.username"]} e outras ${likeNum-2} pessoas`
+                                } 
+                                style={{color:"#AC0000", cursor:'pointer'}} 
+                                onClick={handleDislike}
+                            /> : 
+                            <IoIosHeartEmpty 
+                                data-tip={
+                                    likeNum===0?
+                                        "Ninguem":
+                                        likeNum===1?
+                                            post.likes[0]["user.username"]:
+                                            likeNum===2?
+                                                `${post.likes[0]["user.username"]} e ${post.likes[1]["user.username"]}`:
+                                                `${post.likes[0]["user.username"]}, ${post.likes[1]["user.username"]} e outras ${likeNum-2} pessoas`
+                                } 
+                                style={{cursor:'pointer'}} 
+                                onClick={handleLike}
+                            />
+                        :
+                        like ? 
+                        <IoIosHeart 
+                            data-tip={
+                                likeNum===1?
+                                    `Você`:
+                                    likeNum===2?
+                                        `Você e ${(post.likes.find(i=> i.username!==userInfo.user.username)).username}`:
+                                        `Você, ${(post.likes.find(i=> i.username!==userInfo.user.username)).username} e outras ${likeNum-2} pessoas`
+                            } 
+                            style={{color:"#AC0000", cursor:'pointer'}} 
+                            onClick={handleDislike}
+                        /> : 
+                        <IoIosHeartEmpty 
+                            data-tip={
+                                likeNum===0?
+                                    "Ninguem":
+                                    likeNum===1?
+                                        post.likes[0].username:
+                                        likeNum===2?
+                                            `${post.likes[0].username} e ${post.likes[1].username}`:
+                                            `${post.likes[0].username}, ${post.likes[1].username} e outras ${likeNum-2} pessoas`
+                            } 
+                            style={{cursor:'pointer'}} 
+                            onClick={handleLike}
+                        />
+                    }
                 </div>
                 <p>{likeNum+" likes"}</p>
             </div>
