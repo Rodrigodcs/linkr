@@ -117,12 +117,40 @@ export default function Post({post, timeline}) {
                 <div className="like-container">
                     { like ? <IoIosHeart style={{color:"#AC0000", cursor:'pointer'}} onClick={handleDislike}/> : <IoIosHeartEmpty style={{cursor:'pointer'}} onClick={handleLike}/>}
                 </div>
-                <p data-tip data-for="likes" >
-                    {likeNum+" likes"}
-                </p>
-                <ReactTooltip border={1} borderColor={"red"} borderRadius={3} id="likes" type='warning' effect='solid'>
-                    <span>{tooltip}</span>
-                </ReactTooltip>
+
+                <ReactTooltip arrowColor={'#fff'} className="tooltip"/>
+                <p data-tip={
+                    timeline?
+                        like?
+                            likeNum===1?
+                                `Você`:
+                                likeNum===2?
+                                    `Você e ${(post.likes.find(i=> i["user.username"]!==userInfo.user.username))["user.username"]}`:
+                                    `Você, ${(post.likes.find(i=> i["user.username"]!==userInfo.user.username))["user.username"]} e outras ${likeNum-2} pessoas`
+                        :
+                            likeNum===0?
+                                "Ninguem":
+                                likeNum===1?
+                                    (post.likes.find(i=> i["user.username"]!==userInfo.user.username))["user.username"]:
+                                    likeNum===2?
+                                        `${(post.likes.find(i=> i["user.username"]!==userInfo.user.username))["user.username"]} e ${(post.likes.reverse().find(i=> i["user.username"]!==userInfo.user.username))["user.username"]}`:
+                                        `${(post.likes.find(i=> i["user.username"]!==userInfo.user.username))["user.username"]}, ${(post.likes.reverse().find(i=> i["user.username"]!==userInfo.user.username))["user.username"]} e outras ${likeNum-2} pessoas`
+                    :
+                        like?
+                            likeNum===1?
+                                `Você`:
+                                likeNum===2?
+                                    `Você e ${(post.likes.find(i=> i.username!==userInfo.user.username)).username}`:
+                                    `Você, ${(post.likes.find(i=> i.username!==userInfo.user.username)).username} e outras ${likeNum-2} pessoas`
+                        :
+                            likeNum===0?
+                                "Ninguém":
+                                likeNum===1?
+                                    (post.likes.find(i=> i.username!==userInfo.user.username)).username:
+                                    likeNum===2?
+                                        `${(post.likes.find(i=> i.username!==userInfo.user.username)).username} e ${(post.likes.reverse().find(i=> i.username!==userInfo.user.username)).username}`:
+                                        `${(post.likes.find(i=> i.username!==userInfo.user.username)).username}, ${(post.likes.reverse().find(i=> i.username!==userInfo.user.username)).username} e outras ${likeNum-2} pessoas`
+                }>{`${likeNum} likes`}</p>
             </div>
             <PostContent>
                 <div className="post-header">

@@ -48,6 +48,15 @@ export const GlobalStyle = createGlobalStyle`
     background: rgba(255, 255, 255, 0.9);
   }
 
+  .tooltip{
+    background-color:rgb(255, 255, 255) !important;
+    font-family: 'Lato', sans-serif !important;
+    font-weight:700 !important;
+    color: black !important;
+    opacity: 0.8 !important;
+    border-radius: 5px !important;
+  }
+
 `
 
 // font-family: 'Lato', sans-serif;
