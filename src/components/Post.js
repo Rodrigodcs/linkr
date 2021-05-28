@@ -1,28 +1,62 @@
 import React from 'react'
 import {useHistory} from 'react-router-dom'
 import styled from 'styled-components'
-import { IoIosHeartEmpty } from "react-icons/io"
-import { BsTrash } from "react-icons/bs";
-import { BsPencil } from "react-icons/bs";
+import { IoIosHeartEmpty, IoIosHeart } from "react-icons/io"
+import { BsTrash, BsPencil } from "react-icons/bs";
 import ReactHashtag from "react-hashtag";
-import UserContext from "../contexts/UserContext"
 import {useContext,useState, useRef} from "react"
+import UserContext from "../contexts/UserContext"
 import axios from 'axios';
 import Modal from 'react-modal';
 import preloader from '../images/preloader.gif'
+import ReactTooltip from 'react-tooltip';
 
-export default function Post({post}) {
+export default function Post({post, timeline}) {
     const {userInfo, refresh, setRefresh} = useContext(UserContext)
     const [editing,setEditing] = useState(false)
-    const [disabled,setDisabled]=useState(false)
+    const [disabled,setDisabled] = useState(false)
     const [showModal, setShowModal] = useState(false)
+    const [like, setLike] = useState(post.likes.some(like=> timeline ? like.userId === userInfo.user.id : like.id === userInfo.user.id))
+    const [likeNum, setLikeNum] = useState(post.likes.length);
     const [postText,setPostText] = useState(post.text)
-    const history = useHistory();
+    const history = useHistory()
     const inputRef = useRef()
+
     const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
+
     
-    function toggleLike(){
-        return
+
+    function handleLike(){
+        setLike(true);
+        setLikeNum(likeNum+1);
+        
+
+        const promisse = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/posts/${post.id}/like`,{},config)
+        promisse.then(()=>{
+            ReactTooltip.rebuild()
+        });
+        promisse.catch(()=>{
+            setLike(false);
+            setLikeNum(likeNum);
+            ReactTooltip.rebuild()
+            alert("Houve um problema ao curtir esta publicação!");
+        });
+    }
+
+    function handleDislike(){
+        setLike(false);
+        setLikeNum(likeNum-1);
+
+        const promisse = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/posts/${post.id}/dislike`,{},config)
+        promisse.then(()=>{
+            ReactTooltip.rebuild()
+        });
+        promisse.catch(()=>{
+            setLike(true);
+            setLikeNum(likeNum);
+            ReactTooltip.rebuild()
+            alert("Houve um problema ao descurtir esta publicação!");
+        });
     }
 
     function goToHashtag(hash){
@@ -53,6 +87,7 @@ export default function Post({post}) {
 
     function requestPostEdition(){
         setDisabled(true)
+        const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
         const request = axios.put(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/posts/${post.id}`,{text:postText},config)
         request.then(r=> {
             post.text=postText;
@@ -85,23 +120,64 @@ export default function Post({post}) {
                 <div onClick={goToUser} className="profile-picture"> 
                     <img src={post.user.avatar} alt="profile"/>
                 </div>
-                <div className="like-container" onClick={toggleLike} >
-                    <IoIosHeartEmpty/>
+                <div className="like-container">
+                    <ReactTooltip />
+                    {like?
+                            <IoIosHeart style={{color:"#AC0000", cursor:'pointer'}} onClick={handleDislike}/> : 
+                            <IoIosHeartEmpty style={{cursor:'pointer'}} onClick={handleLike}/>
+                    }
                 </div>
-                <p>{post.likes.length+" likes"}</p>
+                <ReactTooltip />
+                <p data-tip={
+                    timeline?
+                        like?
+                            likeNum===1?
+                                `Você`:
+                                likeNum===2?
+                                    `Você e ${(post.likes.find(i=> i["user.username"]!==userInfo.user.username))["user.username"]}`:
+                                    `Você, ${(post.likes.find(i=> i["user.username"]!==userInfo.user.username))["user.username"]} e outras ${likeNum-2} pessoas`
+                        :
+                            likeNum===0?
+                                "Ninguem":
+                                likeNum===1?
+                                    (post.likes.find(i=> i["user.username"]!==userInfo.user.username))["user.username"]:
+                                    likeNum===2?
+                                        `${(post.likes.find(i=> i["user.username"]!==userInfo.user.username))["user.username"]} e ${(post.likes.reverse().find(i=> i["user.username"]!==userInfo.user.username))["user.username"]}`:
+                                        `${(post.likes.find(i=> i["user.username"]!==userInfo.user.username))["user.username"]}, ${(post.likes.reverse().find(i=> i["user.username"]!==userInfo.user.username))["user.username"]} e outras ${likeNum-2} pessoas`
+                    :
+                        like?
+                            likeNum===1?
+                                `Você`:
+                                likeNum===2?
+                                    `Você e ${(post.likes.find(i=> i.username!==userInfo.user.username)).username}`:
+                                    `Você, ${(post.likes.find(i=> i.username!==userInfo.user.username)).username} e outras ${likeNum-2} pessoas`
+                        :
+                            likeNum===0?
+                                "Ninguem":
+                                likeNum===1?
+                                    (post.likes.find(i=> i.username!==userInfo.user.username)).username:
+                                    likeNum===2?
+                                        `${(post.likes.find(i=> i.username!==userInfo.user.username)).username} e ${(post.likes.reverse().find(i=> i.username!==userInfo.user.username)).username}`:
+                                        `${(post.likes.find(i=> i.username!==userInfo.user.username)).username}, ${(post.likes.reverse().find(i=> i.username!==userInfo.user.username)).username} e outras ${likeNum-2} pessoas`
+                }>{`${likeNum} likes`}</p>
             </div>
             <PostContent>
                 <div className="post-header">
                     <p className="post-username" onClick={goToUser} >{post.user.username}</p>
                     {post.user.username===userInfo.user.username && 
                         <div className="post-icons">
-                            <BsPencil onClick={()=>editPost()}/>
-                            <BsTrash onClick={()=> setShowModal(true)}/>
+                            <BsPencil style={{cursor:'pointer'}} onClick={()=>editPost()}/>
+                            <BsTrash  style={{cursor:'pointer'}} onClick={()=> setShowModal(true)}/>
                             <Modal isOpen={showModal}
                                     className="Modal"
                                     overlayClassName="Overlay"
                                     ariaHideApp={false}>
-                                <h1>Tem certeza que deseja excluir essa publicação?</h1>
+                                <HeaderModal>{disabled ? "Deletando..." : "Tem certeza que deseja excluir essa publicação?" }</HeaderModal>
+                                {disabled && 
+                                    <Loader>
+                                        <img src={preloader} style={{marginTop:20}} alt="loading"></img>
+                                    </Loader>
+                                }       
                                 <Buttons>
                                     <NoButton disabled={disabled} onClick={()=> setShowModal(false)}>
                                         Não, voltar
@@ -110,11 +186,6 @@ export default function Post({post}) {
                                         Sim, excluir
                                     </YesButton>
                                 </Buttons>
-                                {disabled && 
-                                    <Loader>
-                                        <img src={preloader} alt="loading"></img>
-                                    </Loader>
-                                }       
                             </Modal>
                         </div>
                     }
@@ -162,6 +233,14 @@ const Loader = styled.div`
         height:100%;
     }
 `
+
+const HeaderModal = styled.h1`
+    font-family: 'Lato',sans-serif;
+    font-size: 34px;
+    font-weight: 700;
+    color:#fff;
+`
+
 const Buttons = styled.div`
     display: flex;
     margin-top: 30px;
@@ -172,8 +251,11 @@ const Buttons = styled.div`
 const YesButton = styled.button`
     width:134px;
     height:37px;
-    text-align: center;
     border-radius:5px;
+    font-size: 18px;
+    font-weight: 700;
+    font-family: 'Lato',sans-serif;
+    text-align: center;
     outline:none;
     border:none;
     background:#1877F2;
@@ -182,15 +264,20 @@ const YesButton = styled.button`
 const NoButton = styled.button`
     width:134px;
     height:37px;
-    text-align: center;
     border-radius:5px;
+    font-size: 18px;
+    font-weight: 700;
+    font-family: 'Lato',sans-serif;
+    text-align: center;
     outline:none;
     border:none;
+    background:#FFF;
     color:#1877F2;
 `
 
 const LinkSnippet = styled.div`
-width:100%;
+
+width: 100%;
 display: flex;
 justify-content: space-between;
 min-height: 155px;
@@ -230,7 +317,7 @@ color:#cecece;
     img{
         width: 100%;
         height:100%;
-        overflow:hidden
+        overflow:hidden;
     }
 }
 
@@ -282,7 +369,7 @@ color:#cecece;
 `
 
 const PostContent = styled.div`
-    width:100%;
+width:100%;
 span{
     color:#fff;
     font-weight: bold;
@@ -300,7 +387,7 @@ span{
     font-weight: 400;
     font-size:16px;
     color:#b7b7b7;   
-    word-break: break-word; 
+    word-break: break-word;
 }
 .post-header{
     display:flex;
