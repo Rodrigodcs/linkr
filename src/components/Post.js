@@ -2,6 +2,7 @@ import React from 'react'
 import {useHistory} from 'react-router-dom'
 import styled from 'styled-components'
 import { IoIosHeartEmpty, IoIosHeart } from "react-icons/io"
+import ReactTooltip from 'react-tooltip';
 import { BsTrash, BsPencil } from "react-icons/bs";
 import ReactHashtag from "react-hashtag";
 import {useContext,useState, useRef} from "react"
@@ -15,6 +16,7 @@ export default function Post({post, timeline}) {
     const [editing,setEditing] = useState(false)
     const [disabled,setDisabled] = useState(false)
     const [showModal, setShowModal] = useState(false)
+    const [tooltip , setTooltip] = useState("lala laê")
     const [like, setLike] = useState(post.likes.some(like=> timeline ? like.userId === userInfo.user.id : like.id === userInfo.user.id))
     const [likeNum, setLikeNum] = useState(post.likes.length);
     const [postText,setPostText] = useState(post.text)
@@ -113,7 +115,12 @@ export default function Post({post, timeline}) {
                 <div className="like-container">
                     { like ? <IoIosHeart style={{color:"#AC0000", cursor:'pointer'}} onClick={handleDislike}/> : <IoIosHeartEmpty style={{cursor:'pointer'}} onClick={handleLike}/>}
                 </div>
-                <p>{likeNum+" likes"}</p>
+                <p data-tip data-for="likes" >
+                    {likeNum+" likes"}
+                </p>
+                <ReactTooltip border={1} borderColor={"red"} borderRadius={3} id="likes" type='warning' effect='solid'>
+                    <span>{tooltip}</span>
+                </ReactTooltip>
             </div>
             <PostContent>
                 <div className="post-header">
@@ -126,7 +133,7 @@ export default function Post({post, timeline}) {
                                     className="Modal"
                                     overlayClassName="Overlay"
                                     ariaHideApp={false}>
-                                <HeaderModal>{disabled ? "Deletando..." : "Tem certeza que deseja excluir essa publicação?" }</HeaderModal>
+                                <HeaderModal>{ disabled ? "Deletando..." : "Tem certeza que deseja excluir essa publicação?" }</HeaderModal>
                                 {disabled && 
                                     <Loader>
                                         <img src={preloader} style={{marginTop:20}} alt="loading"></img>
