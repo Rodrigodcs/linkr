@@ -147,6 +147,7 @@ export const Log = styled.section`
         line-height: 40px;
         color: #FFFFFF;
         opacity:0.6;
+        cursor: pointer;
     }
     @media (max-width: 1000px) {
         position:fixed;
@@ -163,6 +164,7 @@ export const Log = styled.section`
         }
     }
 `;
+
 export const Title = styled.h1`
     font-family: 'Passion One', cursive;
     font-weight: bold;
@@ -224,6 +226,7 @@ export const Button = styled.button`
     font-size: 27px;
     line-height: 40px;
     color: #FFFFFF;
+    cursor: pointer;
     @media (max-width: 1000px) {
         width: 330px;
     }
