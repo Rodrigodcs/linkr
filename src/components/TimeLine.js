@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import CreatePost from './CreatePost'
 import Trending from "./Trending/Trending"
 import Post from './Post'
+import useInterval from 'use-interval'
 import UserContext from '../contexts/UserContext'
 import axios from 'axios'
 import preloader from '../images/preloader.gif'
@@ -28,6 +29,7 @@ export default function TimeLine(){
         const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
         const promisse = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/posts",config);
         promisse.then(answer=>{
+            console.log(answer.data);
             setLoader(false);
             setPosts(answer.data.posts);
         });
