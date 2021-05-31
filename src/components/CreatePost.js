@@ -2,6 +2,8 @@ import styled from 'styled-components'
 import { useContext, useState } from 'react'
 import UserContext from '../contexts/UserContext'
 import axios from 'axios'
+import { GrLocation } from "react-icons/gr";
+import { FaBeer } from 'react-icons/fa'
 
 export default function CreatePost({setPosts}){
 
@@ -9,6 +11,8 @@ export default function CreatePost({setPosts}){
     const [submitting, setSubmitting] = useState(false);
     const [link , setLink] = useState("");
     const [text , setText] = useState("");
+    const [location, setLocation]= useState({})
+
 
     function submitPost(e){
         e.preventDefault();
@@ -30,7 +34,25 @@ export default function CreatePost({setPosts}){
             setSubmitting(false);
         })
     }
+    function getLocation(){
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(p=>{
+                setLocation({
+                    latitude:p.coords.latitude,
+                    longitude:p.coords.longitude
+                })
+            });
+          } else {
+            alert("Não foi possivel obter a localização")
+          }
+    }
 
+    function disableLocation(){
+        setLocation({})
+    }
+
+    console.log(location)
+    
     return(
         <CreatePostStyles>
             <div className="create-left-column">
@@ -39,11 +61,18 @@ export default function CreatePost({setPosts}){
                 </div>
             </div>
             <div className="create-post-content">
-                <p>O que você tem pra favoritar hoje?</p>
+                <h2>O que você tem pra favoritar hoje?</h2>
                 <form onSubmit={submitPost}>
                     <textarea value={link} onChange={(e)=>setLink(e.target.value)} required placeholder="http://..."></textarea>
                     <textarea value={text} onChange={(e)=>setText(e.target.value)} placeholder="Muito irado esse link falando de #javascript"></textarea>
-                    <button disabled={submitting} type="submit">{ submitting ? "Publishing..." : "Publish" }</button>
+                    <div>
+                        {location.latitude?
+                            <Location selected onClick={()=>disableLocation()}><GrLocation/><p>Localização ativada</p></Location>:
+                            <Location onClick={()=>getLocation()}><GrLocation/><p>Localização ativada</p></Location>
+                        }
+                        <button disabled={submitting} type="submit">{ submitting ? "Publishing..." : "Publish" }</button>
+                    </div>
+                    
                 </form>
             </div>
         </CreatePostStyles>
@@ -77,13 +106,18 @@ display:flex;
     margin-left:18px;
     width: 100%;
 
-    p{
+    h2{
         padding-top: 6px;
         font-family: 'Lato', sans-serif;
         font-weight: 300;
         font-size: 24px;
         color:#707070;
         margin-bottom: 10px;
+    }
+    div{
+        display:flex;
+        align-items: center;
+        justify-content: space-between;
     }
 
     textarea{
@@ -107,7 +141,7 @@ display:flex;
 
     button{
         background: #1877F2;
-        margin-left: 392px;
+        
         width: 112px;
         height: 31px;
         color:#fff;
@@ -196,4 +230,19 @@ display:flex;
     }
 }
 
+`
+
+const Location= styled.div`
+    display:flex;
+    gap:5px;
+    align-items: center;
+    font-family: 'Lato', sans-serif;
+    font-weight: 300;
+    font-size: 13px;
+    line-height: 16px;
+    color: ${props=>props.selected?"#238700":"#949494"};
+    cursor:pointer;
+    .teste{
+        color:red;
+    }
 `
