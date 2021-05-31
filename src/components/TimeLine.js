@@ -29,7 +29,6 @@ export default function TimeLine(){
         const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
         const promisse = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/posts",config);
         promisse.then(answer=>{
-            console.log(answer.data);
             setLoader(false);
             setPosts(answer.data.posts);
         });
