@@ -3,7 +3,6 @@ import styled from 'styled-components'
 import CreatePost from './CreatePost'
 import Trending from "./Trending/Trending"
 import Post from './Post'
-import useInterval from 'use-interval'
 import UserContext from '../contexts/UserContext'
 import preloader from '../images/preloader.gif'
 import axios from 'axios'
