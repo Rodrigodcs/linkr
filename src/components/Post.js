@@ -11,6 +11,7 @@ import axios from 'axios';
 import Modal from 'react-modal';
 import preloader from '../images/preloader.gif'
 import UserMap from "./UserMap"
+import LinkWindow from "./LinkWindow"
 
 export default function Post({post, timeline}) {
     const {userInfo, refresh, setRefresh} = useContext(UserContext)
@@ -23,6 +24,7 @@ export default function Post({post, timeline}) {
     const history = useHistory()
     const inputRef = useRef()
     const location = post.geolocation?post.geolocation:"";
+    const [showLinkWindow,setShowLinkWindow] = useState(false)
 
     const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
 
@@ -200,18 +202,19 @@ export default function Post({post, timeline}) {
                             </ReactHashtag>
                         </p>
                     }
-                <a href={post.link} target="_blank" rel="noreferrer">
-                    <LinkSnippet>
-                        <div className="link-content">
-                            <p>{post.linkTitle ? post.linkTitle : `  Can't find any title for this link  `}</p>
-                            <p>{post.linkDescription ? post.linkDescription.substring(0,100) +  "..." : `" Can't find any description for this link "`}</p>
-                            <p>{post.link.substring(0,55)}  ... </p>
-                        </div>
-                        <div className="link-img">
-                            <img src={post.linkImage} alt="link preview"/>
-                        </div>
-                    </LinkSnippet>
-                </a>
+                
+                <LinkSnippet onClick={()=>setShowLinkWindow(true)}>
+                    <div className="link-content">
+                        <p>{post.linkTitle ? post.linkTitle : `  Can't find any title for this link  `}</p>
+                        <p>{post.linkDescription ? post.linkDescription.substring(0,100) +  "..." : `" Can't find any description for this link "`}</p>
+                        <p>{post.link.substring(0,55)}  ... </p>
+                    </div>
+                    <div className="link-img">
+                        <img src={post.linkImage} alt="link preview"/>
+                    </div>
+                </LinkSnippet>
+                <LinkWindow link={post.link} showLinkWindow={showLinkWindow} setShowLinkWindow={setShowLinkWindow}/>
+                
             </PostContent>
         </PostStyles>
     )
@@ -279,6 +282,7 @@ min-height: 155px;
 max-width: 503px;
 margin-top:10px;
 color:#cecece;
+cursor: pointer;
 
 .link-content{
     border-radius: 11px 0px 0px 11px;
