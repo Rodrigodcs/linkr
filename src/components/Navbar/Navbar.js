@@ -41,7 +41,7 @@ export default function Navbar(){
                 setDoesNotFollowList(data.data.users.filter(i=> i.isFollowingLoggedUser === false))
             })
             response.catch(()=>{
-                console.log("deu ruim")
+                alert("Oops, parece que algo deu errado. Tente novamente!")
             })
         } else{
             setShowList(false)
@@ -60,37 +60,32 @@ export default function Navbar(){
                     <DebounceInput debounceTimeout={300} element={Search} placeholder="Search for people and friends" onChange={(e) => {
                         getUserList(e)
                         } }>
-                    </DebounceInput>
-                    <Submit></Submit>   
+                    </DebounceInput>  
                 </form>
-
                 <List showList={showList}>
                     {(followList && showList) &&
-                        followList.map((i, index)=>(
-                            <Link key={index} to={`/user/${i.id}`} onClick={()=>setShowList(false)}>
+                        followList.map((user, index)=>(
+                            <Link key={index} to={`/user/${user.id}`} onClick={()=>setShowList(false)}>
                                 <SearchedUser showList={showList}>
-                                    <img src={i.avatar} alt="user"></img>
-                                    <h1>{i.username}</h1>
+                                    <img src={user.avatar} alt="user"></img>
+                                    <h1>{user.username}</h1>
                                     <p> • following</p> 
                                 </SearchedUser>
                             </Link>
                         )) 
                     }
                     {(doesNotFollowList && showList) &&
-                        doesNotFollowList.map((i,index)=>(
-                            <Link key={index} to={`/user/${i.id}`} onClick={()=>setShowList(false)}>
+                        doesNotFollowList.map((user,index)=>(
+                            <Link key={index} to={`/user/${user.id}`} onClick={()=>setShowList(false)}>
                                 <SearchedUser showList={showList}>
-                                    <img src={i.avatar} alt="user"></img>
-                                    <h1>{i.username}</h1>
+                                    <img src={user.avatar} alt="user"></img>
+                                    <h1>{user.username}</h1>
                                 </SearchedUser>
                             </Link>
                         )) 
                     }
-                    
                 </List>
-                
             </UserList>
-           
             <DropDown>
                 {!show ? 
                         <ChevronDownOutline onClick={()=>setShow(true)}
@@ -126,9 +121,8 @@ export default function Navbar(){
         </Container>
     )
 }
-const Submit = styled.button`
-display:none;
-`
+
+
 const SearchedUser = styled.div`
     width:100%;
     height: 39px;
@@ -137,17 +131,14 @@ const SearchedUser = styled.div`
     margin-bottom:16px;
     font-family: 'Lato', sans-serif;
     transition: 0.5s;
-
     h1{
         margin: 0 10px;
         color:#515151 !important;
         font-size:19px !important;
-
     }
     p{
         font-size:19px;
         color:#c5c5c5;
-
     }
     img{
         width:39px;
@@ -172,16 +163,15 @@ const List = styled.div`
         margin-top: 50px;
     }
     @media(max-width:414px){
-    position: fixed;
-    width: calc(100% - 20px);
-    top:100px;
-    left: 10px;
-    right: 10px;
+        position: fixed;
+        width: calc(100% - 20px);
+        top:100px;
+        left: 10px;
+        right: 10px;
     }
     a:first-child{  
         margin-top: 55px;
     }
-   
 `
 
 const Search = styled.input`
@@ -195,12 +185,9 @@ const Search = styled.input`
     color: #515151;
     outline:none;
     z-index: 1;
-
     &::placeholder{
         color: #C6C6C6;
     }
-    
-
 `
 
 const UserList = styled.div`
@@ -222,7 +209,7 @@ const UserList = styled.div`
         top:100px;
         right:0;    
     }
-    `
+`
 
 const Container = styled.div`
     height: 72px;
@@ -247,7 +234,6 @@ const Container = styled.div`
         max-width:563px;
         margin: 0 20px;
         z-index:3;
-        
     }
     @media(max-width:950px){
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
