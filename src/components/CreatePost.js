@@ -2,8 +2,7 @@ import styled from 'styled-components'
 import { useContext, useState } from 'react'
 import UserContext from '../contexts/UserContext'
 import axios from 'axios'
-import { GrLocation } from "react-icons/gr";
-import { FaBeer } from 'react-icons/fa'
+import { MdLocationOn } from "react-icons/md";
 
 export default function CreatePost({setPosts}){
 
@@ -19,9 +18,11 @@ export default function CreatePost({setPosts}){
         setSubmitting(true);
         
         const config = {headers: {"Authorization": `Bearer ${userInfo.token}`}}
-        const body = {"text": text,"link": link} 
+        const body = {"text": text,"link": link,"geolocation":{"latitude":location.latitude,"longitude":location.longitude}} 
+        console.log(body)
         const promisse = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/posts", body, config)
         promisse.then((answer)=>{
+            console.log(answer)
             setSubmitting(false);
             setLink("");
             setText("");
@@ -52,7 +53,7 @@ export default function CreatePost({setPosts}){
     }
 
     console.log(location)
-    
+
     return(
         <CreatePostStyles>
             <div className="create-left-column">
@@ -67,12 +68,11 @@ export default function CreatePost({setPosts}){
                     <textarea value={text} onChange={(e)=>setText(e.target.value)} placeholder="Muito irado esse link falando de #javascript"></textarea>
                     <div>
                         {location.latitude?
-                            <Location selected onClick={()=>disableLocation()}><GrLocation/><p>Localização ativada</p></Location>:
-                            <Location onClick={()=>getLocation()}><GrLocation/><p>Localização ativada</p></Location>
+                            <Location selected onClick={()=>disableLocation()}><MdLocationOn/><p>Localização ativada</p></Location>:
+                            <Location onClick={()=>getLocation()}><MdLocationOn/><p>Localização ativada</p></Location>
                         }
                         <button disabled={submitting} type="submit">{ submitting ? "Publishing..." : "Publish" }</button>
                     </div>
-                    
                 </form>
             </div>
         </CreatePostStyles>
@@ -118,6 +118,10 @@ display:flex;
         display:flex;
         align-items: center;
         justify-content: space-between;
+        svg{
+            cursor: pointer;
+            font-size: 20px;
+        }
     }
 
     textarea{

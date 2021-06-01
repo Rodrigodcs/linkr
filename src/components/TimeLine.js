@@ -26,11 +26,10 @@ export default function TimeLine(){
     return(
         <PageContainer>
             {loader
-            ?<CreatePost setPosts={setPosts}/>
-            //<Loading>  
-            //<img src={preloader} alt="preloader"/> 
-            //<p>Loading</p>
-            //</Loading>
+            ?<Loading>  
+                <img src={preloader} alt="preloader"/> 
+                <p>Loading</p>
+            </Loading>
             :<>
             <TimelineStyles>
                 <div className="content">

@@ -10,6 +10,7 @@ import UserContext from "../contexts/UserContext"
 import axios from 'axios';
 import Modal from 'react-modal';
 import preloader from '../images/preloader.gif'
+import UserMap from "./UserMap"
 
 export default function Post({post, timeline}) {
     const {userInfo, refresh, setRefresh} = useContext(UserContext)
@@ -21,6 +22,9 @@ export default function Post({post, timeline}) {
     const [postText,setPostText] = useState(post.text)
     const history = useHistory()
     const inputRef = useRef()
+    const location = post.geolocation?post.geolocation:"";
+    
+    console.log(post)
 
     const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
 
@@ -153,7 +157,10 @@ export default function Post({post, timeline}) {
             </div>
             <PostContent>
                 <div className="post-header">
-                    <p className="post-username" onClick={goToUser} >{post.user.username}</p>
+                    <div className="user-info">
+                        <p className="post-username" onClick={goToUser} >{post.user.username}</p>
+                        {location?<UserMap username={post.user.username} location={location}/>:""}
+                    </div>
                     {post.user.username===userInfo.user.username && 
                         <div className="post-icons">
                             <BsPencil style={{cursor:'pointer'}} onClick={()=>editPost()}/>
@@ -364,9 +371,13 @@ span{
     color:#fff;
     font-weight: bold;
 }
+.user-info{
+    display:flex;
+    align-items: center;
+    gap:10px;
+}
 
 .post-username{
-    padding-top:6px;
     font-size: 19px;
     font-weight: 400;
     color:#fff;
