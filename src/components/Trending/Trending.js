@@ -28,9 +28,48 @@ export default function Trending(){
                     </Link>
                 ))}
             </Hashtags>
+            <Search>
+                <p>#</p>
+                <form>
+                    <input placeholder="type a hashtag"></input>
+                </form>
+            </Search>
         </Container>
     )
 }
+
+const Search = styled.div`
+    width: 90%;
+    background:#252525;
+    height:50px;
+    margin: 0 15px 10px 15px;
+    border-radius:8px;
+    display: flex;
+    align-items: center;
+    font-family: 'Lato', sans-serif;
+    font-size:19px;
+    p{
+        margin: 0 10px;
+    }
+    form{
+        width: 100%;
+        height:100%;
+    }
+    input{
+        background: #252525;
+        border:none;
+        outline: none;
+        height:100%;
+        width:95%;
+        font-family: 'Lato', sans-serif;
+        font-size:16px;
+        color:white;
+        font-style:italic;
+    }
+    input::placeholder{
+        color:#575757 !important;
+    }
+`
 
 const Container = styled.div`
     width:301px;
