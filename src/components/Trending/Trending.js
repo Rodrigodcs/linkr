@@ -1,13 +1,21 @@
 import styled from "styled-components"
 import axios from "axios"
 import {useState} from "react"
-import {Link} from "react-router-dom"
+import {Link, useHistory} from "react-router-dom"
 import {useContext, useEffect} from "react"
 import UserContext from "../../contexts/UserContext"
 
 export default function Trending(){
     const [hashtags, setHashtags] = useState()
+    const [searchInput, setSearchInput] = useState("")
     const {userInfo} = useContext(UserContext)
+    const history = useHistory()
+
+    function goToHashtag(event){
+        event.preventDefault()
+        history.push(`/hashtag/${searchInput}`)
+
+    }
 
     useEffect(()=>{
         const response = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/hashtags/trending", {headers: {"Authorization": `Bearer ${userInfo.token}`}})
@@ -30,8 +38,8 @@ export default function Trending(){
             </Hashtags>
             <Search>
                 <p>#</p>
-                <form>
-                    <input placeholder="type a hashtag"></input>
+                <form onSubmit={goToHashtag}>
+                    <input onChange={(e)=>setSearchInput(e.target.value)} placeholder="type a hashtag"></input>
                 </form>
             </Search>
         </Container>
@@ -41,8 +49,8 @@ export default function Trending(){
 const Search = styled.div`
     width: 90%;
     background:#252525;
-    height:50px;
-    margin: 0 15px 10px 15px;
+    height:35px;
+    margin: 0 15px 15px 15px;
     border-radius:8px;
     display: flex;
     align-items: center;
