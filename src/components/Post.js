@@ -10,6 +10,8 @@ import UserContext from "../contexts/UserContext"
 import axios from 'axios';
 import Modal from 'react-modal';
 import preloader from '../images/preloader.gif'
+import VideoPlayer from "./VideoPlayer"
+import getYouTubeID from "get-youtube-id"
 
 export default function Post({post, timeline}) {
     const {userInfo, refresh, setRefresh} = useContext(UserContext)
@@ -180,33 +182,36 @@ export default function Post({post, timeline}) {
                         </div>
                     }
                 </div>
-                    {editing?
-                        <textarea 
-                            ref={inputRef}
-                            wrap="soft" 
-                            value={postText} 
-                            onChange={(e)=>setPostText(e.target.value)} 
-                            onKeyDown={(e)=>cancelEdition(e)}
-                            disabled={disabled}
-                        ></textarea>:
-                        <p className="post-description">
-                            <ReactHashtag onHashtagClick={(hashtag)=>goToHashtag(hashtag)}>
-                                    {post.text!=="" ? post.text : "Hey, check this link i found on Linkr"}
-                            </ReactHashtag>
-                        </p>
-                    }
-                <a href={post.link} target="_blank" rel="noreferrer">
-                    <LinkSnippet>
-                        <div className="link-content">
-                            <p>{post.linkTitle ? post.linkTitle : `  Can't find any title for this link  `}</p>
-                            <p>{post.linkDescription ? post.linkDescription.substring(0,100) +  "..." : `" Can't find any description for this link "`}</p>
-                            <p>{post.link.substring(0,55)}  ... </p>
-                        </div>
-                        <div className="link-img">
-                            <img src={post.linkImage} alt="link preview"/>
-                        </div>
-                    </LinkSnippet>
-                </a>
+                {editing?
+                    <textarea 
+                        ref={inputRef}
+                        wrap="soft" 
+                        value={postText} 
+                        onChange={(e)=>setPostText(e.target.value)} 
+                        onKeyDown={(e)=>cancelEdition(e)}
+                        disabled={disabled}
+                    ></textarea>:
+                    <p className="post-description">
+                        <ReactHashtag onHashtagClick={(hashtag)=>goToHashtag(hashtag)}>
+                                {post.text!=="" ? post.text : "Hey, check this link i found on Linkr"}
+                        </ReactHashtag>
+                    </p>
+                }
+                {getYouTubeID(post.link)!==null?
+                    <VideoPlayer link={post.link}/>:
+                    <a href={post.link} target="_blank" rel="noreferrer">
+                        <LinkSnippet>
+                            <div className="link-content">
+                                <p>{post.linkTitle ? post.linkTitle : `  Can't find any title for this link  `}</p>
+                                <p>{post.linkDescription ? post.linkDescription.substring(0,100) +  "..." : `" Can't find any description for this link "`}</p>
+                                <p>{post.link.substring(0,55)}  ... </p>
+                            </div>
+                            <div className="link-img">
+                                <img src={post.linkImage} alt="link preview"/>
+                            </div>
+                        </LinkSnippet>
+                    </a>
+                }
             </PostContent>
         </PostStyles>
     )
@@ -360,6 +365,8 @@ color:#cecece;
 
 const PostContent = styled.div`
 width:100%;
+height:100%;
+
 span{
     color:#fff;
     font-weight: bold;
@@ -416,7 +423,6 @@ textarea{
 const PostStyles = styled.div`
 
 width:611px;
-min-height: 276px;
 font-family: 'Lato', sans-serif;
 background:#171717;
 display: flex;
