@@ -1,10 +1,12 @@
 import { useContext, useEffect, useState } from 'react'
-import styled from 'styled-components'
 import CreatePost from './CreatePost'
 import Trending from "./Trending/Trending"
 import Post from './Post'
 import UserContext from '../contexts/UserContext'
 import preloader from '../images/preloader.gif'
+import InfiniteScroll from 'react-infinite-scroller';
+import useInterval from 'use-interval'
+import styled from 'styled-components'
 import axios from 'axios'
 
 export default function TimeLine(){
@@ -34,8 +36,9 @@ export default function TimeLine(){
         promisse.catch(()=>alert("Houve uma falha ao obter os posts, por favor atualize a página"));
     },15000);
 
-
-
+    function loadFunc() {
+        return
+    }
 
     return(
         <PageContainer>
@@ -49,10 +52,19 @@ export default function TimeLine(){
                 <div className="content">
                     <header>timeline</header>
                     <CreatePost setPosts={setPosts}/>
-                    {posts.length === 0 ? ("Nenhum post encontrado") : posts.map((post)=>(
-                        <Post post={post} timeline={true} key={post.id}/>
-                    ))}
-                    
+                    <InfiniteScroll
+                        pageStart={0}
+                        loadMore={loadFunc}
+                        hasMore={true || false}
+                        loader={
+                            <div className="loader" key={0}>
+                                Loading ...
+                            </div>
+                        }>
+                        {posts.length === 0 ? ("Nenhum post encontrado") : posts.map((post)=>(
+                            <Post post={post} timeline={true} key={post.id}/>
+                        ))}
+                    </InfiniteScroll>
                 </div>
             </TimelineStyles>
                 <div className="hashtag-container">
