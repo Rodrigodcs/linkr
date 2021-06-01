@@ -3,7 +3,6 @@ import { MdLocationOn } from 'react-icons/md';
 import {AiOutlineClose} from 'react-icons/ai';
 import styled from 'styled-components';
 import Modal from 'react-modal';
-import { Map } from 'google-maps-react';
 
 import { GoogleMap, LoadScript } from '@react-google-maps/api';
 
