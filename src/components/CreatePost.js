@@ -18,10 +18,8 @@ export default function CreatePost({setPosts}){
         
         const config = {headers: {"Authorization": `Bearer ${userInfo.token}`}}
         const body = {"text": text,"link": link,"geolocation":{"latitude":location.latitude,"longitude":location.longitude}} 
-        console.log(body)
         const promisse = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/posts", body, config)
         promisse.then((answer)=>{
-            console.log(answer)
             setSubmitting(false);
             setLink("");
             setText("");
