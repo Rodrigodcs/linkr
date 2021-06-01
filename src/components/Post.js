@@ -42,7 +42,6 @@ export default function Post({post, timeline}) {
     function handleDislike(){
         setLike(false);
         setLikeNum(likeNum-1);
-
         const promisse = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/posts/${post.id}/dislike`,{},config)
         promisse.then(()=>{
             !timeline&&setRefresh(refresh+1)
