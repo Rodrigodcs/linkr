@@ -27,8 +27,8 @@ export default function TimeLine(){
         <PageContainer>
             {loader
             ?<Loading>  
-            <img src={preloader} alt="preloader"/> 
-            <p>Loading</p>
+                <img src={preloader} alt="preloader"/> 
+                <p>Loading</p>
             </Loading>
             :<>
             <TimelineStyles>
