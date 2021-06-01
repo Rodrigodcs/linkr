@@ -66,6 +66,7 @@ export const style = {
         backgroundColor: "rgba(255, 255, 255, 0.9)",
         display: "flex",
     },
+    
     content: {
         top:"30%",
         margin: "0 auto",

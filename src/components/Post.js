@@ -23,8 +23,6 @@ export default function Post({post, timeline}) {
     const history = useHistory()
     const inputRef = useRef()
     const location = post.geolocation?post.geolocation:"";
-    
-    console.log(post)
 
     const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
 

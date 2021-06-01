@@ -12,7 +12,6 @@ export default function CreatePost({setPosts}){
     const [text , setText] = useState("");
     const [location, setLocation]= useState({})
 
-
     function submitPost(e){
         e.preventDefault();
         setSubmitting(true);
@@ -35,6 +34,7 @@ export default function CreatePost({setPosts}){
             setSubmitting(false);
         })
     }
+
     function getLocation(){
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(p=>{
@@ -42,17 +42,15 @@ export default function CreatePost({setPosts}){
                     latitude:p.coords.latitude,
                     longitude:p.coords.longitude
                 })
-            });
-          } else {
+        });
+        } else {
             alert("Não foi possivel obter a localização")
-          }
+        }
     }
 
     function disableLocation(){
         setLocation({})
     }
-
-    console.log(location)
 
     return(
         <CreatePostStyles>
