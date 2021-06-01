@@ -3,18 +3,16 @@ import {AiOutlineClose} from 'react-icons/ai';
 import styled from 'styled-components';
 import Modal from 'react-modal';
 
-
 export default function LinkWindow({link, showLinkWindow, setShowLinkWindow}){
 
-    console.log(link)
     return(
             <Modal style={style} isOpen={showLinkWindow} ariaHideApp={false}>
                 <Content>
                     <div>
-                        <button>Open in new tab</button>
-                        <AiOutlineClose onClick={() => setShowLinkWindow(false)} />
+                        <a href={link}>Open in new tab</a>
+                        <AiOutlineClose onClick={() => setShowLinkWindow(false)}/>
                     </div>
-                    <iframe title="ifrrameasas" src="https://www.youtube.com/watch?v=B9XGUpQZY38&t=532s"></iframe>
+                    <iframe title="iframe" src={link} width="100%" height="580px"></iframe>
                 </Content>
             </Modal>
     )
@@ -25,16 +23,6 @@ const Content = styled.div`
     flex-direction: column;
     justify-content: space-between;
 
-    button{
-        width: 138px;
-        height: 31px;
-        background: #1877F2;
-        border-radius: 5px;
-        font-size: 14px;
-        line-height: 17px;
-        color: #FFFFFF;
-        border:none;
-    }
     svg{
         cursor: pointer;
         font-size: 20px;
@@ -45,6 +33,19 @@ const Content = styled.div`
         align-items: center;
         margin-bottom: 10px;
     }
+    a{
+        display:flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        width: 138px;
+        height: 31px;
+        background: #1877F2;
+        border-radius: 5px;
+        font-size: 14px;
+        line-height: 17px;
+        color: #FFFFFF;
+    }
 `;
 
 export const style = {
@@ -52,7 +53,6 @@ export const style = {
         backgroundColor: "rgba(255, 255, 255, 0.9)",
         display: "flex",
     },
-    
     content: {
         top:"10%",
         margin: "0 auto",
