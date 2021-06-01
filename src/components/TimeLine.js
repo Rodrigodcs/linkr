@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import CreatePost from './CreatePost'
 import Trending from "./Trending/Trending"
 import Post from './Post'
+import useInterval from 'use-interval'
 import UserContext from '../contexts/UserContext'
 import axios from 'axios'
 import preloader from '../images/preloader.gif'
@@ -23,6 +24,17 @@ export default function TimeLine(){
         promisse.catch(()=>alert("Houve uma falha ao obter os posts, por favor atualize a página"));
     },[userInfo.token, refresh])
 
+    useInterval(()=>{
+        console.log("refresh")
+        const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
+        const promisse = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/posts",config);
+        promisse.then(answer=>{
+            setLoader(false);
+            setPosts(answer.data.posts);
+        });
+        promisse.catch(()=>alert("Houve uma falha ao obter os posts, por favor atualize a página"));
+    },15000);
+    
     return(
         <PageContainer>
             {loader
