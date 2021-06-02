@@ -19,7 +19,6 @@ export default function TimeLine(){
         const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
         const promisse = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/following/posts",config);
         promisse.then(answer=>{
-            console.log(answer.data.posts)
             setLoader(false);
             setPosts(answer.data.posts);
             setMorePosts(answer.data.posts.length);
@@ -29,11 +28,9 @@ export default function TimeLine(){
     },[userInfo.token, refresh])
 
     useInterval(()=>{
-        console.log("refresh")
         const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
         const promisse = axios.get(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/following/posts?earlierThan=${posts[0].id}`,config);
         promisse.then(answer=>{
-            console.log(answer.data.posts)
             setPosts([...answer.data.posts, ...posts]);
         });
         promisse.catch(()=>alert("Houve uma falha ao obter os posts, por favor atualize a página"));
