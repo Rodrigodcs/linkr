@@ -117,7 +117,6 @@ margin-top:58px;
         font-weight: 700;
         font-size:43px;
         color: #fff;
-        background-color: red;
     }
 
     &>div{
