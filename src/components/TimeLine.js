@@ -6,13 +6,12 @@ import useInterval from 'use-interval'
 import UserContext from '../contexts/UserContext'
 import preloader from '../images/preloader.gif'
 import InfiniteScroll from 'react-infinite-scroller';
-import useInterval from 'use-interval'
 import styled from 'styled-components'
 import axios from 'axios'
 
 export default function TimeLine(){
 
-    const {userInfo, refresh} = useContext(UserContext);
+    const {userInfo, refresh, lastId, setLastId, morePosts, setMorePosts} = useContext(UserContext);
     const [posts, setPosts] = useState([]);
     const [loader, setLoader] = useState(true);
     
@@ -20,8 +19,11 @@ export default function TimeLine(){
         const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
         const promisse = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/posts",config);
         promisse.then(answer=>{
+            console.log(answer.data.posts)
             setLoader(false);
             setPosts(answer.data.posts);
+            setMorePosts(answer.data.posts.length);
+            setLastId(answer.data.posts[answer.data.posts.length -1])
         });
         promisse.catch(()=>alert("Houve uma falha ao obter os posts, por favor atualize a página"));
     },[userInfo.token, refresh])
@@ -29,16 +31,25 @@ export default function TimeLine(){
     useInterval(()=>{
         console.log("refresh")
         const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
-        const promisse = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/posts",config);
+        const promisse = axios.get(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/posts?earlierThan=${lastId.id}`,config);
         promisse.then(answer=>{
-            setLoader(false);
+            console.log(answer.data.posts)
             setPosts(answer.data.posts);
+            setMorePosts(answer.data.posts.length);
+            setLastId(answer.data.posts[answer.data.posts.length-1]);
         });
         promisse.catch(()=>alert("Houve uma falha ao obter os posts, por favor atualize a página"));
     },15000);
 
     function loadFunc() {
-        return
+        const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
+        const promisse = axios.get(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/posts?olderThan=${lastId.id}`,config);
+        promisse.then((answer)=>{
+            setPosts([...posts, ...answer.data.posts]);
+            setMorePosts(answer.data.posts.length);
+            setLastId(answer.data.posts[answer.data.posts.length-1]);
+
+        })
     }
 
     return(
@@ -55,15 +66,17 @@ export default function TimeLine(){
                     <CreatePost setPosts={setPosts}/>
                     <InfiniteScroll
                         pageStart={0}
+                        initialLoad={false}
+                        threshold={100}
                         loadMore={loadFunc}
-                        hasMore={true || false}
+                        hasMore={morePosts >= 10}
                         loader={
                             <div className="loader" key={0}>
                                 Loading ...
                             </div>
                         }>
                         {posts.length === 0 ? ("Nenhum post encontrado") : posts.map((post)=>(
-                            <Post post={post} timeline={true} key={post.id}/>
+                            <Post post={post} key={post.id}/>
                         ))}
                     </InfiniteScroll>
                 </div>

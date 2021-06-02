@@ -10,17 +10,20 @@ import UserContext from "../contexts/UserContext"
 import axios from 'axios';
 import Modal from 'react-modal';
 import preloader from '../images/preloader.gif'
+import defaultSnippet from '../images/defaultSnippet.png'
 import VideoPlayer from "./VideoPlayer"
 import getYouTubeID from "get-youtube-id"
 import UserMap from "./UserMap"
 
 
-export default function Post({post, timeline}) {
+export default function Post({post}) {
+    
     const {userInfo, refresh, setRefresh} = useContext(UserContext)
     const [editing,setEditing] = useState(false)
     const [disabled,setDisabled] = useState(false)
     const [showModal, setShowModal] = useState(false)
-    const [like, setLike] = useState(post.likes.some(like=> timeline ? like.userId === userInfo.user.id : like.id === userInfo.user.id))
+    const [badImage, setBadImage] = useState(false)
+    const [like, setLike] = useState(post.likes.some(like=> like.userId === userInfo.user.id))
     const [likeNum, setLikeNum] = useState(post.likes.length);
     const [postText,setPostText] = useState(post.text)
     const history = useHistory()
@@ -37,7 +40,7 @@ export default function Post({post, timeline}) {
         promisse.catch(()=>{
             setLike(false);
             setLikeNum(likeNum);
-            !timeline&&setRefresh(refresh+1)
+            setRefresh(refresh+1)
             alert("Houve um problema ao curtir esta publicação!");
         });
     }
@@ -47,7 +50,7 @@ export default function Post({post, timeline}) {
         setLikeNum(likeNum-1);
         const promisse = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/posts/${post.id}/dislike`,{},config)
         promisse.then(()=>{
-            !timeline&&setRefresh(refresh+1)
+            setRefresh(refresh+1)
         });
         promisse.catch(()=>{
             setLike(true);
@@ -123,7 +126,6 @@ export default function Post({post, timeline}) {
 
                 <ReactTooltip arrowColor={'#fff'} className="tooltip"/>
                 <p data-tip={
-                    timeline?
                         like?
                             likeNum===1?
                                 `Você`:
@@ -138,21 +140,7 @@ export default function Post({post, timeline}) {
                                     likeNum===2?
                                         `${(post.likes.find(i=> i["user.username"]!==userInfo.user.username))["user.username"]} e ${(post.likes.reverse().find(i=> i["user.username"]!==userInfo.user.username))["user.username"]}`:
                                         `${(post.likes.find(i=> i["user.username"]!==userInfo.user.username))["user.username"]}, ${(post.likes.reverse().find(i=> i["user.username"]!==userInfo.user.username))["user.username"]} e outras ${likeNum-2} pessoas`
-                    :
-                        like?
-                            likeNum===1?
-                                `Você`:
-                                likeNum===2?
-                                    `Você e ${(post.likes.find(i=> i.username!==userInfo.user.username)).username}`:
-                                    `Você, ${(post.likes.find(i=> i.username!==userInfo.user.username)).username} e outras ${likeNum-2} pessoas`
-                        :
-                            likeNum===0?
-                                "Ninguém":
-                                likeNum===1?
-                                    (post.likes.find(i=> i.username!==userInfo.user.username)).username:
-                                    likeNum===2?
-                                        `${(post.likes.find(i=> i.username!==userInfo.user.username)).username} e ${(post.likes.reverse().find(i=> i.username!==userInfo.user.username)).username}`:
-                                        `${(post.likes.find(i=> i.username!==userInfo.user.username)).username}, ${(post.likes.reverse().find(i=> i.username!==userInfo.user.username)).username} e outras ${likeNum-2} pessoas`
+                    
                 }>{`${likeNum} likes`}</p>
             </div>
             <PostContent>
@@ -212,7 +200,7 @@ export default function Post({post, timeline}) {
                                 <p>{post.link.substring(0,55)}  ... </p>
                             </div>
                             <div className="link-img">
-                                <img src={post.linkImage} alt="link preview"/>
+                                <img src={badImage ? defaultSnippet : post.linkImage} onError={()=>setBadImage(true)} alt="link preview"/>
                             </div>
                         </LinkSnippet>
                     </a>

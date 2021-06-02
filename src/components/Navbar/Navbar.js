@@ -185,6 +185,7 @@ const Search = styled.input`
     color: #515151;
     outline:none;
     z-index: 1;
+    
     &::placeholder{
         color: #C6C6C6;
     }
@@ -201,6 +202,7 @@ const UserList = styled.div`
     border-radius:8px;
     margin: 0 15px;
     height:20px;
+
     @media(max-width:414px){
         position: fixed;
         width:100%;
@@ -247,6 +249,7 @@ const DropDown = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
+    
     img{
         height:50px;
         width:50px;

@@ -12,11 +12,13 @@ import UserContext from "./contexts/UserContext"
 import {useState} from "react"
 
 export default function App(){
-    const [userInfo, setUserInfo]=useState(JSON.parse(localStorage.getItem('linkrUserInfo'))!==null?JSON.parse(localStorage.getItem('linkrUserInfo')):"")
-    const [refresh, setRefresh] =useState(0)
+    const [userInfo, setUserInfo] = useState(JSON.parse(localStorage.getItem('linkrUserInfo'))!==null?JSON.parse(localStorage.getItem('linkrUserInfo')):"");
+    const [refresh, setRefresh] = useState(0);
+    const [lastId, setLastId] = useState("");
+    const [morePosts, setMorePosts] = useState(0);
 
     return (
-        <UserContext.Provider value={{userInfo, setUserInfo, refresh, setRefresh}}>
+        <UserContext.Provider value={{userInfo, setUserInfo, refresh, setRefresh, lastId, setLastId, morePosts, setMorePosts}}>
             <Router>
                 <GlobalStyle/>
                 <Switch>
