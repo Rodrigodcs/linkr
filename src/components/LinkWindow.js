@@ -62,7 +62,7 @@ export const style = {
         margin: "0 auto",
         backgroundColor: "#333",
         width:"90%",
-        height:"85%",
+        height:"70%",
         opacity: "1",
         borderRadius: "10px", 
         color: 'white',

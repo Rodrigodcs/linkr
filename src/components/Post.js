@@ -15,6 +15,7 @@ import preloader from '../images/preloader.gif'
 import VideoPlayer from "./VideoPlayer"
 import getYouTubeID from "get-youtube-id"
 import UserMap from "./UserMap"
+import LinkWindow from "./LinkWindow"
 
 
 export default function Post({post, timeline}) {
@@ -29,6 +30,7 @@ export default function Post({post, timeline}) {
     const history = useHistory()
     const inputRef = useRef()
     const location = post.geolocation?post.geolocation:"";
+    const [showLinkWindow,setShowLinkWindow] = useState(false)
 
     const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
 
@@ -259,23 +261,25 @@ export default function Post({post, timeline}) {
                         </p>
                     }
                     {getYouTubeID(post.link)!==null?
-                        <VideoPlayer link={post.link}/>:
-                        <a href={post.link} target="_blank" rel="noreferrer">
-                            <LinkSnippet>
-                                <div className="link-content">
-                                    <p>{post.linkTitle ? post.linkTitle : `  Can't find any title for this link  `}</p>
-                                    <p>{post.linkDescription ? post.linkDescription.substring(0,100) +  "..." : `" Can't find any description for this link "`}</p>
-                                    <p>{post.link.substring(0,55)}  ... </p>
-                                </div>
-                                <div className="link-img">
-                                    <img src={post.linkImage} alt="link preview"/>
-                                </div>
-                            </LinkSnippet>
-                        </a>
+                    <VideoPlayer link={post.link}/>:
+                    <>
+                        <LinkSnippet onClick={()=>setShowLinkWindow(true)}>
+                            <div className="link-content">
+                                <p>{post.linkTitle ? post.linkTitle : `  Can't find any title for this link  `}</p>
+                                <p>{post.linkDescription ? post.linkDescription.substring(0,100) +  "..." : `" Can't find any description for this link "`}</p>
+                                <p>{post.link.substring(0,55)}  ... </p>
+                            </div>
+                            <div className="link-img">
+                                <img src={post.linkImage||"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSm8Vfgq8QNCKjJUFHu-0Dhc2EgfdOjzpaDEA&usqp=CAU"} alt="link preview"/>
+                            </div>
+                        </LinkSnippet>
+                        <LinkWindow link={post.link} showLinkWindow={showLinkWindow} setShowLinkWindow={setShowLinkWindow}/>
+                    </>
                     }
                 </PostContent>
             </PostStyles>
         </PostWrapper>
+
     )
 }
 const PostWrapper = styled.div`
@@ -369,6 +373,7 @@ min-height: 155px;
 max-width: 503px;
 margin-top:10px;
 color:#cecece;
+cursor: pointer;
 
 .link-content{
     border-radius: 11px 0px 0px 11px;

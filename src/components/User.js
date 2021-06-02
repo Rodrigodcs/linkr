@@ -150,7 +150,6 @@ margin-top:58px;
         justify-content: space-between;
         position: relative;
     }
-
     &>div{
         justify-content: flex-start;
     }
