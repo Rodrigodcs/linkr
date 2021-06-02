@@ -113,8 +113,6 @@ export default function Post({post, timeline}) {
         })
     }
 
-    console.log(post)
-
     return(
         <PostStyles>
             <div className="left-column">

@@ -6,7 +6,11 @@ import Modal from 'react-modal';
 export default function LinkWindow({link, showLinkWindow, setShowLinkWindow}){
 
     return(
-        <Modal style={style} isOpen={showLinkWindow} ariaHideApp={false}>
+        <Modal 
+            style={style}
+            isOpen={showLinkWindow} 
+            ariaHideApp={false}
+        >
             <Content>
                 <div>
                     <a href={link}>Open in new tab</a>
