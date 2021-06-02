@@ -10,7 +10,7 @@ import UserContext from "../contexts/UserContext"
 import axios from 'axios';
 import Modal from 'react-modal';
 import preloader from '../images/preloader.gif'
-import defaultSnippet from '../images/defaultSnippet.png'
+import defaultSnippet from '../images/defaultSnippet.jpg'
 import VideoPlayer from "./VideoPlayer"
 import getYouTubeID from "get-youtube-id"
 import UserMap from "./UserMap"
@@ -200,7 +200,7 @@ export default function Post({post}) {
                                 <p>{post.link.substring(0,55)}  ... </p>
                             </div>
                             <div className="link-img">
-                                <img src={badImage ? defaultSnippet : post.linkImage} onError={()=>setBadImage(true)} alt="link preview"/>
+                                <img src={badImage ? defaultSnippet : post.linkImage || defaultSnippet} onError={()=>setBadImage(true)} alt="link preview"/>
                             </div>
                         </LinkSnippet>
                     </a>
@@ -483,4 +483,3 @@ margin-bottom:16px;
     }
 
 `
-

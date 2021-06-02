@@ -4,12 +4,13 @@ import styled from 'styled-components'
 import Trending from "./Trending/Trending"
 import Post from './Post'
 import UserContext from '../contexts/UserContext'
-import axios from 'axios'
+import InfiniteScroll from 'react-infinite-scroller'
 import preloader from '../images/preloader.gif'
+import axios from 'axios'
 
 export default function User(){
     const { id } = useParams()
-    const {userInfo, refresh} = useContext(UserContext);
+    const {userInfo, refresh, lastId, setLastId, morePosts, setMorePosts} = useContext(UserContext);
     const [selectedUserPosts, setSelectedUserPosts] = useState([]);
     const [selectedUserInfo, setSelectedUserInfo] = useState([]);
     const [loader, setLoader] = useState(true);
@@ -32,6 +33,8 @@ export default function User(){
             const promisse = axios.get(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/users/${id}/posts`,config);
             promisse.then(answer=>{
                 setSelectedUserPosts(answer.data.posts);
+                setMorePosts(answer.data.posts.length);
+                setLastId(answer.data.posts[answer.data.posts.length -1])
                 setLoader(false);
             });
             promisse.catch((answer)=>{
@@ -39,6 +42,17 @@ export default function User(){
             });
         }
     },[userInfo.token, id, refresh])
+
+    function loadFunc() {
+        const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
+        const promisse = axios.get(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/users/${id}/posts?olderThan=${lastId.id}`,config);
+        promisse.then((answer)=>{
+            setSelectedUserPosts([...selectedUserPosts, ...answer.data.posts]);
+            setMorePosts(answer.data.posts.length);
+            setLastId(answer.data.posts[answer.data.posts.length-1]);
+
+        })
+    }
 
     return(
         <PageContainer>
@@ -54,9 +68,19 @@ export default function User(){
                             <header>
                                 {selectedUserInfo.user.username}'s posts
                             </header>
-                            {selectedUserPosts.length === 0 ? ("Nenhum post encontrado") : selectedUserPosts.map((post)=>(
-                                <Post post={post} key={post.id}/>
-                            ))}
+                            <InfiniteScroll
+                                pageStart={0}
+                                initialLoad={false}
+                                threshold={100}
+                                loadMore={loadFunc}
+                                hasMore={morePosts >= 10}
+                                loader={<div className="loader" key={0}>Loading ...</div>}
+                            >
+                                {selectedUserPosts.length === 0 ? ("Nenhum post encontrado") : selectedUserPosts.map((post)=>(
+                                    <Post post={post} key={post.id}/>
+                                ))}
+                            
+                            </InfiniteScroll>
                         </div>
                     </TimelineStyles>
                     <div className="hashtag-container">
