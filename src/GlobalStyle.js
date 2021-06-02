@@ -56,6 +56,20 @@ export const GlobalStyle = createGlobalStyle`
     opacity: 0.8 !important;
     border-radius: 5px !important;
   }
+  /* .modal-content{
+    top:"10%";
+    margin: "0 auto";
+    background-color: "#333";
+    width:"90%";
+    height:"85%";
+    opacity: "1";
+    border-radius: "10px"; 
+    color: 'white';
+  }
+  .modal-overlay{
+    background-color: "rgba(255, 255, 255, 0.9)";
+    display: "flex";
+  } */
 
 `
 
