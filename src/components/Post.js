@@ -113,6 +113,8 @@ export default function Post({post, timeline}) {
         })
     }
 
+    console.log(post)
+
     return(
         <PostStyles>
             <div className="left-column">
@@ -214,7 +216,7 @@ export default function Post({post, timeline}) {
                                 <p>{post.link.substring(0,55)}  ... </p>
                             </div>
                             <div className="link-img">
-                                <img src={post.linkImage} alt="link preview"/>
+                                <img src={post.linkImage||"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSm8Vfgq8QNCKjJUFHu-0Dhc2EgfdOjzpaDEA&usqp=CAU"} alt="link preview"/>
                             </div>
                         </LinkSnippet>
                         <LinkWindow link={post.link} showLinkWindow={showLinkWindow} setShowLinkWindow={setShowLinkWindow}/>

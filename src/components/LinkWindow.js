@@ -6,15 +6,15 @@ import Modal from 'react-modal';
 export default function LinkWindow({link, showLinkWindow, setShowLinkWindow}){
 
     return(
-            <Modal style={style} isOpen={showLinkWindow} ariaHideApp={false}>
-                <Content>
-                    <div>
-                        <a href={link}>Open in new tab</a>
-                        <AiOutlineClose onClick={() => setShowLinkWindow(false)}/>
-                    </div>
-                    <iframe title="iframe" src={link} width="100%" height="580px"></iframe>
-                </Content>
-            </Modal>
+        <Modal style={style} isOpen={showLinkWindow} ariaHideApp={false}>
+            <Content>
+                <div>
+                    <a href={link}>Open in new tab</a>
+                    <AiOutlineClose onClick={() => setShowLinkWindow(false)}/>
+                </div>
+                <iframe title="iframe" src={link} width="100%" height="580px"></iframe>
+            </Content>
+        </Modal>
     )
 }
 
