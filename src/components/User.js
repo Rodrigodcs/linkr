@@ -55,7 +55,7 @@ export default function User(){
                                 {selectedUserInfo.user.username}'s posts
                             </header>
                             {selectedUserPosts.length === 0 ? ("Nenhum post encontrado") : selectedUserPosts.map((post)=>(
-                                <Post post={post} timeline={true} key={post.id}/>
+                                <Post post={post} timeline={true} key={post.repostId ? post.repostId :post.id}/>
                             ))}
                         </div>
                     </TimelineStyles>

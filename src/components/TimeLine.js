@@ -13,6 +13,8 @@ export default function TimeLine(){
     const {userInfo, refresh} = useContext(UserContext);
     const [posts, setPosts] = useState([]);
     const [loader, setLoader] = useState(true);
+
+    console.log(posts)
     
     useEffect(()=>{
         const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
@@ -47,7 +49,7 @@ export default function TimeLine(){
                     <header>timeline</header>
                     <CreatePost setPosts={setPosts}/>
                     {posts.length === 0 ? ("Nenhum post encontrado") : posts.map((post)=>(
-                        <Post post={post} timeline={true} key={post.id}/>
+                        <Post post={post} timeline={true} key={post.repostId ? post.repostId :post.id}/>
                     ))}
                     
                 </div>
