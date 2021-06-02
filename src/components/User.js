@@ -52,7 +52,8 @@ export default function User(){
                     <TimelineStyles>
                         <div className="content">
                             <header>
-                                {selectedUserInfo.user.username}'s posts
+                                <Username>{selectedUserInfo.user.username}'s posts</Username>
+                                <FollowButton>Follow</FollowButton>
                             </header>
                             {selectedUserPosts.length === 0 ? ("Nenhum post encontrado") : selectedUserPosts.map((post)=>(
                                 <Post post={post} timeline={true} key={post.id}/>
@@ -111,13 +112,17 @@ width:611px;
 justify-content: space-between;
 margin-right: 25px;
 margin-top:58px;
-
+    
     header{
         margin-bottom:46px;
         font-weight: 700;
         font-size:43px;
         color: #fff;
         background-color: red;
+        display:flex;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
     }
 
     &>div{
@@ -145,4 +150,31 @@ margin-top:58px;
     width: 100%;
 }
 
+`
+
+const FollowButton = styled.button`
+    width: 112px;
+    height: 31px;
+    background: #1877F2;
+    border-radius: 5px;
+    font-family: Lato;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 17px;
+    color: #FFFFFF;
+    border:none;
+    position:absolute;
+    right:-320px;
+    @media(max-width:950px){
+        position:static;
+    }
+`
+const Username = styled.h1`
+    font-family: Oswald;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 43px;
+    line-height: 64px;
+    color: #FFFFFF;
 `
