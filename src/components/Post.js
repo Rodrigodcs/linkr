@@ -2,6 +2,8 @@ import React from 'react'
 import {useHistory} from 'react-router-dom'
 import styled from 'styled-components'
 import { IoIosHeartEmpty, IoIosHeart } from "react-icons/io"
+import {AiOutlineComment} from "react-icons/ai"
+import {BiRepost} from "react-icons/bi"
 import ReactTooltip from 'react-tooltip';
 import { BsTrash, BsPencil } from "react-icons/bs";
 import ReactHashtag from "react-hashtag";
@@ -20,7 +22,8 @@ export default function Post({post, timeline}) {
     const {userInfo, refresh, setRefresh} = useContext(UserContext)
     const [editing,setEditing] = useState(false)
     const [disabled,setDisabled] = useState(false)
-    const [showModal, setShowModal] = useState(false)
+    const [showDeleteModal, setShowDeleteModal] = useState(false)
+    const [showRepostModal, setShowRepostModal] = useState(false)
     const [like, setLike] = useState(post.likes.some(like=> timeline ? like.userId === userInfo.user.id : like.id === userInfo.user.id))
     const [likeNum, setLikeNum] = useState(post.likes.length);
     const [postText,setPostText] = useState(post.text)
@@ -103,92 +106,114 @@ export default function Post({post, timeline}) {
         setDisabled(true)
         const response = axios.delete(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/posts/${post.id}`, config)
         response.then(()=>{
-            setShowModal(false)
+            setShowDeleteModal(false)
             setRefresh(refresh+1)
         })
         response.catch(()=>{
             setDisabled(false)
-            setShowModal(false)
+            setShowDeleteModal(false)
+            alert("Não foi possível deletar o post. Tente novamente.")
+        })
+    }
+
+    function confirmRepost(){
+        setDisabled(true)
+        const response = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/posts/${post.id}/share`, {}, config)
+        response.then(()=>{
+            setDisabled(false)
+            setShowRepostModal(false)
+            setRefresh(refresh + 1)
+        })
+        response.catch(()=>{
+            setDisabled(false)
+            setShowRepostModal(false)
             alert("Não foi possível deletar o post. Tente novamente.")
         })
     }
 
     return(
-        <PostStyles>
-            <div className="left-column">
-                <div onClick={goToUser} className="profile-picture"> 
-                    <img src={post.user.avatar} alt="profile"/>
-                </div>
-                <div className="like-container">
-                    { like ? <IoIosHeart style={{color:"#AC0000", cursor:'pointer'}} onClick={handleDislike}/> : <IoIosHeartEmpty style={{cursor:'pointer'}} onClick={handleLike}/>}
-                </div>
-
-                <ReactTooltip arrowColor={'#fff'} className="tooltip"/>
-                <p data-tip={
-                    timeline?
-                        like?
-                            likeNum===1?
-                                `Você`:
-                                likeNum===2?
-                                    `Você e ${(post.likes.find(i=> i["user.username"]!==userInfo.user.username))["user.username"]}`:
-                                    `Você, ${(post.likes.find(i=> i["user.username"]!==userInfo.user.username))["user.username"]} e outras ${likeNum-2} pessoas`
-                        :
-                            likeNum===0?
-                                "Ninguém":
-                                likeNum===1?
-                                    (post.likes.find(i=> i["user.username"]!==userInfo.user.username))["user.username"]:
-                                    likeNum===2?
-                                        `${(post.likes.find(i=> i["user.username"]!==userInfo.user.username))["user.username"]} e ${(post.likes.reverse().find(i=> i["user.username"]!==userInfo.user.username))["user.username"]}`:
-                                        `${(post.likes.find(i=> i["user.username"]!==userInfo.user.username))["user.username"]}, ${(post.likes.reverse().find(i=> i["user.username"]!==userInfo.user.username))["user.username"]} e outras ${likeNum-2} pessoas`
-                    :
-                        like?
-                            likeNum===1?
-                                `Você`:
-                                likeNum===2?
-                                    `Você e ${(post.likes.find(i=> i.username!==userInfo.user.username)).username}`:
-                                    `Você, ${(post.likes.find(i=> i.username!==userInfo.user.username)).username} e outras ${likeNum-2} pessoas`
-                        :
-                            likeNum===0?
-                                "Ninguém":
-                                likeNum===1?
-                                    (post.likes.find(i=> i.username!==userInfo.user.username)).username:
-                                    likeNum===2?
-                                        `${(post.likes.find(i=> i.username!==userInfo.user.username)).username} e ${(post.likes.reverse().find(i=> i.username!==userInfo.user.username)).username}`:
-                                        `${(post.likes.find(i=> i.username!==userInfo.user.username)).username}, ${(post.likes.reverse().find(i=> i.username!==userInfo.user.username)).username} e outras ${likeNum-2} pessoas`
-                }>{`${likeNum} likes`}</p>
-            </div>
-            <PostContent>
-                <div className="post-header">
-                    <div className="user-info">
-                        <p className="post-username" onClick={goToUser} >{post.user.username}</p>
-                        {location?<UserMap username={post.user.username} location={location}/>:""}
+        <PostWrapper>
+            {post.repostedBy &&  
+                <RepostedHeader>
+                    <BiRepost></BiRepost>
+                    <p>Reposted by <strong>{post.repostedBy.username}</strong></p>
+                </RepostedHeader>
+            }
+            <PostStyles>
+                
+                <div className="left-column">
+                    <div onClick={goToUser} className="profile-picture"> 
+                        <img src={post.user.avatar} alt="profile"/>
                     </div>
-                    {post.user.username===userInfo.user.username && 
-                        <div className="post-icons">
-                            <BsPencil style={{cursor:'pointer'}} onClick={()=>editPost()}/>
-                            <BsTrash  style={{cursor:'pointer'}} onClick={()=> setShowModal(true)}/>
-                            <Modal isOpen={showModal}
-                                    className="Modal"
-                                    overlayClassName="Overlay"
-                                    ariaHideApp={false}>
-                                <HeaderModal>{ disabled ? "Deletando..." : "Tem certeza que deseja excluir essa publicação?" }</HeaderModal>
-                                {disabled && 
-                                    <Loader>
-                                        <img src={preloader} style={{marginTop:20}} alt="loading"></img>
-                                    </Loader>
-                                }       
-                                <Buttons>
-                                    <NoButton disabled={disabled} onClick={()=> setShowModal(false)}>
-                                        Não, voltar
-                                    </NoButton>
-                                    <YesButton disabled={disabled} onClick={confirmDelete}>
-                                        Sim, excluir
-                                    </YesButton>
-                                </Buttons>
-                            </Modal>
-                        </div>
-                    }
+                    <div className="like-container">
+                        { like ? <IoIosHeart style={{color:"#AC0000", cursor:'pointer'}} onClick={handleDislike}/> : <IoIosHeartEmpty style={{cursor:'pointer'}} onClick={handleLike}/>}
+                    </div>
+
+                    <ReactTooltip arrowColor={'#fff'} className="tooltip"/>
+                    <p data-tip={
+                        timeline?
+                            like?
+                                likeNum===1?
+                                    `Você`:
+                                    likeNum===2?
+                                        `Você e ${(post.likes.find(i=> i["user.username"]!==userInfo.user.username))["user.username"]}`:
+                                        `Você, ${(post.likes.find(i=> i["user.username"]!==userInfo.user.username))["user.username"]} e outras ${likeNum-2} pessoas`
+                            :
+                                likeNum===0?
+                                    "Ninguém":
+                                    likeNum===1?
+                                        (post.likes.find(i=> i["user.username"]!==userInfo.user.username))["user.username"]:
+                                        likeNum===2?
+                                            `${(post.likes.find(i=> i["user.username"]!==userInfo.user.username))["user.username"]} e ${(post.likes.reverse().find(i=> i["user.username"]!==userInfo.user.username))["user.username"]}`:
+                                            `${(post.likes.find(i=> i["user.username"]!==userInfo.user.username))["user.username"]}, ${(post.likes.reverse().find(i=> i["user.username"]!==userInfo.user.username))["user.username"]} e outras ${likeNum-2} pessoas`
+                        :
+                            like?
+                                likeNum===1?
+                                    `Você`:
+                                    likeNum===2?
+                                        `Você e ${(post.likes.find(i=> i.username!==userInfo.user.username)).username}`:
+                                        `Você, ${(post.likes.find(i=> i.username!==userInfo.user.username)).username} e outras ${likeNum-2} pessoas`
+                            :
+                                likeNum===0?
+                                    "Ninguém":
+                                    likeNum===1?
+                                        (post.likes.find(i=> i.username!==userInfo.user.username)).username:
+                                        likeNum===2?
+                                            `${(post.likes.find(i=> i.username!==userInfo.user.username)).username} e ${(post.likes.reverse().find(i=> i.username!==userInfo.user.username)).username}`:
+                                            `${(post.likes.find(i=> i.username!==userInfo.user.username)).username}, ${(post.likes.reverse().find(i=> i.username!==userInfo.user.username)).username} e outras ${likeNum-2} pessoas`
+                    }>{`${likeNum} likes`}</p>
+
+                    <div className="like-container">
+                        <AiOutlineComment></AiOutlineComment>
+                    </div>
+                    <p>{post.commentCount} comments</p>
+                    <div className="like-container">
+                        <BiRepost onClick={()=> setShowRepostModal(true)} style={{cursor:'pointer'}}></BiRepost>
+                    </div>
+                    <p>{post.repostCount} re-post</p>
+                    <Modal isOpen={showRepostModal}
+                                        className="Modal"
+                                        overlayClassName="Overlay"
+                                        ariaHideApp={false}>
+                        <HeaderModal>
+                            { disabled ? "Reposting..." : "Do you want to re-post this link?" }
+                        </HeaderModal>
+                        {disabled && 
+                            <Loader>
+                                <img src={preloader} style={{marginTop:20}} alt="loading"></img>
+                            </Loader>
+                        }       
+                        <Buttons>
+                            <NoButton disabled={disabled} onClick={()=> setShowRepostModal(false)}>
+                                No, cancel
+                            </NoButton>
+                            <YesButton disabled={disabled} onClick={confirmRepost}>
+                                Yes, share!
+                            </YesButton>
+                        </Buttons>
+                    </Modal>
                 </div>
+<<<<<<< HEAD
                 {editing?
                     <textarea 
                         ref={inputRef}
@@ -222,8 +247,103 @@ export default function Post({post, timeline}) {
                 }
             </PostContent>
         </PostStyles>
+=======
+                <PostContent>
+                    <div className="post-header">
+                        <div className="user-info">
+                            <p className="post-username" onClick={goToUser} >{post.user.username}</p>
+                            {location?<UserMap username={post.user.username} location={location}/>:""}
+                        </div>
+                        {post.user.username===userInfo.user.username && 
+                            <div className="post-icons">
+                                <BsPencil style={{cursor:'pointer'}} onClick={()=>editPost()}/>
+                                <BsTrash  style={{cursor:'pointer'}} onClick={()=> setShowDeleteModal(true)}/>
+                                <Modal isOpen={showDeleteModal}
+                                        className="Modal"
+                                        overlayClassName="Overlay"
+                                        ariaHideApp={false}>
+                                    <HeaderModal>{ disabled ? "Deletando..." : "Tem certeza que deseja excluir essa publicação?" }</HeaderModal>
+                                    {disabled && 
+                                        <Loader>
+                                            <img src={preloader} style={{marginTop:20}} alt="loading"></img>
+                                        </Loader>
+                                    }       
+                                    <Buttons>
+                                        <NoButton disabled={disabled} onClick={()=> setShowDeleteModal(false)}>
+                                            Não, voltar
+                                        </NoButton>
+                                        <YesButton disabled={disabled} onClick={confirmDelete}>
+                                            Sim, excluir
+                                        </YesButton>
+                                    </Buttons>
+                                </Modal>
+                            </div>
+                        }
+                    </div>
+                    {editing?
+                        <textarea 
+                            ref={inputRef}
+                            wrap="soft" 
+                            value={postText} 
+                            onChange={(e)=>setPostText(e.target.value)} 
+                            onKeyDown={(e)=>cancelEdition(e)}
+                            disabled={disabled}
+                        ></textarea>:
+                        <p className="post-description">
+                            <ReactHashtag onHashtagClick={(hashtag)=>goToHashtag(hashtag)}>
+                                    {post.text!=="" ? post.text : "Hey, check this link i found on Linkr"}
+                            </ReactHashtag>
+                        </p>
+                    }
+                    {getYouTubeID(post.link)!==null?
+                        <VideoPlayer link={post.link}/>:
+                        <a href={post.link} target="_blank" rel="noreferrer">
+                            <LinkSnippet>
+                                <div className="link-content">
+                                    <p>{post.linkTitle ? post.linkTitle : `  Can't find any title for this link  `}</p>
+                                    <p>{post.linkDescription ? post.linkDescription.substring(0,100) +  "..." : `" Can't find any description for this link "`}</p>
+                                    <p>{post.link.substring(0,55)}  ... </p>
+                                </div>
+                                <div className="link-img">
+                                    <img src={post.linkImage} alt="link preview"/>
+                                </div>
+                            </LinkSnippet>
+                        </a>
+                    }
+                </PostContent>
+            </PostStyles>
+        </PostWrapper>
+>>>>>>> main
     )
 }
+const PostWrapper = styled.div`
+    background:#1e1e1e;
+    border-radius:16px;
+`
+const RepostedHeader = styled.div`
+    
+    left:0;
+    right:0;
+    height:30px;
+    top:0; 
+    display:flex;
+    align-items: center;
+    margin: 0 10px;
+    font-size:11px;
+    svg{
+        color:white;
+        font-size:25px;
+    }
+    p{  
+        margin-left:6px;
+        color:white;
+        font-family: 'Lato', sans-serif;
+    }
+    strong{
+        font-weight: 700;
+    }
+
+`
 
 const Loader = styled.div`
     width:50px;
@@ -326,7 +446,7 @@ cursor: pointer;
 }
 
 @media(max-width:414px){
-    width: 330px;
+    width: 100%;
     min-height: 95px;
     margin-right:0px;
     
@@ -335,7 +455,7 @@ cursor: pointer;
     flex-direction: column;
     justify-content: space-evenly;
     padding: 10px;
-    width: 255px;
+    width: 100%;
 
         p:nth-child(1){
             font-size: 11px;
@@ -362,7 +482,7 @@ cursor: pointer;
 }
 
 @media(max-width:375px){
-    width: 288px;
+    width: 100%;
     min-height: 75px;
     .link-img{
         max-width: 95px;
@@ -434,20 +554,21 @@ textarea{
 `
 
 const PostStyles = styled.div`
-
-width:611px;
-font-family: 'Lato', sans-serif;
-background:#171717;
-display: flex;
-border-radius:16px;
-padding: 18px 21px 20px 18px;
-margin-bottom:16px;
+    width:611px;
+    font-family: 'Lato', sans-serif;
+    background:#171717;
+    display: flex;
+    border-radius:16px;
+    padding: 18px 21px 20px 10px;
+    margin-bottom:16px;
+    z-index:20;
 
     .left-column{
         display: flex;
+        width:87px;
         flex-direction: column;
         align-items: center;
-        margin-right: 18px;
+        margin-right: 8px;
 
         .profile-picture{
         width:50px;
@@ -471,7 +592,7 @@ margin-bottom:16px;
         }
         
         p{
-            margin-top:5px;
+            margin-bottom:10px;
             font-weight: 400;
             font-size: 11px;
             color:#fff;
@@ -488,7 +609,7 @@ margin-bottom:16px;
         padding: 10px 15px 15px 15px;
 
         .left-column{
-            margin-right: 12px;
+            margin-right: 6px;
 
             .profile-picture{
                 margin-top: 8px;
