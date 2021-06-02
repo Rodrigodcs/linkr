@@ -10,6 +10,10 @@ import UserContext from "../contexts/UserContext"
 import axios from 'axios';
 import Modal from 'react-modal';
 import preloader from '../images/preloader.gif'
+import VideoPlayer from "./VideoPlayer"
+import getYouTubeID from "get-youtube-id"
+import UserMap from "./UserMap"
+
 
 export default function Post({post, timeline}) {
     const {userInfo, refresh, setRefresh} = useContext(UserContext)
@@ -21,6 +25,7 @@ export default function Post({post, timeline}) {
     const [postText,setPostText] = useState(post.text)
     const history = useHistory()
     const inputRef = useRef()
+    const location = post.geolocation?post.geolocation:"";
 
     const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
 
@@ -40,7 +45,6 @@ export default function Post({post, timeline}) {
     function handleDislike(){
         setLike(false);
         setLikeNum(likeNum-1);
-
         const promisse = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/posts/${post.id}/dislike`,{},config)
         promisse.then(()=>{
             !timeline&&setRefresh(refresh+1)
@@ -153,7 +157,10 @@ export default function Post({post, timeline}) {
             </div>
             <PostContent>
                 <div className="post-header">
-                    <p className="post-username" onClick={goToUser} >{post.user.username}</p>
+                    <div className="user-info">
+                        <p className="post-username" onClick={goToUser} >{post.user.username}</p>
+                        {location?<UserMap username={post.user.username} location={location}/>:""}
+                    </div>
                     {post.user.username===userInfo.user.username && 
                         <div className="post-icons">
                             <BsPencil style={{cursor:'pointer'}} onClick={()=>editPost()}/>
@@ -180,33 +187,36 @@ export default function Post({post, timeline}) {
                         </div>
                     }
                 </div>
-                    {editing?
-                        <textarea 
-                            ref={inputRef}
-                            wrap="soft" 
-                            value={postText} 
-                            onChange={(e)=>setPostText(e.target.value)} 
-                            onKeyDown={(e)=>cancelEdition(e)}
-                            disabled={disabled}
-                        ></textarea>:
-                        <p className="post-description">
-                            <ReactHashtag onHashtagClick={(hashtag)=>goToHashtag(hashtag)}>
-                                    {post.text!=="" ? post.text : "Hey, check this link i found on Linkr"}
-                            </ReactHashtag>
-                        </p>
-                    }
-                <a href={post.link} target="_blank" rel="noreferrer">
-                    <LinkSnippet>
-                        <div className="link-content">
-                            <p>{post.linkTitle ? post.linkTitle : `  Can't find any title for this link  `}</p>
-                            <p>{post.linkDescription ? post.linkDescription.substring(0,100) +  "..." : `" Can't find any description for this link "`}</p>
-                            <p>{post.link.substring(0,55)}  ... </p>
-                        </div>
-                        <div className="link-img">
-                            <img src={post.linkImage} alt="link preview"/>
-                        </div>
-                    </LinkSnippet>
-                </a>
+                {editing?
+                    <textarea 
+                        ref={inputRef}
+                        wrap="soft" 
+                        value={postText} 
+                        onChange={(e)=>setPostText(e.target.value)} 
+                        onKeyDown={(e)=>cancelEdition(e)}
+                        disabled={disabled}
+                    ></textarea>:
+                    <p className="post-description">
+                        <ReactHashtag onHashtagClick={(hashtag)=>goToHashtag(hashtag)}>
+                                {post.text!=="" ? post.text : "Hey, check this link i found on Linkr"}
+                        </ReactHashtag>
+                    </p>
+                }
+                {getYouTubeID(post.link)!==null?
+                    <VideoPlayer link={post.link}/>:
+                    <a href={post.link} target="_blank" rel="noreferrer">
+                        <LinkSnippet>
+                            <div className="link-content">
+                                <p>{post.linkTitle ? post.linkTitle : `  Can't find any title for this link  `}</p>
+                                <p>{post.linkDescription ? post.linkDescription.substring(0,100) +  "..." : `" Can't find any description for this link "`}</p>
+                                <p>{post.link.substring(0,55)}  ... </p>
+                            </div>
+                            <div className="link-img">
+                                <img src={post.linkImage} alt="link preview"/>
+                            </div>
+                        </LinkSnippet>
+                    </a>
+                }
             </PostContent>
         </PostStyles>
     )
@@ -360,13 +370,19 @@ color:#cecece;
 
 const PostContent = styled.div`
 width:100%;
+height:100%;
+
 span{
     color:#fff;
     font-weight: bold;
 }
+.user-info{
+    display:flex;
+    align-items: center;
+    gap:10px;
+}
 
 .post-username{
-    padding-top:6px;
     font-size: 19px;
     font-weight: 400;
     color:#fff;
@@ -416,7 +432,6 @@ textarea{
 const PostStyles = styled.div`
 
 width:611px;
-min-height: 276px;
 font-family: 'Lato', sans-serif;
 background:#171717;
 display: flex;

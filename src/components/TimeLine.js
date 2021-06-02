@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from 'react'
 import CreatePost from './CreatePost'
 import Trending from "./Trending/Trending"
 import Post from './Post'
+import useInterval from 'use-interval'
 import UserContext from '../contexts/UserContext'
 import preloader from '../images/preloader.gif'
 import InfiniteScroll from 'react-infinite-scroller';
@@ -44,8 +45,8 @@ export default function TimeLine(){
         <PageContainer>
             {loader
             ?<Loading>  
-            <img src={preloader} alt="preloader"/> 
-            <p>Loading</p>
+                <img src={preloader} alt="preloader"/> 
+                <p>Loading</p>
             </Loading>
             :<>
             <TimelineStyles>
@@ -141,7 +142,7 @@ margin-top:58px;
 
 @media(max-width:414px){
     width:100%;
-    margin: 0px 0px;
+    margin: 40px 0 0 0;
 
     header{
         margin-left:17px;

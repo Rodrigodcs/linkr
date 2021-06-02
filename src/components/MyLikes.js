@@ -100,7 +100,7 @@ const TimelineStyles=styled.div`
     }
 @media(max-width:414px){
     width:100%;
-    margin: 0px 0px;
+    margin: 40px 0 0 0;
     header{
         margin-left:17px;
         margin-top:25px;
