@@ -216,7 +216,7 @@ export default function Post({post, timeline}) {
                     }>{`${likeNum} likes`}</p>
 
                     <div className="like-container">
-                        <AiOutlineComment onClick={()=> setShowComments(!showComments)}></AiOutlineComment>
+                        <AiOutlineComment style={{cursor:'pointer'}} onClick={()=> setShowComments(!showComments)}></AiOutlineComment>
                     </div>
                     <p>{post.commentCount} comments</p>
                     <div className="like-container">
@@ -339,8 +339,8 @@ export default function Post({post, timeline}) {
                         <img src={userInfo.user.avatar} alt="user"></img>
                         <form onSubmit={submitComment}>
                             <Input value={postCommentText} placeholder="write a comment ..." onChange={(e)=>setPostCommentText(e.target.value)}></Input>
-                            <SendButton>
-                                <FiSend></FiSend>
+                            <SendButton style={{cursor:'pointer'}} onClick={submitComment}>
+                                <FiSend ></FiSend>
                             </SendButton>
                         </form>
                     </PostNewComment>
