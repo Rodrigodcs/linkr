@@ -62,6 +62,7 @@ export const style = {
     overlay:{
         backgroundColor: "rgba(255, 255, 255, 0.9)",
         display: "flex",
+        zIndex:"4",
     },
     
     content: {
