@@ -7,18 +7,10 @@ export default function VideoPLayer({link}){
 
     const id = getYouTubeID(link);
 
-    const opts = {
-        width: '100%',
-        height: '250px',
-        playerVars: {
-            autoplay: 0,
-        },
-    };
-
     return (
         <VideoWrapper>
-            <YouTube videoId={id} opts={opts} />
-            <a>{link}</a>
+            <YouTube videoId={id} opts={window.screen.width>600?opts:optsMobile} />
+            <a href={link}>{link}</a>
         </VideoWrapper>
     )
 }
@@ -34,3 +26,19 @@ a{
     cursor:pointer;
 }
 `
+
+const opts = {
+    width: '100%',
+    height: '250px',
+    playerVars: {
+        autoplay: 0,
+    },
+};
+
+const optsMobile = {
+    width: '100%',
+    height: '160px',
+    playerVars: {
+        autoplay: 0,
+    },
+};
