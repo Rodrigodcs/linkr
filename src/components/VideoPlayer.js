@@ -18,7 +18,7 @@ export default function VideoPLayer({link}){
     return (
         <VideoWrapper>
             <YouTube videoId={id} opts={opts} />
-            <a>{link}</a>
+            <a href={link}>{link}</a>
         </VideoWrapper>
     )
 }
