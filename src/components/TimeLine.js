@@ -25,7 +25,6 @@ export default function TimeLine(){
     },[userInfo.token, refresh])
 
     useInterval(()=>{
-        console.log("refresh")
         const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
         const promisse = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/posts",config);
         promisse.then(answer=>{
