@@ -9,7 +9,7 @@ import preloader from '../images/preloader.gif'
 
 export default function User(){
     const { id } = useParams()
-    const {userInfo, refresh,setRefresh} = useContext(UserContext);
+    const {userInfo, refresh} = useContext(UserContext);
     const [selectedUserPosts, setSelectedUserPosts] = useState([]);
     const [selectedUserInfo, setSelectedUserInfo] = useState([]);
     const [loader, setLoader] = useState(true);
@@ -19,7 +19,7 @@ export default function User(){
     useEffect(()=>{
         const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
         axios.all([
-            axios.get(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/users/${id}`, config ),
+            axios.get(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/users/${id}`,config),
             axios.get(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/users/${id}/posts`,config),
             axios.get(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/users/follows`,config)
         ]).then(axios.spread((...responses)=>{
