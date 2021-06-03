@@ -4,16 +4,11 @@ import {AiOutlineClose} from 'react-icons/ai';
 import styled from 'styled-components';
 import Modal from 'react-modal';
 
-import { GoogleMap, LoadScript } from '@react-google-maps/api';
+import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 
 export default function UserMap({username, location}){
     const [showMap, setShowMap] = useState(false);
-
-    const mapStyles = {        
-        height: "80%",
-        width: "100%"
-    };
-
+    
     return(
         <Container>
             <MdLocationOn onClick={() => setShowMap(true)} />
@@ -24,10 +19,13 @@ export default function UserMap({username, location}){
                 </Close>
                 <LoadScript googleMapsApiKey='AIzaSyCrS0yA_nRVYgBh7IQAKTz3xDjKgD7sAGI'>
                     <GoogleMap
-                        mapContainerStyle={mapStyles}
+                        mapContainerStyle={window.screen.width>670?mapStyles:mapStylesMobile}
                         zoom={13}
                         center={{lat:parseFloat(location.latitude),lng:parseFloat(location.longitude)}}
-                    />
+                    >
+                        <Marker key={"Origem do post"} position={{lat:parseFloat(location.latitude),lng:parseFloat(location.longitude)}}/>
+                    </GoogleMap>
+
                 </LoadScript>
             </Modal>
         </Container>
@@ -64,16 +62,28 @@ export const style = {
     overlay:{
         backgroundColor: "rgba(255, 255, 255, 0.9)",
         display: "flex",
+        zIndex:"4",
     },
     
     content: {
         top:"30%",
         margin: "0 auto",
         backgroundColor: "#333",
-        width:"50%",
-        height:"35%",
+        width:"60%",
+        height:"50%",
         opacity: "1",
         borderRadius: "10px", 
         color: 'white',
+        fontFamily: "Oswald",
     }
 }
+
+const mapStyles = {        
+    height: "85%",
+    width: "100%"
+};
+
+const mapStylesMobile = {        
+    height: "75%",
+    width: "100%"
+};
