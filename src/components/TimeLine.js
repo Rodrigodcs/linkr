@@ -36,7 +36,7 @@ export default function TimeLine(){
      useInterval(()=>{
         if(followingList.users.length > 0){
         const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
-        const promisse = axios.get(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/following/posts?earlierThan=${posts[0].id}`,config);
+        const promisse = axios.get(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/following/posts?earlierThan=${posts[0].repostId || posts[0].id}`,config);
         promisse.then(answer=>{
             setPosts([...answer.data.posts, ...posts]);
         });

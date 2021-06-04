@@ -60,7 +60,7 @@ export default function Navbar(){
                     <DebounceInput debounceTimeout={300} element={Search} placeholder="Search for people and friends" onChange={(e) => {
                         getUserList(e)
                         } }>
-                    </DebounceInput>  
+                    </DebounceInput> 
                 </form>
                 <List showList={showList}>
                     {(followList && showList) &&
@@ -156,9 +156,14 @@ const List = styled.div`
     max-width:563px;
     width:100%;
     height:auto;
+    max-height:300px;
     background:#e7e7e7;
     border-radius:7px;
     padding: 0 17px;
+    overflow:scroll;
+    &::-webkit-scrollbar{
+        display:none;
+    }
     a:first-child{  
         margin-top: 50px;
     }

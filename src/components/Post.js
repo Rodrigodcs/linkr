@@ -55,8 +55,10 @@ export default function Post({post}) {
     }, [userInfo.token,post.id])
 
     useInterval(()=>{
-        getCommentList()
-    }, [5000])
+        if(showComments){
+            getCommentList()
+        }
+    },[5000])
 
     function getCommentList(){
         const response = axios.get(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/posts/${post.id}/comments`, config)
@@ -176,7 +178,7 @@ export default function Post({post}) {
             {post.repostedBy &&  
                 <RepostedHeader>
                     <BiRepost></BiRepost>
-                    <p>Reposted by <strong>{post.repostedBy.username}</strong></p>
+                    <p>Reposted by <strong>{post.repostedBy.id === userInfo.user.id? "You" : post.repostedBy.username}</strong></p>
                 </RepostedHeader>
             }
             <PostStyles>
@@ -207,7 +209,10 @@ export default function Post({post}) {
                     }>{`${likeNum} likes`}</p>
 
                     <div className="like-container">
-                        <AiOutlineComment style={{cursor:'pointer'}} onClick={()=> setShowComments(!showComments)}></AiOutlineComment>
+                        <AiOutlineComment style={{cursor:'pointer'}} 
+                            onClick={()=> {setShowComments(!showComments)
+                            getCommentList()                                                        
+                        }}></AiOutlineComment>
                     </div>
                     <p>{post.commentCount} comments</p>
                     <div className="like-container">
