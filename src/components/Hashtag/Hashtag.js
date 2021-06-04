@@ -40,7 +40,7 @@ export default function Hashtag(){
                                 # {hashtag}
                             </header>
                             {postsHash.length === 0 ? ("Nenhum post encontrado") : postsHash.map((post)=>(
-                                <Post post={post} timeline={true} key={post.id}/>
+                                <Post post={post} timeline={true} key={post.repostId ? post.repostId :post.id}/>
                             ))}
                         </div>
                     </TimelineStyles>

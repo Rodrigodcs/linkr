@@ -16,7 +16,7 @@ export default function LinkWindow({link, showLinkWindow, setShowLinkWindow}){
                     <a href={link}>Open in new tab</a>
                     <AiOutlineClose onClick={() => setShowLinkWindow(false)}/>
                 </div>
-                <iframe title="iframe" src={link} width="100%" height="580px"></iframe>
+                <iframe title="iframe" src={link} width="100%" height="600px"></iframe>
             </Content>
         </Modal>
     )
@@ -56,13 +56,14 @@ export const style = {
     overlay:{
         backgroundColor: "rgba(255, 255, 255, 0.9)",
         display: "flex",
+        zIndex:"4",
     },
     content: {
-        top:"10%",
+        top:"5%",
         margin: "0 auto",
         backgroundColor: "#333",
         width:"90%",
-        height:"70%",
+        height:"90%",
         opacity: "1",
         borderRadius: "10px", 
         color: 'white',
