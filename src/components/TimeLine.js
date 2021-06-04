@@ -72,13 +72,14 @@ export default function TimeLine(){
                         threshold={100}
                         loadMore={loadFunc}
                         hasMore={morePosts >= 10}
-                        loader={
+                        loader={followingList.users.length > 0 ?  
                             <div className="load-more-posts" key={0}>
                                 <div>
                                     <img src={preloader} alt="loading more"/>
                                 </div>
                                 <p>Loading more posts...</p>
                             </div>
+                            : ""
                         }>
                             {followingList.users.length === 0 ? "Você não segue ninguém ainda, procure por perfis na busca" :
                         (posts.length === 0 ? ("Nenhum post encontrado") : posts.map((post)=>(
