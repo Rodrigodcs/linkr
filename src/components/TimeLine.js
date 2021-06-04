@@ -52,7 +52,6 @@ export default function TimeLine(){
 
         })
     }
-    console.log(followingList)
 
     return(
         <PageContainer>
