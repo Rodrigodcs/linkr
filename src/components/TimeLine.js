@@ -19,10 +19,6 @@ export default function TimeLine(){
 
     useEffect(()=>{
         const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
-        const request = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/users/follows",config);
-        request.then((answer)=>{
-            setFollowingList()
-        })
         const promisse = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/following/posts",config);
         promisse.then(answer=>{
             setLoader(false);
