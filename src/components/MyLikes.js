@@ -64,7 +64,7 @@ export default function MyLikes(){
                                 }
                             >
                                 {myLikedPosts.length === 0 ? ("Nenhum post encontrado") : myLikedPosts.map((post)=>(
-                                    <Post post={post} key={post.id}/>
+                                    <Post post={post} key={post.repostId ? post.repostId :post.id}/>
                                 ))}
                             </InfiniteScroll>
                         </div>

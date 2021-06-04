@@ -66,7 +66,7 @@ export default function Hashtag(){
                                 }
                             >
                                 {postsHash.length === 0 ? ("Nenhum post encontrado") : postsHash.map((post)=>(
-                                    <Post post={post} key={post.id}/>
+                                    <Post post={post} key={post.repostId ? post.repostId :post.id}/>
                                 ))}
                             </InfiniteScroll>
                         </div>
