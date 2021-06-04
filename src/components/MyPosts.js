@@ -55,12 +55,15 @@ export default function MyPosts(){
                             loadMore={loadFunc}
                             hasMore={morePosts >= 10}
                             loader={
-                                <div className="loader" key={0}>
-                                    Loading ...
+                                <div className="load-more-posts" key={0}>
+                                    <div>
+                                        <img src={preloader} alt="loading more"/>
+                                    </div>
+                                    <p>Loading more posts...</p>
                                 </div>
                             }>
                                 {myPosts.length === 0 ? ("Nenhum post encontrado") : myPosts.map((post)=>(
-                                    <Post post={post} key={post.id}/>
+                                    <Post post={post} key={post.repostId ? post.repostId :post.id}/>
                                     ))}
                             </InfiniteScroll>
                         </div>

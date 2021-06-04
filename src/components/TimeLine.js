@@ -12,11 +12,16 @@ import axios from 'axios'
 export default function TimeLine(){
 
     const {userInfo, refresh, lastId, setLastId, morePosts, setMorePosts} = useContext(UserContext);
+    const [followingList, setFollowingList] = useState([])
     const [posts, setPosts] = useState([]);
     const [loader, setLoader] = useState(true);
-    
+
     useEffect(()=>{
         const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
+        const request = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/users/follows",config);
+        request.then((answer)=>{
+            setFollowingList()
+        })
         const promisse = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/following/posts",config);
         promisse.then(answer=>{
             setLoader(false);
@@ -66,12 +71,15 @@ export default function TimeLine(){
                         loadMore={loadFunc}
                         hasMore={morePosts >= 10}
                         loader={
-                            <div className="loader" key={0}>
-                                Loading ...
+                            <div className="load-more-posts" key={0}>
+                                <div>
+                                    <img src={preloader} alt="loading more"/>
+                                </div>
+                                <p>Loading more posts...</p>
                             </div>
                         }>
                         {posts.length === 0 ? ("Nenhum post encontrado") : posts.map((post)=>(
-                            <Post post={post} key={post.id}/>
+                            <Post post={post} key={post.repostId ? post.repostId :post.id}/>
                         ))}
                     </InfiniteScroll>
 
