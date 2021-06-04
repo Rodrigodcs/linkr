@@ -59,6 +59,7 @@ export default function Post({post}) {
     }, [5000])
 
     function getCommentList(){
+        if(!showComments)return;
         const response = axios.get(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/posts/${post.id}/comments`, config)
         response.then((data)=>{
             setCommentList(data.data)
