@@ -53,6 +53,7 @@ export default function Hashtag(){
                             <header>
                                 # {hashtag}
                             </header>
+<<<<<<< HEAD
                             <InfiniteScroll
                             pageStart={0}
                             initialLoad={false}
@@ -68,6 +69,11 @@ export default function Hashtag(){
                                     <Post post={post} key={post.id}/>
                                 ))}
                             </InfiniteScroll>
+=======
+                            {postsHash.length === 0 ? ("Nenhum post encontrado") : postsHash.map((post)=>(
+                                <Post post={post} timeline={true} key={post.repostId ? post.repostId :post.id}/>
+                            ))}
+>>>>>>> main
                         </div>
                     </TimelineStyles>
                     <div className="hashtag-container">

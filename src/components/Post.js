@@ -1,13 +1,14 @@
 import React from 'react'
-import {useHistory} from 'react-router-dom'
+import {useHistory, Link} from 'react-router-dom'
 import styled from 'styled-components'
 import { IoIosHeartEmpty, IoIosHeart } from "react-icons/io"
 import {AiOutlineComment} from "react-icons/ai"
 import {BiRepost} from "react-icons/bi"
 import ReactTooltip from 'react-tooltip';
 import { BsTrash, BsPencil } from "react-icons/bs";
+import {FiSend} from "react-icons/fi"
 import ReactHashtag from "react-hashtag";
-import {useContext,useState, useRef} from "react"
+import {useContext,useState, useRef, useEffect} from "react"
 import UserContext from "../contexts/UserContext"
 import axios from 'axios';
 import Modal from 'react-modal';
@@ -16,6 +17,7 @@ import defaultSnippet from '../images/defaultSnippet.jpg'
 import VideoPlayer from "./VideoPlayer"
 import getYouTubeID from "get-youtube-id"
 import UserMap from "./UserMap"
+import useInterval from 'use-interval'
 import LinkWindow from "./LinkWindow"
 
 
@@ -28,19 +30,42 @@ export default function Post({post}) {
     const [like, setLike] = useState(post.likes.some(like=> like.userId === userInfo.user.id))
     const [showDeleteModal, setShowDeleteModal] = useState(false)
     const [showRepostModal, setShowRepostModal] = useState(false)
+    const [showComments, setShowComments] = useState(false)
+    const [like, setLike] = useState(post.likes.some(like=> timeline ? like.userId === userInfo.user.id : like.id === userInfo.user.id))
     const [likeNum, setLikeNum] = useState(post.likes.length);
     const [postText,setPostText] = useState(post.text)
+    const [postCommentText, setPostCommentText] = useState()
+    const [commentList, setCommentList] = useState({comments:[]})
+    const [followingList, setFollowingList] = useState([])
+    const [showLinkWindow,setShowLinkWindow] = useState(false)
     const history = useHistory()
     const inputRef = useRef()
+    
     const location = post.geolocation?post.geolocation:"";
-    const [showLinkWindow,setShowLinkWindow] = useState(false)
-
     const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
+
+    useEffect(()=>{
+        const response = axios.get(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/users/follows`, config)
+        response.then((data)=>{
+            setFollowingList(data.data)
+        })
+        getCommentList()
+    }, [])
+
+    useInterval(()=>{
+        getCommentList()
+    }, [5000])
+
+    function getCommentList(){
+        const response = axios.get(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/posts/${post.id}/comments`, config)
+        response.then((data)=>{
+            setCommentList(data.data)
+        })
+    }
 
     function handleLike(){
         setLike(true);
         setLikeNum(likeNum+1);
-
         const promisse = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/posts/${post.id}/like`,{},config)
         promisse.catch(()=>{
             setLike(false);
@@ -134,6 +159,16 @@ export default function Post({post}) {
         })
     }
 
+    function submitComment(e){
+        e.preventDefault()
+        const response = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/posts/${post.id}/comment`, {text:postCommentText}, config)
+        response.then(()=>{
+            setPostCommentText("")
+            getCommentList()
+        })
+
+    }
+
     return(
         <PostWrapper>
             {post.repostedBy &&  
@@ -143,7 +178,6 @@ export default function Post({post}) {
                 </RepostedHeader>
             }
             <PostStyles>
-                
                 <div className="left-column">
                     <div onClick={goToUser} className="profile-picture"> 
                         <img src={post.user.avatar} alt="profile"/>
@@ -151,7 +185,6 @@ export default function Post({post}) {
                     <div className="like-container">
                         { like ? <IoIosHeart style={{color:"#AC0000", cursor:'pointer'}} onClick={handleDislike}/> : <IoIosHeartEmpty style={{cursor:'pointer'}} onClick={handleLike}/>}
                     </div>
-
                     <ReactTooltip arrowColor={'#fff'} className="tooltip"/>
                     <p data-tip={
                             like?
@@ -172,7 +205,7 @@ export default function Post({post}) {
                     }>{`${likeNum} likes`}</p>
 
                     <div className="like-container">
-                        <AiOutlineComment></AiOutlineComment>
+                        <AiOutlineComment style={{cursor:'pointer'}} onClick={()=> setShowComments(!showComments)}></AiOutlineComment>
                     </div>
                     <p>{post.commentCount} comments</p>
                     <div className="like-container">
@@ -234,21 +267,21 @@ export default function Post({post}) {
                         }
                     </div>
                     {editing?
-                        <textarea 
-                            ref={inputRef}
-                            wrap="soft" 
-                            value={postText} 
-                            onChange={(e)=>setPostText(e.target.value)} 
-                            onKeyDown={(e)=>cancelEdition(e)}
-                            disabled={disabled}
-                        ></textarea>:
-                        <p className="post-description">
-                            <ReactHashtag onHashtagClick={(hashtag)=>goToHashtag(hashtag)}>
-                                    {post.text!=="" ? post.text : "Hey, check this link i found on Linkr"}
-                            </ReactHashtag>
-                        </p>
-                    }
-                    {getYouTubeID(post.link)!==null?
+                    <textarea 
+                        ref={inputRef}
+                        wrap="soft" 
+                        value={postText} 
+                        onChange={(e)=>setPostText(e.target.value)} 
+                        onKeyDown={(e)=>cancelEdition(e)}
+                        disabled={disabled}
+                    ></textarea>:
+                    <p className="post-description">
+                        <ReactHashtag onHashtagClick={(hashtag)=>goToHashtag(hashtag)}>
+                                {post.text!=="" ? post.text : "Hey, check this link i found on Linkr"}
+                        </ReactHashtag>
+                    </p>
+                }
+                {getYouTubeID(post.link)!==null?
                     <VideoPlayer link={post.link}/>:
                     <>
                         <LinkSnippet onClick={()=>setShowLinkWindow(true)}>
@@ -263,16 +296,153 @@ export default function Post({post}) {
                         </LinkSnippet>
                         <LinkWindow link={post.link} showLinkWindow={showLinkWindow} setShowLinkWindow={setShowLinkWindow}/>
                     </>
+                }
+            </PostContent>
+        </PostStyles>
+            {showComments &&
+                <CommentSection show={showComments}>
+                    { commentList.comments.length > 0 ? commentList.comments.map((c, i) => (
+                        <Comment key={i}>
+                            <Link to={`/user/${c.user.id}`}>
+                                <img src={c.user.avatar} alt="user"></img>
+                            </Link>
+                                <Description>
+                                    <Link to={`/user/${c.user.id}`}>
+                                        <UsernameWrapper>
+                                            <h1>{c.user.username}</h1>
+                                            {c.user.id === post.user.id ? <p>• post's author</p> : (
+                                                followingList.users.some(f => c.user.id === f.id) ? <p>• following</p>: ""
+                                            ) }
+                                        </UsernameWrapper>
+                                    </Link>
+                                    <p>
+                                        <ReactHashtag onHashtagClick={(hashtag)=>goToHashtag(hashtag)}>
+                                            {c.text}
+                                        </ReactHashtag>
+                                    </p>
+                            </Description>
+                        </Comment>
+                    )) : <p>Nenhum comentario ainda, seja o primeiro a comentar!</p>
                     }
-                </PostContent>
-            </PostStyles>
+                    <PostNewComment>
+                        <img src={userInfo.user.avatar} alt="user"></img>
+                        <form onSubmit={submitComment}>
+                            <Input value={postCommentText} placeholder="write a comment ..." onChange={(e)=>setPostCommentText(e.target.value)}></Input>
+                            <SendButton style={{cursor:'pointer'}} onClick={submitComment}>
+                                <FiSend ></FiSend>
+                            </SendButton>
+                        </form>
+                    </PostNewComment>
+                </CommentSection>
+            }
         </PostWrapper>
-
     )
 }
+const PostNewComment = styled.div`
+    display:flex;
+    padding-top:15px;
+    form{
+        margin-left:10px;
+        width:100%;
+        display:flex;
+        justify-content: space-between;
+        align-items: center;
+        background:#252525;
+        border-radius:8px;
+    }
+    img{
+        width:39px;
+        height:39px;
+        border-radius:50%;
+    }
+`
+
+const Input = styled.input`
+    width:100%;
+    height:100%;
+    background:none;
+    border:none;
+    outline:none;
+    color:#acacac;
+    padding:5px 15px;
+    font-family: 'Lato',sans-serif;
+    &::placeholder{
+        color:#575757;
+        font-style:italic;
+        
+    }
+
+`
+
+const SendButton = styled.button`
+    background:none;
+    border:none;
+    outline:none;
+    color: #f3f3f3;
+    height:100%;
+    width:20px;
+    font-size: 15px;
+    margin-right:12px;
+
+`
+
+const Description = styled.div`
+    display:flex;
+    flex-direction: column;
+    justify-content:flex-start;
+    margin-left: 20px;
+    h1{
+        font-family: 'Lato',sans-serif;
+        font-size:14px;
+        font-weight: 700;
+        color:#f3f3f3;
+        margin-bottom:3px;
+    }
+    p{
+        font-family: 'Lato',sans-serif;
+        font-size:14px;
+        font-weight: 400;
+        color:#ACACAC;
+        span{
+            font-weight: 700;
+            color:white;
+        }
+    }
+
+`
+const UsernameWrapper = styled.div`
+    display:flex;
+    p{
+        margin-left: 5px;
+        color:#565656;
+    }
+`
+
+const Comment = styled.div`
+    border-bottom: 1px solid #353535 ;
+    display:flex;
+    padding: 15px 0;
+    img{
+        width:39px;
+        height:39px;
+        border-radius:50%;
+    }
+`
+
+const CommentSection = styled.div`
+    padding: 0 25px 25px 25px;
+    &>p{
+        color:white;
+        margin-top:10px;
+    }
+`
 const PostWrapper = styled.div`
     background:#1e1e1e;
     border-radius:16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-bottom:44px;
 `
 const RepostedHeader = styled.div`
     
@@ -514,8 +684,7 @@ const PostStyles = styled.div`
     display: flex;
     border-radius:16px;
     padding: 18px 21px 20px 10px;
-    margin-bottom:16px;
-    z-index:20;
+    z-index:0;
 
     .left-column{
         display: flex;
@@ -523,28 +692,24 @@ const PostStyles = styled.div`
         flex-direction: column;
         align-items: center;
         margin-right: 8px;
-
         .profile-picture{
-        width:50px;
-        height: 50px;
-        border-radius: 50%;
-        overflow: hidden;
-        margin-bottom: 21px;
+            width:50px;
+            height: 50px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-bottom: 21px;
         cursor:pointer;
         }
-
         img{
             height: 50px;
             width: 50px;
         }
-
         .like-container{
             display: flex;
             justify-content:center;
             color:#fff;
             font-size: 23px;
-        }
-        
+        }   
         p{
             margin-bottom:10px;
             font-weight: 400;
@@ -552,20 +717,18 @@ const PostStyles = styled.div`
             color:#fff;
             cursor:default;
         }
-
     }
     @media(max-width:611px){
         width:100%;
     }
+
     @media(max-width:414px){
         width: 100%;
         min-height: 192px;
         border-radius: 0px;
         padding: 10px 15px 15px 15px;
-
         .left-column{
             margin-right: 6px;
-
             .profile-picture{
                 margin-top: 8px;
                 width:40px;
@@ -573,5 +736,4 @@ const PostStyles = styled.div`
             }
         }
     }
-
 `

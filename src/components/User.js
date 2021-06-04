@@ -15,17 +15,28 @@ export default function User(){
     const [selectedUserPosts, setSelectedUserPosts] = useState([]);
     const [selectedUserInfo, setSelectedUserInfo] = useState([]);
     const [loader, setLoader] = useState(true);
+<<<<<<< HEAD
     
+=======
+    const [requestingFollow,setRequestingFollow]=useState(false)
+    const [followedUser,setFollowedUser] = useState(false)
+
+>>>>>>> main
     useEffect(()=>{
         const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
-        const userInfoPromisse = axios.get(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/users/${id}`, config )
-        userInfoPromisse.then(response =>{
-            setSelectedUserInfo(response.data)
-            getUserInfo()
-        })
-        userInfoPromisse.catch(() =>{
+        axios.all([
+            axios.get(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/users/${id}`,config),
+            axios.get(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/users/${id}/posts`,config),
+            axios.get(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/users/follows`,config)
+        ]).then(axios.spread((...responses)=>{
+            setSelectedUserInfo(responses[0].data)
+            setSelectedUserPosts(responses[1].data.posts);
+            setFollowedUser(responses[2].data.users.map(u=>u.id).includes(parseInt(id)))
+            setLoader(false)
+        })).catch(() =>{
             alert("Houve uma falha ao obter os posts, por favor atualize a página")
         })
+<<<<<<< HEAD
         function getUserInfo(){
             const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
             const promisse = axios.get(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/users/${id}/posts`,config);
@@ -50,6 +61,36 @@ export default function User(){
             setLastId(answer.data.posts[answer.data.posts.length-1]);
 
         })
+=======
+    },[userInfo.token, id, refresh])
+
+    function followUser(id){
+        setRequestingFollow(true)
+        const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
+        const request = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/users/${id}/follow`,{},config);
+        request.then(r=>{
+            setRequestingFollow(false)
+            setFollowedUser(true)
+        });
+        request.catch((e)=>{
+            alert("Houve uma falha ao seguir o usuário, por favor tente novamente")
+            setRequestingFollow(false)
+        });
+    }
+
+    function unfollowUser(id){
+        setRequestingFollow(true)
+        const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
+        const request = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/users/${id}/unfollow`,{},config);
+        request.then(r=>{
+            setRequestingFollow(false)
+            setFollowedUser(false)
+        });
+        request.catch((e)=>{
+            alert("Houve uma falha ao deixar de seguir o usuário, por favor tente novamente")
+            setRequestingFollow(false)
+        });
+>>>>>>> main
     }
 
     return(
@@ -64,8 +105,17 @@ export default function User(){
                     <TimelineStyles>
                         <div className="content">
                             <header>
-                                {selectedUserInfo.user.username}'s posts
+                                <Username>{selectedUserInfo.user.username}'s posts</Username>
+                                {followedUser?
+                                    requestingFollow?
+                                        <FollowButton disable>Unfollow</FollowButton>:
+                                        <FollowButton onClick={()=>unfollowUser(id)}>Unfollow</FollowButton>
+                                    :requestingFollow?
+                                        <FollowButton followed disable>Follow</FollowButton>:
+                                        <FollowButton followed onClick={()=>followUser(id)}>Follow</FollowButton>
+                                }
                             </header>
+<<<<<<< HEAD
                             <InfiniteScroll
                                 pageStart={0}
                                 initialLoad={false}
@@ -79,6 +129,11 @@ export default function User(){
                                 ))}
                             
                             </InfiniteScroll>
+=======
+                            {selectedUserPosts.length === 0 ? ("Nenhum post encontrado") : selectedUserPosts.map((post)=>(
+                                <Post post={post} timeline={true} key={post.repostId ? post.repostId :post.id}/>
+                            ))}
+>>>>>>> main
                         </div>
                     </TimelineStyles>
                     <div className="hashtag-container">
@@ -133,14 +188,17 @@ width:611px;
 justify-content: space-between;
 margin-right: 25px;
 margin-top:58px;
-
+    
     header{
         margin-bottom:46px;
         font-weight: 700;
         font-size:43px;
         color: #fff;
+        display:flex;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
     }
-
     &>div{
         justify-content: flex-start;
     }
@@ -166,4 +224,33 @@ margin-top:58px;
     width: 100%;
 }
 
+`
+
+const FollowButton = styled.button`
+    width: 112px;
+    height: 31px;
+    background: ${props => props.followed ? "#1877F2" : "white"};
+    border-radius: 5px;
+    font-family: Lato;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 17px;
+    color: ${props => props.followed ? "white" : "#1877F2"};
+    border:none;
+    position:absolute;
+    right:-320px;
+    cursor: pointer;
+    opacity:${props => props.disable ? "0.3" : "1"};
+    @media(max-width:950px){
+        position:static;
+    }
+`
+const Username = styled.h1`
+    font-family: Oswald;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 43px;
+    line-height: 64px;
+    color: #FFFFFF;
 `

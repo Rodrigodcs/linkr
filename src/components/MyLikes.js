@@ -51,6 +51,7 @@ export default function MyLikes(){
                             <header>
                                 my likes
                             </header>
+<<<<<<< HEAD
                             <InfiniteScroll
                             pageStart={0}
                             initialLoad={false}
@@ -66,6 +67,11 @@ export default function MyLikes(){
                                     <Post post={post} key={post.id}/>
                                 ))}
                             </InfiniteScroll>
+=======
+                            {myLikedPosts.length === 0 ? ("Nenhum post encontrado") : myLikedPosts.reverse().map((post)=>(
+                                <Post post={post} timeline={false} key={post.repostId ? post.repostId :post.id}/>
+                            ))}
+>>>>>>> main
                         </div>
                     </TimelineStyles>
                     <div className="hashtag-container">
