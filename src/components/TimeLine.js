@@ -1,38 +1,52 @@
 import { useContext, useEffect, useState } from 'react'
-import styled from 'styled-components'
 import CreatePost from './CreatePost'
 import Trending from "./Trending/Trending"
 import Post from './Post'
 import useInterval from 'use-interval'
 import UserContext from '../contexts/UserContext'
-import axios from 'axios'
 import preloader from '../images/preloader.gif'
+import InfiniteScroll from 'react-infinite-scroller'
+import styled from 'styled-components'
+import axios from 'axios'
 
 export default function TimeLine(){
-    const {userInfo, refresh} = useContext(UserContext);
+
+    const {userInfo, refresh, lastId, setLastId, morePosts, setMorePosts} = useContext(UserContext);
     const [posts, setPosts] = useState([]);
     const [loader, setLoader] = useState(true);
     
     useEffect(()=>{
         const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
-        const promisse = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/posts",config);
+        const promisse = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/following/posts",config);
         promisse.then(answer=>{
             setLoader(false);
             setPosts(answer.data.posts);
+            setMorePosts(answer.data.posts.length);
+            setLastId(answer.data.posts[answer.data.posts.length -1])
         });
         promisse.catch(()=>alert("Houve uma falha ao obter os posts, por favor atualize a página"));
-    },[userInfo.token, refresh])
+    },[userInfo.token, refresh,setLastId,setMorePosts])
 
     useInterval(()=>{
         const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
-        const promisse = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/posts",config);
+        const promisse = axios.get(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/following/posts?earlierThan=${posts[0].id}`,config);
         promisse.then(answer=>{
-            setLoader(false);
-            setPosts(answer.data.posts);
+            setPosts([...answer.data.posts, ...posts]);
         });
         promisse.catch(()=>alert("Houve uma falha ao obter os posts, por favor atualize a página"));
     },15000);
-    
+
+    function loadFunc() {
+        const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
+        const promisse = axios.get(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/following/posts?olderThan=${lastId.id}`,config);
+        promisse.then((answer)=>{
+            setPosts([...posts, ...answer.data.posts]);
+            setMorePosts(answer.data.posts.length);
+            setLastId(answer.data.posts[answer.data.posts.length-1]);
+
+        })
+    }
+
     return(
         <PageContainer>
             {loader
@@ -45,9 +59,22 @@ export default function TimeLine(){
                 <div className="content">
                     <header>timeline</header>
                     <CreatePost setPosts={setPosts}/>
-                    {posts.length === 0 ? ("Nenhum post encontrado") : posts.map((post)=>(
-                        <Post post={post} timeline={true} key={post.repostId ? post.repostId :post.id}/>
-                    ))}
+                    <InfiniteScroll
+                        pageStart={0}
+                        initialLoad={false}
+                        threshold={100}
+                        loadMore={loadFunc}
+                        hasMore={morePosts >= 10}
+                        loader={
+                            <div className="loader" key={0}>
+                                Loading ...
+                            </div>
+                        }>
+                        {posts.length === 0 ? ("Nenhum post encontrado") : posts.map((post)=>(
+                            <Post post={post} key={post.id}/>
+                        ))}
+                    </InfiniteScroll>
+
                 </div>
             </TimelineStyles>
                 <div className="hashtag-container">

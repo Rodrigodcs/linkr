@@ -4,12 +4,13 @@ import styled from 'styled-components'
 import Trending from "../Trending/Trending"
 import Post from '../Post'
 import UserContext from '../../contexts/UserContext'
-import axios from 'axios'
+import InfiniteScroll from 'react-infinite-scroller'
 import preloader from '../../images/preloader.gif'
+import axios from 'axios'
 
 export default function Hashtag(){
     const { hashtag } = useParams()
-    const {userInfo, refresh} = useContext(UserContext);
+    const {userInfo, refresh, lastId, setLastId, morePosts, setMorePosts} = useContext(UserContext);
     const [postsHash, setPostsHash] = useState([]);
     const [loader, setLoader] = useState(true);
 
@@ -19,11 +20,24 @@ export default function Hashtag(){
         promisse.then(answer=>{
             setLoader(false);
             setPostsHash(answer.data.posts);
+            setMorePosts(answer.data.posts.length);
+            setLastId(answer.data.posts[answer.data.posts.length-1]);
         });
         promisse.catch((answer)=>{
             alert("Houve uma falha ao obter os posts, por favor atualize a página")
         });
-    },[userInfo.token, hashtag, refresh])
+    },[userInfo.token, hashtag, refresh,setMorePosts,setLastId])
+
+    function loadFunc() {
+        const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
+        const promisse = axios.get(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/hashtags/${hashtag}/posts?olderThan=${lastId.id}`,config);
+        promisse.then((answer)=>{
+            setPostsHash([...postsHash, ...answer.data.posts]);
+            setMorePosts(answer.data.posts.length);
+            setLastId(answer.data.posts[answer.data.posts.length-1]);
+
+        })
+    }
 
     return(
         <PageContainer>
@@ -39,9 +53,22 @@ export default function Hashtag(){
                             <header>
                                 # {hashtag}
                             </header>
-                            {postsHash.length === 0 ? ("Nenhum post encontrado") : postsHash.map((post)=>(
-                                <Post post={post} timeline={true} key={post.repostId ? post.repostId :post.id}/>
-                            ))}
+                            <InfiniteScroll
+                                pageStart={0}
+                                initialLoad={false}
+                                threshold={100}
+                                loadMore={loadFunc}
+                                hasMore={morePosts >= 10}
+                                loader={
+                                    <div className="loader" key={0}>
+                                        Loading ...
+                                    </div>
+                                }
+                            >
+                                {postsHash.length === 0 ? ("Nenhum post encontrado") : postsHash.map((post)=>(
+                                    <Post post={post} key={post.id}/>
+                                ))}
+                            </InfiniteScroll>
                         </div>
                     </TimelineStyles>
                     <div className="hashtag-container">

@@ -4,12 +4,14 @@ import styled from 'styled-components'
 import Trending from "./Trending/Trending"
 import Post from './Post'
 import UserContext from '../contexts/UserContext'
-import axios from 'axios'
+import InfiniteScroll from 'react-infinite-scroller'
 import preloader from '../images/preloader.gif'
+import axios from 'axios'
 
 export default function User(){
+    
     const { id } = useParams()
-    const {userInfo, refresh} = useContext(UserContext);
+    const {userInfo, refresh, lastId, setLastId, morePosts, setMorePosts} = useContext(UserContext);
     const [selectedUserPosts, setSelectedUserPosts] = useState([]);
     const [selectedUserInfo, setSelectedUserInfo] = useState([]);
     const [loader, setLoader] = useState(true);
@@ -26,11 +28,40 @@ export default function User(){
             setSelectedUserInfo(responses[0].data)
             setSelectedUserPosts(responses[1].data.posts);
             setFollowedUser(responses[2].data.users.map(u=>u.id).includes(parseInt(id)))
+            
+            setSelectedUserPosts(responses[1].data.posts);
+            setMorePosts(responses[1].data.posts.length);
+            setLastId(responses[1].data.posts[responses[1].data.posts.length -1])
+
             setLoader(false)
         })).catch(() =>{
             alert("Houve uma falha ao obter os posts, por favor atualize a página")
         })
-    },[userInfo.token, id, refresh])
+
+        // function getUserInfo(){
+        //     const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
+        //     const promisse = axios.get(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/users/${id}/posts`,config);
+        //     promisse.then(answer=>{
+        //         setSelectedUserPosts(answer.data.posts);
+        //         setMorePosts(answer.data.posts.length);
+        //         setLastId(answer.data.posts[answer.data.posts.length -1])
+        //         setLoader(false);
+        //     });
+        //     promisse.catch((answer)=>{
+        //         alert("Houve uma falha ao obter os posts, por favor atualize a página")
+        //     });
+        // }
+    },[userInfo.token, id, refresh,setLastId,setMorePosts])
+
+    function loadFunc() {
+        const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
+        const promisse = axios.get(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/users/${id}/posts?olderThan=${lastId.id}`,config);
+        promisse.then((answer)=>{
+            setSelectedUserPosts([...selectedUserPosts, ...answer.data.posts]);
+            setMorePosts(answer.data.posts.length);
+            setLastId(answer.data.posts[answer.data.posts.length-1]);
+        })
+    }
 
     function followUser(id){
         setRequestingFollow(true)
@@ -82,9 +113,18 @@ export default function User(){
                                         <FollowButton followed onClick={()=>followUser(id)}>Follow</FollowButton>
                                 }
                             </header>
-                            {selectedUserPosts.length === 0 ? ("Nenhum post encontrado") : selectedUserPosts.map((post)=>(
-                                <Post post={post} timeline={true} key={post.repostId ? post.repostId :post.id}/>
-                            ))}
+                            <InfiniteScroll
+                                pageStart={0}
+                                initialLoad={false}
+                                threshold={100}
+                                loadMore={loadFunc}
+                                hasMore={morePosts >= 10}
+                                loader={<div className="loader" key={0}>Loading ...</div>}
+                            >
+                                {selectedUserPosts.length === 0 ? ("Nenhum post encontrado") : selectedUserPosts.map((post)=>(
+                                    <Post post={post} key={post.id}/>
+                                ))}
+                            </InfiniteScroll>
                         </div>
                     </TimelineStyles>
                     <div className="hashtag-container">

@@ -13,6 +13,7 @@ import UserContext from "../contexts/UserContext"
 import axios from 'axios';
 import Modal from 'react-modal';
 import preloader from '../images/preloader.gif'
+import defaultSnippet from '../images/defaultSnippet.jpg'
 import VideoPlayer from "./VideoPlayer"
 import getYouTubeID from "get-youtube-id"
 import UserMap from "./UserMap"
@@ -20,33 +21,38 @@ import useInterval from 'use-interval'
 import LinkWindow from "./LinkWindow"
 
 
-export default function Post({post, timeline}) {
+export default function Post({post}) {
     const {userInfo, refresh, setRefresh} = useContext(UserContext)
     const [editing,setEditing] = useState(false)
     const [disabled,setDisabled] = useState(false)
+    const [badImage, setBadImage] = useState(false)
+    const [like, setLike] = useState(post.likes.some(like=> like.userId === userInfo.user.id))
     const [showDeleteModal, setShowDeleteModal] = useState(false)
     const [showRepostModal, setShowRepostModal] = useState(false)
     const [showComments, setShowComments] = useState(false)
-    const [like, setLike] = useState(post.likes.some(like=> timeline ? like.userId === userInfo.user.id : like.id === userInfo.user.id))
     const [likeNum, setLikeNum] = useState(post.likes.length);
     const [postText,setPostText] = useState(post.text)
     const [postCommentText, setPostCommentText] = useState()
     const [commentList, setCommentList] = useState({comments:[]})
     const [followingList, setFollowingList] = useState([])
+    const [showLinkWindow,setShowLinkWindow] = useState(false)
     const history = useHistory()
     const inputRef = useRef()
+    
     const location = post.geolocation?post.geolocation:"";
-    const [showLinkWindow,setShowLinkWindow] = useState(false)
-
     const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
 
     useEffect(()=>{
+        const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
         const response = axios.get(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/users/follows`, config)
         response.then((data)=>{
             setFollowingList(data.data)
         })
-        getCommentList()
-    }, [])
+        const answer = axios.get(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/posts/${post.id}/comments`, config)
+        answer.then((data)=>{
+            setCommentList(data.data)
+        })
+    }, [userInfo.token,post.id])
 
     useInterval(()=>{
         getCommentList()
@@ -66,7 +72,7 @@ export default function Post({post, timeline}) {
         promisse.catch(()=>{
             setLike(false);
             setLikeNum(likeNum);
-            !timeline&&setRefresh(refresh+1)
+            setRefresh(refresh+1)
             alert("Houve um problema ao curtir esta publicação!");
         });
     }
@@ -76,7 +82,7 @@ export default function Post({post, timeline}) {
         setLikeNum(likeNum-1);
         const promisse = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/posts/${post.id}/dislike`,{},config)
         promisse.then(()=>{
-            !timeline&&setRefresh(refresh+1)
+            setRefresh(refresh+1)
         });
         promisse.catch(()=>{
             setLike(true);
@@ -183,11 +189,11 @@ export default function Post({post, timeline}) {
                     </div>
                     <ReactTooltip arrowColor={'#fff'} className="tooltip"/>
                     <p data-tip={
-                        timeline?
                             like?
                                 likeNum===1?
                                     `Você`:
                                     likeNum===2?
+
                                         `Você e ${(post.likes.find(i=> i["user.username"]!==userInfo.user.username))["user.username"]}`:
                                         `Você, ${(post.likes.find(i=> i["user.username"]!==userInfo.user.username))["user.username"]} e outras ${likeNum-2} pessoas`
                             :
@@ -198,21 +204,6 @@ export default function Post({post, timeline}) {
                                         likeNum===2?
                                             `${(post.likes.find(i=> i["user.username"]!==userInfo.user.username))["user.username"]} e ${(post.likes.reverse().find(i=> i["user.username"]!==userInfo.user.username))["user.username"]}`:
                                             `${(post.likes.find(i=> i["user.username"]!==userInfo.user.username))["user.username"]}, ${(post.likes.reverse().find(i=> i["user.username"]!==userInfo.user.username))["user.username"]} e outras ${likeNum-2} pessoas`
-                        :
-                            like?
-                                likeNum===1?
-                                    `Você`:
-                                    likeNum===2?
-                                        `Você e ${(post.likes.find(i=> i.username!==userInfo.user.username)).username}`:
-                                        `Você, ${(post.likes.find(i=> i.username!==userInfo.user.username)).username} e outras ${likeNum-2} pessoas`
-                            :
-                                likeNum===0?
-                                    "Ninguém":
-                                    likeNum===1?
-                                        (post.likes.find(i=> i.username!==userInfo.user.username)).username:
-                                        likeNum===2?
-                                            `${(post.likes.find(i=> i.username!==userInfo.user.username)).username} e ${(post.likes.reverse().find(i=> i.username!==userInfo.user.username)).username}`:
-                                            `${(post.likes.find(i=> i.username!==userInfo.user.username)).username}, ${(post.likes.reverse().find(i=> i.username!==userInfo.user.username)).username} e outras ${likeNum-2} pessoas`
                     }>{`${likeNum} likes`}</p>
 
                     <div className="like-container">
@@ -302,7 +293,7 @@ export default function Post({post, timeline}) {
                                 <p>{post.link.substring(0,55)}  ... </p>
                             </div>
                             <div className="link-img">
-                                <img src={post.linkImage||"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSm8Vfgq8QNCKjJUFHu-0Dhc2EgfdOjzpaDEA&usqp=CAU"} alt="link preview"/>
+                                <img src={badImage ? defaultSnippet : post.linkImage || defaultSnippet} onError={()=>setBadImage(true)} alt="link preview"/>
                             </div>
                         </LinkSnippet>
                         <LinkWindow link={post.link} showLinkWindow={showLinkWindow} setShowLinkWindow={setShowLinkWindow}/>
@@ -726,6 +717,7 @@ const PostStyles = styled.div`
             font-weight: 400;
             font-size: 11px;
             color:#fff;
+            cursor:default;
         }
     }
     @media(max-width:611px){
@@ -747,4 +739,3 @@ const PostStyles = styled.div`
         }
     }
 `
-
