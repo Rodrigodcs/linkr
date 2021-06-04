@@ -105,7 +105,14 @@ export default function User(){
                                 threshold={100}
                                 loadMore={loadFunc}
                                 hasMore={morePosts >= 10}
-                                loader={<div className="loader" key={0}>Loading ...</div>}
+                                loader={
+                                    <div className="load-more-posts" key={0}>
+                                        <div>
+                                            <img src={preloader} alt="loading more"/>
+                                        </div>
+                                        <p>Loading more posts...</p>
+                                    </div>
+                                }
                             >
                                 {selectedUserPosts.length === 0 ? ("Nenhum post encontrado") : selectedUserPosts.map((post)=>(
                                     <Post post={post} key={post.repostId ? post.repostId :post.id}/>

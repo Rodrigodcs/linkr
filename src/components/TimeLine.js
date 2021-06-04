@@ -14,8 +14,9 @@ export default function TimeLine(){
     const {userInfo, refresh, lastId, setLastId, morePosts, setMorePosts} = useContext(UserContext);
     const [posts, setPosts] = useState([]);
     const [loader, setLoader] = useState(true);
-    const [followingList, setFollowingList] = useState({users: []})
-    
+
+    const [followingList, setFollowingList] = useState({users: []})    
+
     useEffect(()=>{
         const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
         const promisse = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/following/posts",config);
@@ -72,8 +73,11 @@ export default function TimeLine(){
                         loadMore={loadFunc}
                         hasMore={morePosts >= 10}
                         loader={
-                            <div className="loader" key={0}>
-                                Loading ...
+                            <div className="load-more-posts" key={0}>
+                                <div>
+                                    <img src={preloader} alt="loading more"/>
+                                </div>
+                                <p>Loading more posts...</p>
                             </div>
                         }>
                             {followingList.users.length === 0 ? "Você não segue ninguém ainda, procure por perfis na busca" :

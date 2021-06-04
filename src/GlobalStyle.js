@@ -57,6 +57,27 @@ export const GlobalStyle = createGlobalStyle`
     border-radius: 5px !important;
   }
 
+  .load-more-posts{
+    display: flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items: center;
+    margin-bottom: 50px;
+    div{
+      width:50px;
+      height:50px;
+
+      img{
+        width: 50px;
+        height: 50px;
+      }
+    }
+    p{
+      color:#6d6d6d;
+      font-size: 22px;
+    }
+  }
+
 `
 
 // font-family: 'Lato', sans-serif;
