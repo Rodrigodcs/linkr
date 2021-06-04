@@ -60,7 +60,7 @@ export default function MyPosts(){
                                 </div>
                             }>
                                 {myPosts.length === 0 ? ("Nenhum post encontrado") : myPosts.map((post)=>(
-                                    <Post post={post} key={post.id}/>
+                                    <Post post={post} key={post.repostId ? post.repostId :post.id}/>
                                     ))}
                             </InfiniteScroll>
                         </div>
