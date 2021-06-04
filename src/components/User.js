@@ -37,7 +37,6 @@ export default function User(){
         })).catch(() =>{
             alert("Houve uma falha ao obter os posts, por favor atualize a página")
         })
-
     },[userInfo.token, id, refresh,setLastId,setMorePosts])
 
     function loadFunc() {
