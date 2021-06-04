@@ -24,7 +24,7 @@ export default function MyLikes(){
         promisse.catch((answer)=>{
             alert("Houve uma falha ao obter os posts, por favor atualize a página")
         });
-    },[userInfo.token, userInfo.user.id, refresh])
+    },[userInfo.token, userInfo.user.id, refresh,setLastId,setMorePosts])
 
     function loadFunc() {
         const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
@@ -51,27 +51,22 @@ export default function MyLikes(){
                             <header>
                                 my likes
                             </header>
-<<<<<<< HEAD
                             <InfiniteScroll
-                            pageStart={0}
-                            initialLoad={false}
-                            threshold={100}
-                            loadMore={loadFunc}
-                            hasMore={morePosts >= 10}
-                            loader={
-                                <div className="loader" key={0}>
-                                    Loading ...
-                                </div>
-                            }>
+                                pageStart={0}
+                                initialLoad={false}
+                                threshold={100}
+                                loadMore={loadFunc}
+                                hasMore={morePosts >= 10}
+                                loader={
+                                    <div className="loader" key={0}>
+                                        Loading ...
+                                    </div>
+                                }
+                            >
                                 {myLikedPosts.length === 0 ? ("Nenhum post encontrado") : myLikedPosts.map((post)=>(
                                     <Post post={post} key={post.id}/>
                                 ))}
                             </InfiniteScroll>
-=======
-                            {myLikedPosts.length === 0 ? ("Nenhum post encontrado") : myLikedPosts.reverse().map((post)=>(
-                                <Post post={post} timeline={true} key={post.repostId ? post.repostId :post.id}/>
-                            ))}
->>>>>>> main
                         </div>
                     </TimelineStyles>
                     <div className="hashtag-container">

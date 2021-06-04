@@ -25,7 +25,7 @@ export default function TimeLine(){
             setLastId(answer.data.posts[answer.data.posts.length -1])
         });
         promisse.catch(()=>alert("Houve uma falha ao obter os posts, por favor atualize a página"));
-    },[userInfo.token, refresh])
+    },[userInfo.token, refresh,setLastId,setMorePosts])
 
     useInterval(()=>{
         const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}

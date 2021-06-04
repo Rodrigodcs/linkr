@@ -15,13 +15,9 @@ export default function User(){
     const [selectedUserPosts, setSelectedUserPosts] = useState([]);
     const [selectedUserInfo, setSelectedUserInfo] = useState([]);
     const [loader, setLoader] = useState(true);
-<<<<<<< HEAD
-    
-=======
     const [requestingFollow,setRequestingFollow]=useState(false)
     const [followedUser,setFollowedUser] = useState(false)
 
->>>>>>> main
     useEffect(()=>{
         const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
         axios.all([
@@ -32,25 +28,30 @@ export default function User(){
             setSelectedUserInfo(responses[0].data)
             setSelectedUserPosts(responses[1].data.posts);
             setFollowedUser(responses[2].data.users.map(u=>u.id).includes(parseInt(id)))
+            
+            setSelectedUserPosts(responses[1].data.posts);
+            setMorePosts(responses[1].data.posts.length);
+            setLastId(responses[1].data.posts[responses[1].data.posts.length -1])
+
             setLoader(false)
         })).catch(() =>{
             alert("Houve uma falha ao obter os posts, por favor atualize a página")
         })
-<<<<<<< HEAD
-        function getUserInfo(){
-            const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
-            const promisse = axios.get(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/users/${id}/posts`,config);
-            promisse.then(answer=>{
-                setSelectedUserPosts(answer.data.posts);
-                setMorePosts(answer.data.posts.length);
-                setLastId(answer.data.posts[answer.data.posts.length -1])
-                setLoader(false);
-            });
-            promisse.catch((answer)=>{
-                alert("Houve uma falha ao obter os posts, por favor atualize a página")
-            });
-        }
-    },[userInfo.token, id, refresh])
+
+        // function getUserInfo(){
+        //     const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
+        //     const promisse = axios.get(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/users/${id}/posts`,config);
+        //     promisse.then(answer=>{
+        //         setSelectedUserPosts(answer.data.posts);
+        //         setMorePosts(answer.data.posts.length);
+        //         setLastId(answer.data.posts[answer.data.posts.length -1])
+        //         setLoader(false);
+        //     });
+        //     promisse.catch((answer)=>{
+        //         alert("Houve uma falha ao obter os posts, por favor atualize a página")
+        //     });
+        // }
+    },[userInfo.token, id, refresh,setLastId,setMorePosts])
 
     function loadFunc() {
         const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
@@ -59,10 +60,8 @@ export default function User(){
             setSelectedUserPosts([...selectedUserPosts, ...answer.data.posts]);
             setMorePosts(answer.data.posts.length);
             setLastId(answer.data.posts[answer.data.posts.length-1]);
-
         })
-=======
-    },[userInfo.token, id, refresh])
+    }
 
     function followUser(id){
         setRequestingFollow(true)
@@ -90,7 +89,6 @@ export default function User(){
             alert("Houve uma falha ao deixar de seguir o usuário, por favor tente novamente")
             setRequestingFollow(false)
         });
->>>>>>> main
     }
 
     return(
@@ -115,7 +113,6 @@ export default function User(){
                                         <FollowButton followed onClick={()=>followUser(id)}>Follow</FollowButton>
                                 }
                             </header>
-<<<<<<< HEAD
                             <InfiniteScroll
                                 pageStart={0}
                                 initialLoad={false}
@@ -127,13 +124,7 @@ export default function User(){
                                 {selectedUserPosts.length === 0 ? ("Nenhum post encontrado") : selectedUserPosts.map((post)=>(
                                     <Post post={post} key={post.id}/>
                                 ))}
-                            
                             </InfiniteScroll>
-=======
-                            {selectedUserPosts.length === 0 ? ("Nenhum post encontrado") : selectedUserPosts.map((post)=>(
-                                <Post post={post} timeline={true} key={post.repostId ? post.repostId :post.id}/>
-                            ))}
->>>>>>> main
                         </div>
                     </TimelineStyles>
                     <div className="hashtag-container">

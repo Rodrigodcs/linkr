@@ -31,7 +31,6 @@ export default function MyPosts(){
             setMyPosts([...myPosts, ...answer.data.posts]);
             setMorePosts(answer.data.posts.length);
             setLastId(answer.data.posts[answer.data.posts.length-1]);
-
         })
     }
 
@@ -49,7 +48,6 @@ export default function MyPosts(){
                             <header>
                                 my posts
                             </header>
-<<<<<<< HEAD
                             <InfiniteScroll
                             pageStart={0}
                             initialLoad={false}
@@ -65,11 +63,6 @@ export default function MyPosts(){
                                     <Post post={post} key={post.id}/>
                                     ))}
                             </InfiniteScroll>
-=======
-                            {myPosts.length === 0 ? ("Nenhum post encontrado") : myPosts.map((post)=>(
-                                <Post post={post} timeline={true} key={post.repostId ? post.repostId :post.id}/>
-                            ))}
->>>>>>> main
                         </div>
                     </TimelineStyles>
                     <div className="hashtag-container">

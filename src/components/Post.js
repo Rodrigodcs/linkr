@@ -22,7 +22,6 @@ import LinkWindow from "./LinkWindow"
 
 
 export default function Post({post}) {
-    
     const {userInfo, refresh, setRefresh} = useContext(UserContext)
     const [editing,setEditing] = useState(false)
     const [disabled,setDisabled] = useState(false)
@@ -31,7 +30,6 @@ export default function Post({post}) {
     const [showDeleteModal, setShowDeleteModal] = useState(false)
     const [showRepostModal, setShowRepostModal] = useState(false)
     const [showComments, setShowComments] = useState(false)
-    const [like, setLike] = useState(post.likes.some(like=> timeline ? like.userId === userInfo.user.id : like.id === userInfo.user.id))
     const [likeNum, setLikeNum] = useState(post.likes.length);
     const [postText,setPostText] = useState(post.text)
     const [postCommentText, setPostCommentText] = useState()
@@ -45,12 +43,16 @@ export default function Post({post}) {
     const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
 
     useEffect(()=>{
+        const config = {headers:{Authorization:`Bearer ${userInfo.token}`}}
         const response = axios.get(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/users/follows`, config)
         response.then((data)=>{
             setFollowingList(data.data)
         })
-        getCommentList()
-    }, [])
+        const answer = axios.get(`https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/posts/${post.id}/comments`, config)
+        answer.then((data)=>{
+            setCommentList(data.data)
+        })
+    }, [userInfo.token,post.id])
 
     useInterval(()=>{
         getCommentList()
